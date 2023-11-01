@@ -1,6 +1,6 @@
 # Chuckler
 <div align="center" style="max-width: 50%;">
-  <img src="https://github.com/Devamp/raw-ape/blob/main/chuckler-logo.png" alt="Project Logo">
+  <img src="https://github.com/Devamp/chuckler/blob/main/chuckler-logo.png" alt="Project Logo" width='200' height='200'>
 </div>
 Chuckler is an exciting and interactive social party game app that combines the best elements of popular games like Jackbox and Cards Against Humanity. It allows users to unleash their creativity and sense of humor by filling in the blanks, sharing funny answers, and engaging with a daily prompt.
 
