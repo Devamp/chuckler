@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "25599306163",
+    "project_id": "chuckler-622ff",
+    "storage_bucket": "chuckler-622ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25599306163:android:fc581e1e6b15a9140843c6",
+        "android_client_info": {
+          "package_name": "com.example.chuckler"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuAM9zQ3I2l5e9HeYNQfQnuncij13DshY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
