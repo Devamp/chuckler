@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:chuckler/route_generator.dart';
 
 void main() {
@@ -11,12 +10,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Chuckler',
-      theme: ThemeData(
-        primarySwatch: Colors.orange
-      ),
-     initialRoute: '/',
-     onGenerateRoute: RouteGenerator.generateRoute,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.orange),
+      initialRoute: '/',
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
-
