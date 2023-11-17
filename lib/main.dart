@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'Chuckler',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.orange),
-      initialRoute: '/',
+      initialRoute: '/create',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
