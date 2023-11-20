@@ -10,7 +10,7 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Text("This is the account page."),
-      bottomNavigationBar: NavigationBarController(initialPageIndex: 0)
+      bottomNavigationBar: NavigationBarController(initialPageIndex: 3)
     );
   }
 }

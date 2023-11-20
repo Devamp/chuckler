@@ -4,6 +4,7 @@ import 'package:chuckler/PageTransitioner.dart';
 import 'package:chuckler/pages/create_page.dart';
 import 'package:chuckler/pages/feed_page.dart';
 import 'package:chuckler/pages/explore_page.dart';
+import 'package:chuckler/pages/account_page.dart';
 
 
 class NavigationBarController extends StatefulWidget {
@@ -55,14 +56,21 @@ void setCurrentPageIndex(int index) {
               SmoothPageTransition(child: ExplorePage()),
             );
           }
-      },
+          else if (_currentPageIndex == 3) {
+            Navigator.push(
+              context,
+              SmoothPageTransition(child: AccountPage()),
+            );
+          }
+        },
       selectedItemColor: Colors.black,
       unselectedItemColor: Colors.grey,
         //Creates a list of each of the icons in the nav bar
       items: [
         BottomNavigationBarItem(label: "Create", icon: Icon(Icons.create)),
         BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home)),
-        BottomNavigationBarItem(label: "Explore", icon: Icon(Icons.explore))
+        BottomNavigationBarItem(label: "Explore", icon: Icon(Icons.explore)),
+        BottomNavigationBarItem(label: "Account", icon: Icon(Icons.person))
       ]
     );
   }
