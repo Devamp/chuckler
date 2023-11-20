@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:chuckler/route_generator.dart';
+import './firebase/firebase_options.dart';
 
-void main() {
+Future<void> main() async {
+  DefaultFirebaseOptions fb = DefaultFirebaseOptions();
+  WidgetsFlutterBinding.ensureInitialized();
+  fb.initializeFirebase();
   runApp(MyApp());
 }
 
