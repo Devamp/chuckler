@@ -1,3 +1,4 @@
+
 import 'package:chuckler/AppNavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/route_generator.dart';
@@ -16,5 +17,6 @@ class FeedPage extends StatelessWidget {
         body: Text("This is the Feed page."),
         bottomNavigationBar: NavigationBarController(initialPageIndex: 1)
     );
+
   }
 }
