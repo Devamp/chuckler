@@ -1,11 +1,14 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+// ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String inputEmail = '';
+  String inputPassword = '';
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,7 @@ class LoginPage extends StatelessWidget {
                 const SizedBox(height: 30),
                 TextField(
                   onChanged: (text) {
-                    print('Input text: $text');
+                    inputEmail = text;
                   },
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: Colors.white),
@@ -53,12 +56,19 @@ class LoginPage extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1.0,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextField(
                   onChanged: (text) {
-                    print('Input text: $text');
+                    inputPassword = text;
                   },
                   obscureText: true, // for password
                   style: TextStyle(color: Colors.white),
@@ -69,6 +79,13 @@ class LoginPage extends StatelessWidget {
                     hintStyle: TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 1.0,
+                      ),
                     ),
                   ),
                 ),
@@ -95,7 +112,7 @@ class LoginPage extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        print("Sign Up Clicked");
+                        Navigator.pushNamed(context, '/signup');
                       },
                       style: ButtonStyle(
                         backgroundColor:
@@ -122,8 +139,42 @@ class LoginPage extends StatelessWidget {
                     ),
                     SizedBox(width: 25),
                     ElevatedButton(
-                      onPressed: () {
-                        print("Login Clicked");
+                      onPressed: () async {
+                        try {
+                          await _auth.signInWithEmailAndPassword(
+                              email: inputEmail, password: inputPassword);
+
+                          Navigator.pushNamed(context, '/feed');
+                        } catch (e) {
+                          String errorMessage = e.toString();
+
+                          int startIndex = errorMessage.indexOf(']');
+                          String endMessage =
+                              errorMessage.substring(startIndex + 1).trim();
+
+                          if (errorMessage
+                              .contains("INVALID_LOGIN_CREDENTIALS")) {
+                            endMessage = "Invalid user or password.";
+                          }
+                          // ignore: use_build_context_synchronously
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Failure'),
+                                content: Text(endMessage),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Ok'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor:
