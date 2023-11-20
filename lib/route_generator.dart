@@ -21,11 +21,11 @@ class RouteGenerator {
       case '/feed':
         return MaterialPageRoute(builder: (_) => FeedPage());
       case '/explore':
-        return MaterialPageRoute(builder: (_) => LoginPage());
+        return MaterialPageRoute(builder: (_) => ExplorePage());
       case '/account':
-        return MaterialPageRoute(builder: (_) => LoginPage());
+        return MaterialPageRoute(builder: (_) => AccountPage());
       case '/create':
-        return MaterialPageRoute(builder: (_) => LoginPage());
+        return MaterialPageRoute(builder: (_) => CreatePage());
       default:
         return MaterialPageRoute(builder: (_) => LoginPage());
     }
