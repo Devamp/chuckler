@@ -26,14 +26,21 @@ class CreateForm extends StatelessWidget {
           flex: 25,
           child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Container(
-                  child: Text("The Promt will appear here"),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: Colors.black),
-                )
+                Expanded(flex: 1, child: Container()),
+                Expanded(
+                    flex: 2,
+                    child: FractionallySizedBox(
+                        heightFactor: 0.5,
+                        child: Container(
+                          child:Center( child: Text("The Promt will appear here\nCheck this",
+                              style: TextStyle(color: Colors.white))),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                              color: Colors.black),
+                        ))),
+                Expanded(flex: 1, child: Container()),
               ]),
         ),
         //Text Box Container
