@@ -70,7 +70,7 @@ class CreateForm extends StatelessWidget {
                       ElevatedButton(
                         child: Text("POST", style: TextStyle(fontSize: 30)),
                         onPressed: () {
-                          print("Guest Clicked");
+                          print("Post Clicked");
                         },
                         style: ButtonStyle(
                           backgroundColor:
