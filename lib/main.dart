@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   DefaultFirebaseOptions fb = DefaultFirebaseOptions();
   WidgetsFlutterBinding.ensureInitialized();
+
   try {
     await fb.initializeFirebase();
     runApp(MyApp());
@@ -13,6 +14,7 @@ Future<void> main() async {
   catch(e) {
     print("Error initiating Firebase");
   }
+
 
 
 }
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
       title: 'Chuckler',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.orange),
-      initialRoute: '/create',
+      initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
