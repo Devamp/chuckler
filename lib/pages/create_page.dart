@@ -3,6 +3,7 @@ import 'package:chuckler/route_generator.dart';
 import 'package:chuckler/AppNavBar.dart';
 import 'package:chuckler/globalvars.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chuckler/AppHeaderMain.dart';
 
 class CreatePage extends StatelessWidget {
   @override
@@ -25,12 +26,7 @@ class CreateForm extends StatelessWidget {
         //Heading
         Expanded(
           flex: 5,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black
-            )
-
-          )
+          child: MainHeaderBar()
         ),
         //Post Promt
         Expanded(
@@ -67,7 +63,7 @@ class CreateForm extends StatelessWidget {
             flex: 10,
             child: Container(
                 alignment: Alignment.center,
-                child: Text("24:00:00 remain",
+                child: Text("24:00:00 Remaining",
                     style: TextStyle(fontFamily: 'Livvic', fontWeight: FontWeight.w600)))),
         //Text Box Container
         Expanded(
