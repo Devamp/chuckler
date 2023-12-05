@@ -33,8 +33,9 @@ void setCurrentPageIndex(int index) {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: Colors.amber,
-      //set current selection
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.amber,
+        //set current selection
         currentIndex: _currentPageIndex,
         //Move to the correct tab
         onTap: (itemIndex) {
@@ -64,7 +65,7 @@ void setCurrentPageIndex(int index) {
           }
         },
       selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.grey,
+      unselectedItemColor: Colors.white70,
         //Creates a list of each of the icons in the nav bar
       items: [
         BottomNavigationBarItem(label: "Create", icon: Icon(Icons.create)),
