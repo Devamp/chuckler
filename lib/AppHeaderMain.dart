@@ -14,15 +14,14 @@ class MainHeaderBar extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              flex: 3,
+              flex: 4,
               child: AutoSizeText(
                 " Chuckler",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 style: TextStyle(
                   fontFamily: "OpenSans",
-                  fontWeight: FontWeight.w700,
-                  fontSize: 100,
+                  fontSize: 200,
                   color: Colors.amber,
                 ),
               ),
@@ -33,8 +32,21 @@ class MainHeaderBar extends StatelessWidget {
             ),
             Expanded(
               flex: 2,
-              child: Container(),
-            )
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: IconButton(
+                  color: Colors.white,
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  icon: Icon(Icons.person, color: Colors.blue,),
+                  onPressed: () {
+                    // do something when the button is pressed
+                    debugPrint('Profile picture button pressed');
+                  },
+                ),
+              ),
+            ),
           ],
         ));
   }
