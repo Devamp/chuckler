@@ -118,7 +118,9 @@ class AccountPage extends StatelessWidget {
                   height: 10,
                 ),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    print('Edit Profile Clicked');
+                  },
                   icon: Icon(Icons.settings),
                   label: Text(
                     'Edit Profile',
