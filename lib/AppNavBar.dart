@@ -64,8 +64,8 @@ void setCurrentPageIndex(int index) {
             );
           }
         },
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.white70,
+      selectedItemColor: Colors.amber,
+      unselectedItemColor: Colors.white,
         //Creates a list of each of the icons in the nav bar
       items: [
         BottomNavigationBarItem(label: "Create", icon: Icon(Icons.create)),
