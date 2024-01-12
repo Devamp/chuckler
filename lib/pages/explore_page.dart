@@ -140,7 +140,7 @@ class ExploreMainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Expanded(flex: 3, child: ExploreHeader()),
+        Expanded(flex: 5, child: ExploreHeader()),
         Expanded(flex: 35, child: Explorelist())
       ],
     );
@@ -174,7 +174,7 @@ class _ExploreHeaderState extends State<ExploreHeader> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Expanded(
-                        flex: 5,
+                        flex: 4,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: AutoSizeText(
