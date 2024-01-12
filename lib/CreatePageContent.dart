@@ -223,7 +223,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.amber),
+                                MaterialStateProperty.all<Color>(Colors.amber),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(

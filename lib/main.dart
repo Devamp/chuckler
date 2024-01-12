@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       title: 'Chuckler',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.orange),
-      initialRoute: '/',
+      initialRoute: '/feed',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
