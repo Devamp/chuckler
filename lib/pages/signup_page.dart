@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // ignore: must_be_immutable
 class SignupPage extends StatelessWidget {
@@ -10,9 +11,25 @@ class SignupPage extends StatelessWidget {
   String username = '';
   String email = '';
   String password = '';
-  int age = 13;
+  int age = 18;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  Future<void> registerUser() async {
+    try {
+      await firestore.collection('Users').add({
+        'Email': email,
+        'Password': password,
+        'Username': username,
+        'Age': age,
+        'Followers': 0,
+        'Following': 0
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +161,8 @@ class SignupPage extends StatelessWidget {
                             email: email,
                             password: password,
                           );
+
+                          registerUser(); // add user info to db
 
                           // ignore: use_build_context_synchronously
                           showDialog(

@@ -5,9 +5,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:chuckler/AppNavBar.dart';
 import 'package:chuckler/globalvars.dart';
+import '../Session.dart';
+import 'package:provider/provider.dart';
 
 class AccountPage extends StatelessWidget {
-  const AccountPage({Key? key}) : super(key: key);
+  AccountPage({Key? key}) : super(key: key);
+
+  String username = "";
+  int followers = 0;
+  int following = 0;
 
   Widget header(BuildContext context) {
     return Align(
@@ -18,7 +24,7 @@ class AccountPage extends StatelessWidget {
             child: Container(
               height: 220,
               decoration: BoxDecoration(
-                color: const Color(0xFFffd230),
+                color: Colors.black,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(20.0),
                 ),
@@ -31,7 +37,7 @@ class AccountPage extends StatelessWidget {
                     height: 40,
                   ),
                   ProfilePicture(
-                    name: 'Devam Patel',
+                    name: username,
                     radius: 50,
                     fontsize: 40,
                   ),
@@ -39,11 +45,11 @@ class AccountPage extends StatelessWidget {
                     height: 10,
                   ),
                   Text(
-                    'Devam Patel',
+                    username,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -54,7 +60,7 @@ class AccountPage extends StatelessWidget {
             height: 220,
             width: 230,
             decoration: BoxDecoration(
-              color: const Color(0xFFffd230),
+              color: Colors.black,
               borderRadius: BorderRadius.only(
                 bottomRight: Radius.circular(20.0),
               ),
@@ -78,16 +84,16 @@ class AccountPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '3123',
+                          following.toString(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         ),
                         Text(
                           'Following',
-                          style: TextStyle(fontSize: 16, color: Colors.black),
+                          style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                       ],
                     ),
@@ -99,16 +105,16 @@ class AccountPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          '3042',
+                          followers.toString(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         ),
                         Text(
                           'Followers',
-                          style: TextStyle(fontSize: 16, color: Colors.black),
+                          style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                       ],
                     ),
@@ -124,12 +130,12 @@ class AccountPage extends StatelessWidget {
                   icon: Icon(Icons.settings),
                   label: Text(
                     'Edit Profile',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.black),
                   ),
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
-                    iconColor: MaterialStateProperty.all<Color>(Colors.white),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        const Color(0xFFffd230)),
+                    iconColor: MaterialStateProperty.all<Color>(Colors.black),
                   ),
                 ),
               ],
@@ -142,17 +148,29 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            header(context),
-            // Add more widgets as needed
-          ],
+    UserService userSession = Provider.of<UserService>(context);
+
+    if (userSession.userId != null) {
+      username = userSession.userId!;
+      followers = userSession.followers!;
+      following = userSession.following!;
+
+      return Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              header(context),
+              // Add more widgets as needed
+            ],
+          ),
         ),
-      ),
-      backgroundColor: Colors.black,
-      bottomNavigationBar: NavigationBarController(initialPageIndex: 3),
-    );
+        backgroundColor: const Color(0xFFffd230),
+        bottomNavigationBar: NavigationBarController(initialPageIndex: 3),
+      );
+    } else {
+      // If no user is logged in, redirect to the login page
+      Navigator.pushReplacementNamed(context, '/login');
+      return Container(); // Placeholder widget; it won't be visible
+    }
   }
 }

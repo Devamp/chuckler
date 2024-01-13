@@ -1,15 +1,61 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../Session.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String inputEmail = '';
   String inputPassword = '';
   String resetEmail = '';
+
+  Future<bool> verifyLogin(email, password) async {
+    try {
+      QuerySnapshot querySnapshot = await firestore.collection('Users').get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        dynamic saved_email = doc.get(FieldPath(['Email']));
+        dynamic saved_password = doc.get(FieldPath(['Password']));
+
+        if (saved_email == email && saved_password == password) {
+          return true;
+        }
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return false;
+  }
+
+  Future<void> setupUserSession(context, email) async {
+    final UserService userSession =
+        Provider.of<UserService>(context, listen: false);
+
+    try {
+      QuerySnapshot querySnapshot = await firestore.collection('Users').get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        dynamic saved_email = doc.get(FieldPath(['Email']));
+        dynamic saved_user = doc.get(FieldPath(['Username']));
+        dynamic saved_followers = doc.get(FieldPath(['Followers']));
+        dynamic saved_following = doc.get(FieldPath(['Following']));
+
+        if (saved_email == email) {
+          userSession.setUserId(saved_user);
+          userSession.setFollowers(saved_followers);
+          userSession.setFollowing(saved_following);
+        }
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   void showForgotPasswordSheet(BuildContext context) {
     showModalBottomSheet(
@@ -245,35 +291,26 @@ class LoginPage extends StatelessWidget {
                     SizedBox(width: 25),
                     ElevatedButton(
                       onPressed: () async {
-                        try {
-                          await _auth.signInWithEmailAndPassword(
-                              email: inputEmail, password: inputPassword);
+                        bool status =
+                            await verifyLogin(inputEmail, inputPassword);
 
+                        if (status) {
+                          await setupUserSession(context, inputEmail);
                           Navigator.pushNamed(context, '/feed');
-                        } catch (e) {
-                          String errorMessage = e.toString();
-
-                          int startIndex = errorMessage.indexOf(']');
-                          String endMessage =
-                              errorMessage.substring(startIndex + 1).trim();
-
-                          if (errorMessage
-                              .contains("INVALID_LOGIN_CREDENTIALS")) {
-                            endMessage = "Invalid user or password.";
-                          }
-                          // ignore: use_build_context_synchronously
+                        } else {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Failure'),
-                                content: Text(endMessage),
+                                title: Text("Verification Failed"),
+                                content: Text(
+                                    "Invalid email or password. Please try again."),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.of(context).pop();
+                                      Navigator.pop(context);
                                     },
-                                    child: Text('Ok'),
+                                    child: Text("OK"),
                                   ),
                                 ],
                               );

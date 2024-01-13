@@ -34,7 +34,7 @@ void setCurrentPageIndex(int index) {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFFffd230),
+        backgroundColor: Colors.black,
         //set current selection
         currentIndex: _currentPageIndex,
         //Move to the correct tab
