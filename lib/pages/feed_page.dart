@@ -46,6 +46,21 @@ class StateProvider extends ChangeNotifier {
   void updatePosition(DragUpdateDetails details) {
     _isDragging = true;
     _position += details.delta;
+    print(_position.dx);
+    if(_position.dx > 100) {
+      _green +=  details.delta.dx as int;
+    }
+    else if (position.dx < -100) {
+      _red +=  -details.delta.dx as int;
+    }
+    else {
+      if(_isDragging) {
+        _red = 0;
+        _green = 0;
+      }
+    }
+
+
     final x = _position.dx;
     _angle = 2 * (x / screenSize.width);
     notifyListeners();
@@ -94,18 +109,18 @@ class StateProvider extends ChangeNotifier {
   void like() {
     _angle = 20;
     _position += Offset(screenSize.width / 2, 0);
-    _green += 255;
-    print("like");
+    _green += (255 - _green);
+
     notifyListeners();
     nextCard();
   }
 
   //Dislike animation
   void dislike() {
+
     _angle = -20;
     _position -= Offset(screenSize.width / 2, 0);
-    _red += 255;
-    print("dislike");
+    _red += (255 - _red);
     notifyListeners();
     nextCard();
   }
