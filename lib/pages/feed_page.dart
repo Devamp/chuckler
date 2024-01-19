@@ -46,7 +46,7 @@ class StateProvider extends ChangeNotifier {
   void updatePosition(DragUpdateDetails details) {
     _isDragging = true;
     _position += details.delta;
-    print(_position.dx);
+    //Change the color of the buttons
     if(_position.dx > 100) {
       _green +=  details.delta.dx as int;
     }
@@ -60,7 +60,7 @@ class StateProvider extends ChangeNotifier {
       }
     }
 
-
+    //rotate the answer sections
     final x = _position.dx;
     _angle = 2 * (x / screenSize.width);
     notifyListeners();
