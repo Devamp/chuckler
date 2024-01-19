@@ -1,19 +1,123 @@
 import 'package:chuckler/AppNavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/AppHeaderMain.dart';
+import 'package:provider/provider.dart';
 
+//Overall Feed Hierarchy
 class FeedPage extends StatelessWidget {
   const FeedPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        backgroundColor: Colors.amber,
-        body: TheFeed(),
-        bottomNavigationBar: NavigationBarController(initialPageIndex: 1));
+    return ChangeNotifierProvider(
+        create: (context) => StateProvider(),
+        child: const Scaffold(
+            backgroundColor: Colors.amber,
+            body: TheFeed(),
+            bottomNavigationBar: NavigationBarController(initialPageIndex: 1)));
   }
 }
 
+enum CardStatus { like, dislike }
+
+class StateProvider extends ChangeNotifier {
+  //Variables
+  Offset _position = Offset.zero;
+  bool _isDragging = false;
+  double _angle = 0;
+  Size _screenSize = Size.zero;
+  int _red = 0;
+  int _green = 0;
+  get red => _red;
+  get green => _green;
+
+  //Getter Methods
+  Size get screenSize => _screenSize;
+
+  Offset get position => _position;
+
+  bool get isDragging => _isDragging;
+
+  double get angle => _angle;
+
+  void startPosition(DragStartDetails details) {}
+
+  //Have the card follow your drag
+  void updatePosition(DragUpdateDetails details) {
+    _isDragging = true;
+    _position += details.delta;
+    final x = _position.dx;
+    _angle = 2 * (x / screenSize.width);
+    notifyListeners();
+  }
+
+  //When you end your drag animate the card off the page
+  void endPosition(DragEndDetails details) {
+    _isDragging = false;
+    final status = getStatus();
+    switch (status) {
+      case CardStatus.like:
+        like();
+      case CardStatus.dislike:
+        dislike();
+      default:
+        resetPosition();
+    }
+
+
+  }
+
+//reset the card back to its original position
+  void resetPosition() {
+    _position = Offset.zero;
+    _angle = 0;
+    _red = 0;
+    _green = 0;
+    notifyListeners();
+  }
+
+  void setScreenSize(ss) => _screenSize = ss;
+
+  //Gets the status of the card based on the dx
+  CardStatus? getStatus() {
+    final x = _position.dx;
+    final delta = 100;
+    if (x >= delta) {
+      return CardStatus.like;
+    }
+    if (x <= -delta) {
+      return CardStatus.dislike;
+    }
+  }
+
+  //Like animation
+  void like() {
+    _angle = 20;
+    _position += Offset(screenSize.width / 2, 0);
+    _green += 255;
+    print("like");
+    notifyListeners();
+    nextCard();
+  }
+
+  //Dislike animation
+  void dislike() {
+    _angle = -20;
+    _position -= Offset(screenSize.width / 2, 0);
+    _red += 255;
+    print("dislike");
+    notifyListeners();
+    nextCard();
+  }
+
+  //wait for animation to finish before reset
+  void nextCard() async {
+    await Future.delayed(Duration(milliseconds: 200));
+    resetPosition();
+  }
+}
+
+//Non-stateful components of the feed
 class TheFeed extends StatelessWidget {
   const TheFeed({super.key});
 
@@ -68,61 +172,58 @@ class FeedPost extends StatefulWidget {
   _FeedPostState createState() => _FeedPostState();
 }
 
-class _FeedPostState extends State<FeedPost>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  bool isLeftSwipe = false;
-  bool isRightSwipe = false;
-  double startVal = 0;
-  double difVal = 0;
-  bool isSwiping = false;
-  Offset _offset = Offset.zero;
-
+//Stateful components of the Feed
+class _FeedPostState extends State<FeedPost> {
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-        vsync: this,
-        lowerBound: -1,
-        upperBound: 1,
-        duration: const Duration(seconds: 10))..addStatusListener((AnimationStatus status) {
-       if(status == AnimationStatus.forward && isSwiping == true) {
-        // _controller.value = 0;
-         print("Working?");
-       }
 
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final size = MediaQuery.of(context).size;
+      final provider = Provider.of<StateProvider>(context, listen: false);
+      provider.setScreenSize(size);
     });
-
-    _controller.value = 0;
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<StateProvider>(context);
+    final position = provider.position;
+    final isDragging = provider.isDragging;
+    final time = isDragging ? 0 : 200;
+    final angle = provider.angle;
+    final Offset center =
+        Offset(provider.screenSize.width / 2, provider.screenSize.height / 2);
+    final rotatedMatrix = Matrix4.identity()
+      ..translate(center.dx, center.dy)
+      ..rotateZ(angle)
+      ..translate(-center.dx, -center.dy);
+    final redv = provider.red;
+    final greenv = provider.green;
+
     return GestureDetector(
-        onHorizontalDragStart: (val) {
-          startVal = val.globalPosition.dx;
+        onPanUpdate: (details) {
+          final provider = Provider.of<StateProvider>(context, listen: false);
+          provider.updatePosition(details);
         },
-        onHorizontalDragUpdate: (val) {
-          difVal = val.globalPosition.dx - startVal;
-          _controller.forward();
+        onPanEnd: (details) {
+          final provider = Provider.of<StateProvider>(context, listen: false);
+          provider.endPosition(details);
+          print("paning");
         },
-        onHorizontalDragEnd: (val) {
-         //_controller.reset();
-        // _controller.value = 0;
-         difVal = 0;
+        onPanStart: (details) {
+          final provider = Provider.of<StateProvider>(context, listen: false);
+          provider.startPosition(details);
+          print("paning");
         },
-        child: Column(children: <Widget>[
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
           Expanded(
             flex: 1,
-            child: AnimatedBuilder(
-              animation: _controller,
-              builder: (_, child) {
-                return Transform.translate(
-                  offset: Offset(difVal, 0),
-                  child: child,
-                );
-              },
-
+            child: AnimatedContainer(
+                duration: Duration(milliseconds: time),
+                curve: Curves.easeInOut,
+                transform: rotatedMatrix..translate(position.dx, position.dy),
                 child: Row(children: <Widget>[
                   Expanded(flex: 1, child: Container()),
                   Expanded(
@@ -172,7 +273,8 @@ class _FeedPostState extends State<FeedPost>
                                         onPressed: () {},
                                       ),
                                       IconButton(
-                                        icon: const Icon(Icons.messenger_rounded,
+                                        icon: const Icon(
+                                            Icons.messenger_rounded,
                                             color: Colors.white),
                                         onPressed: () {},
                                       ),
@@ -190,22 +292,37 @@ class _FeedPostState extends State<FeedPost>
                         ),
                       )),
                   Expanded(flex: 1, child: Container())
-                ]),
-              ),
-            ),
-
+                ])),
+          ),
           //Swipe Control Area
           Expanded(
               flex: 1,
-              child: Container(
-                color: Colors.grey,
+              child: Row(
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child:AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          child: IconButton(
+                          onPressed: () {
+                            final provider = Provider.of<StateProvider>(context, listen: false);
+                            provider.dislike();
+                          },
+                          iconSize: MediaQuery.of(context).size.width > MediaQuery.of(context).size.height?  MediaQuery.of(context).size.height/8: MediaQuery.of(context).size.width/8,
+                          icon: Icon(Icons.thumb_down,color: Color.fromRGBO(redv,0,0,1))))),
+                  Expanded(
+                      flex: 1,
+                      child:AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                          child:IconButton(
+                          onPressed: () {
+                            final provider = Provider.of<StateProvider>(context, listen: false);
+                            provider.like();
+                          },
+                          iconSize: MediaQuery.of(context).size.width > MediaQuery.of(context).size.height?  MediaQuery.of(context).size.height/8: MediaQuery.of(context).size.width/8 ,
+                          icon: Icon(Icons.thumb_up),color: Color.fromRGBO(0,greenv,0,1),))),
+                ],
               ))
         ]));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }
