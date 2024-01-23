@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'main.dart';
 
 class UserService with ChangeNotifier {
   String? _userId;
@@ -37,5 +38,16 @@ class UserService with ChangeNotifier {
   void clearFollowers() {
     _followers = null;
     notifyListeners();
+  }
+
+  void logout() {
+    clearUserId();
+    clearFollowing();
+    clearFollowers();
+    reloadApp();
+  }
+
+  void reloadApp() {
+    runApp(MyApp());
   }
 }

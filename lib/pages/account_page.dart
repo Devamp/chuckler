@@ -1,21 +1,28 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:chuckler/AppNavBar.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:provider/provider.dart';
 import 'package:chuckler/globalvars.dart';
 import '../Session.dart';
-import 'package:provider/provider.dart';
 
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   AccountPage({Key? key}) : super(key: key);
 
+  @override
+  _AccountPageState createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
   String username = "";
   int followers = 0;
   int following = 0;
+  int currentIndex = 0;
 
   Widget header(BuildContext context) {
+    UserService userSession = Provider.of<UserService>(context);
+
     return Align(
       alignment: Alignment.topCenter,
       child: Row(
@@ -25,9 +32,6 @@ class AccountPage extends StatelessWidget {
               height: 220,
               decoration: BoxDecoration(
                 color: Colors.black,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20.0),
-                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -61,9 +65,6 @@ class AccountPage extends StatelessWidget {
             width: 230,
             decoration: BoxDecoration(
               color: Colors.black,
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(20.0),
-              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,11 +126,11 @@ class AccountPage extends StatelessWidget {
                 ),
                 ElevatedButton.icon(
                   onPressed: () {
-                    print('Edit Profile Clicked');
+                    userSession.logout();
                   },
-                  icon: Icon(Icons.settings),
+                  icon: Icon(Icons.logout_outlined),
                   label: Text(
-                    'Edit Profile',
+                    'Logout',
                     style: TextStyle(color: Colors.black),
                   ),
                   style: ButtonStyle(
@@ -146,6 +147,57 @@ class AccountPage extends StatelessWidget {
     );
   }
 
+  Widget navBar(BuildContext context) {
+    return Container(
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.black,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sticky_note_2),
+            label: 'My Posts',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark),
+            label: 'Bookmarks',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Activity',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: currentIndex,
+        selectedItemColor: Colors.yellow,
+        unselectedItemColor: Colors.white,
+        onTap: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+
+          // Handle navigation based on index
+          switch (index) {
+            case 0:
+              // Navigate to My Posts page or perform related action
+              break;
+            case 1:
+              // Navigate to Search page or perform related action
+              break;
+            case 2:
+              // Navigate to Favorites page or perform related action
+              break;
+            case 3:
+              // Navigate to Profile page or perform related action
+              break;
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     UserService userSession = Provider.of<UserService>(context);
@@ -156,15 +208,12 @@ class AccountPage extends StatelessWidget {
       following = userSession.following!;
 
       return Scaffold(
+        backgroundColor: const Color(0xFFffd230),
         body: SingleChildScrollView(
           child: Column(
-            children: [
-              header(context),
-              // Add more widgets as needed
-            ],
+            children: [header(context), navBar(context)],
           ),
         ),
-        backgroundColor: const Color(0xFFffd230),
         bottomNavigationBar: NavigationBarController(initialPageIndex: 3),
       );
     } else {
