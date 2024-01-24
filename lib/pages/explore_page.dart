@@ -16,8 +16,9 @@ class ExplorePage extends StatelessWidget {
 
 class ExploreElement extends StatelessWidget {
   final String Answer;
+  final comments = ["This is 1 comment", "This is 2 comment"];
 
-  const ExploreElement({super.key, required this.Answer});
+  ExploreElement({super.key, required this.Answer});
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,30 @@ class ExploreElement extends StatelessWidget {
                           ),
                           IconButton(
                             icon: const Icon(Icons.chat_bubble, color: Colors.white),
-                            onPressed: () {},
+                            onPressed: () {
+                              showModalBottomSheet<void>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child:  Column(
+                                        children: <Widget>[
+                                         CommentForm(),
+                                          ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: comments.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              return ListTile(title: Text(comments[index]));
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -256,3 +280,56 @@ class _ExploreHeaderState extends State<ExploreHeader> {
         ));
   }
 }
+
+class CommentForm extends StatefulWidget {
+  @override
+  _CommentFormState createState() => _CommentFormState();
+}
+
+class _CommentFormState extends State<CommentForm> {
+  final myController = TextEditingController();
+  bool _hasInput = false;
+
+  @override
+  void initState() {
+    super.initState();
+    myController.addListener(_checkInput);
+  }
+
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
+  _checkInput() {
+    setState(() {
+      _hasInput = myController.text.isNotEmpty;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      autofocus: true,
+      controller: myController,
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Add a comment',
+        suffixIcon: _hasInput
+            ? IconButton(
+          splashRadius: 16,
+          splashColor: Colors.black,
+          icon: Icon(Icons.send),
+          onPressed: () {
+            // Handle the submit action here
+          },
+        )
+            : null,
+      ),
+    );
+  }
+}
+

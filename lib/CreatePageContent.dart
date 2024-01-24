@@ -20,6 +20,9 @@ class _CreatePageContentState extends State<CreatePageContent> {
   String beforeAnswer = "";
   String afterAnswer = "";
   bool isUser = false;
+  String promptId ="";
+  String userId ="";
+  String userName = "";
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -46,7 +49,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
       // Get the prompt from the first document
       Map<String, dynamic> data = snapshot.docs.first.data();
       if (data.containsKey('Before') && data.containsKey('After')) {
-        return {'Before': data['Before'], 'After': data['After']};
+        return {'Before': data['Before'], 'After': data['After'], 'id': snapshot.docs.first.id};
       } else {
         throw Exception('Error: Document does not contain a "prompt" field');
       }
@@ -55,12 +58,33 @@ class _CreatePageContentState extends State<CreatePageContent> {
     }
   }
 
+  /*
+  This Function sends the post to the bata base with the current text
+   */
+  Future<void> postData() async {
+    CollectionReference collection = FirebaseFirestore.instance.collection('Posts');
+    return collection
+        .add({
+      'commentIds': [], // Field
+      'content': _controller.text,
+      'dislikedUserIds': [],
+      'likedUserIds': [],
+      'promptId': promptId,
+      'userId': userId
+    })
+        .then((value) => print("Data Added"))
+        .catchError((error) => print("Failed to add data: $error"));
+  }
+
+  /*
+  This function ensures the user is logged in and establishes the userId
+   */
   Future<bool> checkIfUserIsLoggedIn() async {
     final User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
       // User is logged in
-      print(user.email);
+      userId = user.uid;
       return true;
 
     } else {
@@ -83,6 +107,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
     setState(() {
       beforeAnswer = promptData['Before'];
       afterAnswer = promptData['After'];
+      promptId = promptData['id'];
     });
   }
   /*
@@ -94,6 +119,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
       isUser = theUs;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -186,8 +212,9 @@ class _CreatePageContentState extends State<CreatePageContent> {
                         onPressed: () {
 
                           if (isUser) {
-                            // User is logged in
-                            print("Posted");
+                            print("data posted");
+                            //Uncomment below to post data
+                            //postData();
                           } else {
 
                             // User is not logged in
