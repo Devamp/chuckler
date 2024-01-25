@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:chuckler/route_generator.dart';
 import 'package:chuckler/PageTransitioner.dart';
 import 'package:chuckler/pages/create_page.dart';
 import 'package:chuckler/pages/feed_page.dart';
@@ -42,19 +41,19 @@ void setCurrentPageIndex(int index) {
           setCurrentPageIndex(itemIndex);
           if (_currentPageIndex == 0) {
             Navigator.push(context,
-              SmoothPageTransition(child: CreatePage()),
+              SmoothPageTransition(child: const CreatePage()),
             );
           }
           else if (_currentPageIndex == 1) {
             Navigator.push(
               context,
-              SmoothPageTransition(child: FeedPage()),
+              SmoothPageTransition(child: const FeedPage()),
             );
           }
           else if (_currentPageIndex == 2) {
             Navigator.push(
               context,
-              SmoothPageTransition(child: ExplorePage()),
+              SmoothPageTransition(child: const ExplorePage()),
             );
           }
           else if (_currentPageIndex == 3) {
@@ -67,7 +66,7 @@ void setCurrentPageIndex(int index) {
       selectedItemColor: Colors.amber,
       unselectedItemColor: Colors.white,
         //Creates a list of each of the icons in the nav bar
-      items: [
+      items: const [
         BottomNavigationBarItem(label: "Create", icon: Icon(Icons.create)),
         BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home)),
         BottomNavigationBarItem(label: "Explore", icon: Icon(Icons.explore)),

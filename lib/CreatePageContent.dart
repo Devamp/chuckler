@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:chuckler/route_generator.dart';
-import 'package:chuckler/AppNavBar.dart';
-import 'package:chuckler/globalvars.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +20,9 @@ class _CreatePageContentState extends State<CreatePageContent> {
   String beforeAnswer = "";
   String afterAnswer = "";
   bool isUser = false;
+  String promptId ="";
+  String userId ="";
+  String userName = "";
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -30,7 +30,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
   Gets the current prompt and returns a Map {'Before': 'content before prompt', 'After': 'Content after prompt'}
    */
   Future<Map<String, dynamic>> getTodaysPrompt() async {
-    DateTime now = DateTime.now().toUtc().subtract(Duration(hours: 8));
+    DateTime now = DateTime.now().toUtc().subtract(const Duration(hours: 8));
     DateTime today = DateTime(now.year, now.month, now.day);
 
     // Create timestamps for the start and end datess
@@ -49,7 +49,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
       // Get the prompt from the first document
       Map<String, dynamic> data = snapshot.docs.first.data();
       if (data.containsKey('Before') && data.containsKey('After')) {
-        return {'Before': data['Before'], 'After': data['After']};
+        return {'Before': data['Before'], 'After': data['After'], 'id': snapshot.docs.first.id};
       } else {
         throw Exception('Error: Document does not contain a "prompt" field');
       }
@@ -58,12 +58,33 @@ class _CreatePageContentState extends State<CreatePageContent> {
     }
   }
 
+  /*
+  This Function sends the post to the bata base with the current text
+   */
+  Future<void> postData() async {
+    CollectionReference collection = FirebaseFirestore.instance.collection('Posts');
+    return collection
+        .add({
+      'commentIds': [], // Field
+      'content': _controller.text,
+      'dislikedUserIds': [],
+      'likedUserIds': [],
+      'promptId': promptId,
+      'userId': userId
+    })
+        .then((value) => print("Data Added"))
+        .catchError((error) => print("Failed to add data: $error"));
+  }
+
+  /*
+  This function ensures the user is logged in and establishes the userId
+   */
   Future<bool> checkIfUserIsLoggedIn() async {
     final User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
       // User is logged in
-      print(user.email);
+      userId = user.uid;
       return true;
 
     } else {
@@ -86,6 +107,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
     setState(() {
       beforeAnswer = promptData['Before'];
       afterAnswer = promptData['After'];
+      promptId = promptData['id'];
     });
   }
   /*
@@ -97,6 +119,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
       isUser = theUs;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -120,7 +143,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
                           child: Center(
                               child: AutoSizeText.rich(
                             TextSpan(
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 40,
                                   color: Colors.white,
                                   fontFamily: 'OpenSans',
@@ -128,8 +151,8 @@ class _CreatePageContentState extends State<CreatePageContent> {
                               children: <TextSpan>[
                                 TextSpan(text: beforeAnswer),
                                 TextSpan(
-                                    text: '${_controller.text}',
-                                    style: TextStyle(color: Colors.amber)),
+                                    text: _controller.text,
+                                    style: const TextStyle(color: Colors.amber)),
                                 TextSpan(text: afterAnswer),
                               ],
                             ),
@@ -145,7 +168,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
             flex: 10,
             child: Container(
                 alignment: Alignment.center,
-                child: Text("24:00:00 Remaining",
+                child: const Text("24:00:00 Remaining",
                     style: TextStyle(
                         fontFamily: 'Livvic', fontWeight: FontWeight.w600)))),
 //Text Box Container - INPUTss
@@ -156,7 +179,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
               border: Border.all(color: Colors.black, width: 10),
               borderRadius: BorderRadius.circular(15),
             ),
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: TextField(
               controller: _controller,
               onChanged: (text) {
@@ -166,7 +189,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
               expands: true,
               keyboardType: TextInputType.multiline,
               cursorColor: Colors.black,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Answer Prompt Here",
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10),
@@ -186,16 +209,12 @@ class _CreatePageContentState extends State<CreatePageContent> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        child: Text("Post",
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontFamily: 'Livvic',
-                                fontWeight: FontWeight.w600)),
                         onPressed: () {
 
                           if (isUser) {
-                            // User is logged in
-                            print("Posted");
+                            print("data posted");
+                            //Uncomment below to post data
+                            //postData();
                           } else {
 
                             // User is not logged in
@@ -204,12 +223,12 @@ class _CreatePageContentState extends State<CreatePageContent> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                      title: Text('Not Logged In'),
-                                      content: Text(
+                                      title: const Text('Not Logged In'),
+                                      content: const Text(
                                           'You cannot post unless you are logged in.'),
                                       actions: <Widget>[
                                         TextButton(
-                                          child: Text('Go to Login'),
+                                          child: const Text('Go to Login'),
                                           onPressed: () {
                                             Navigator.push(
                                               context,
@@ -229,6 +248,11 @@ class _CreatePageContentState extends State<CreatePageContent> {
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50))),
                         ),
+                        child: const Text("Post",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontFamily: 'Livvic',
+                                fontWeight: FontWeight.w600)),
                       ),
                     ]))),
       ],

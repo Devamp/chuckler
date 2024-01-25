@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:chuckler/main.dart';
 import 'package:chuckler/pages/login_page.dart';
 import 'package:chuckler/pages/signup_page.dart';
 import 'package:chuckler/pages/explore_page.dart';
@@ -19,13 +18,13 @@ class RouteGenerator {
       case '/signup':
         return MaterialPageRoute(builder: (_) => SignupPage());
       case '/feed':
-        return MaterialPageRoute(builder: (_) => FeedPage());
+        return MaterialPageRoute(builder: (_) => const FeedPage());
       case '/explore':
-        return MaterialPageRoute(builder: (_) => ExplorePage());
+        return MaterialPageRoute(builder: (_) => const ExplorePage());
       case '/account':
-        return MaterialPageRoute(builder: (_) => AccountPage());
+        return MaterialPageRoute(builder: (_) =>  AccountPage());
       case '/create':
-        return MaterialPageRoute(builder: (_) => CreatePage());
+        return MaterialPageRoute(builder: (_) => const CreatePage());
       default:
         return MaterialPageRoute(builder: (_) => LoginPage());
     }
