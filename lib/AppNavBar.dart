@@ -63,7 +63,7 @@ void setCurrentPageIndex(int index) {
             );
           }
         },
-      selectedItemColor: Colors.amber,
+      selectedItemColor: Color(0xFFffd230),
       unselectedItemColor: Colors.white,
         //Creates a list of each of the icons in the nav bar
       items: const [

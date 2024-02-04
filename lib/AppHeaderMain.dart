@@ -19,7 +19,7 @@ class MainHeaderBar extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: "OpenSans",
                   fontSize: 200,
-                  color: Colors.amber,
+                  color: Color(0xFFffd230),
                 ),
               ),
             ),

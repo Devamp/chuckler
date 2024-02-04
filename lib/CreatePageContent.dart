@@ -152,7 +152,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
                                 TextSpan(text: beforeAnswer),
                                 TextSpan(
                                     text: _controller.text,
-                                    style: const TextStyle(color: Colors.amber)),
+                                    style: const TextStyle(color: Color(0xFFffd230))),
                                 TextSpan(text: afterAnswer),
                               ],
                             ),
@@ -242,7 +242,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.amber),
+                                MaterialStateProperty.all<Color>(Color(0xFFffd230)),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(

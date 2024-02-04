@@ -12,7 +12,7 @@ class FeedPage extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => StateProvider(),
         child: const Scaffold(
-            backgroundColor: Colors.amber,
+            backgroundColor: Color(0xFFffd230),
             body: TheFeed(),
             bottomNavigationBar: NavigationBarController(initialPageIndex: 1)));
   }

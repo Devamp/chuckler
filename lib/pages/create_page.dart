@@ -11,7 +11,7 @@ class CreatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-        backgroundColor: Colors.amber,
+        backgroundColor: Color(0xFFffd230),
         body: CreateForm(),
         bottomNavigationBar: NavigationBarController(initialPageIndex: 0));
   }
