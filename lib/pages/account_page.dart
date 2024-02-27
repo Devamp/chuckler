@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
-import 'package:chuckler/AppNavBar.dart';
+//import 'package:chuckler/AppNavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chuckler/globalvars.dart';
 import '../Session.dart';
 
@@ -19,10 +20,13 @@ class _AccountPageState extends State<AccountPage> {
   int followers = 0;
   int following = 0;
   int currentIndex = 0;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Widget header(BuildContext context) {
     UserService userSession = Provider.of<UserService>(context);
-
+    void signout() async {
+      _auth.signOut();
+    }
     return Align(
       alignment: Alignment.topCenter,
       child: Row(
@@ -125,8 +129,10 @@ class _AccountPageState extends State<AccountPage> {
                   height: 10,
                 ),
                 ElevatedButton.icon(
-                  onPressed: () {
+                  onPressed: () async {
+                    await _auth.signOut();
                     userSession.logout();
+
                   },
                   icon: Icon(Icons.logout_outlined),
                   label: Text(
@@ -213,13 +219,15 @@ class _AccountPageState extends State<AccountPage> {
           child: Column(
             children: [header(context), navBar(context)],
           ),
-        ),
-        bottomNavigationBar: NavigationBarController(initialPageIndex: 3),
+        )
       );
     } else {
       // If no user is logged in, redirect to the login page
-      Navigator.pushReplacementNamed(context, '/login');
-      return Container(); // Placeholder widget; it won't be visible
+      //Post frame call back actually the current build to finish before calling Navigator
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/login');
+        });
+      return Container(); // Placeholder widget; This will be visible for a second
     }
   }
 }

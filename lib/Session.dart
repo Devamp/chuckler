@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'package:chuckler/AppNavBar.dart';
 
 class UserService with ChangeNotifier {
   String? _userId;
@@ -27,24 +28,25 @@ class UserService with ChangeNotifier {
 
   void clearUserId() {
     _userId = null;
-    notifyListeners();
+
   }
 
   void clearFollowing() {
     _following = null;
-    notifyListeners();
+
   }
 
   void clearFollowers() {
     _followers = null;
-    notifyListeners();
+
   }
 
   void logout() {
     clearUserId();
     clearFollowing();
     clearFollowers();
-    reloadApp();
+    notifyListeners();
+
   }
 
   void reloadApp() {

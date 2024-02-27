@@ -16,11 +16,10 @@ class SignupPage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> registerUser() async {
+  Future<void> registerUser(String uid) async {
     try {
       await firestore.collection('Users').add({
-        'Email': email,
-        'Password': password,
+        'UID': uid,
         'Username': username,
         'Age': age,
         'Followers': 0,
@@ -153,16 +152,17 @@ class SignupPage extends StatelessWidget {
                   width: 200,
                   child: ElevatedButton(
                     onPressed: () async {
+                      //Register User if it is valid information
                       if (username.isNotEmpty &&
                           email.isNotEmpty &&
                           password.isNotEmpty) {
                         try {
-                          await _auth.createUserWithEmailAndPassword(
+                         UserCredential result =  await _auth.createUserWithEmailAndPassword(
                             email: email,
                             password: password,
                           );
-
-                          registerUser(); // add user info to db
+                          //Register user with unique uid from authentication
+                          registerUser(result.user!.uid); // add user info to db
 
                           // ignore: use_build_context_synchronously
                           showDialog(

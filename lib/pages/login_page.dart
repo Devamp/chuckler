@@ -17,41 +17,44 @@ class LoginPage extends StatelessWidget {
   String inputPassword = '';
   String resetEmail = '';
 
-  Future<bool> verifyLogin(email, password) async {
+  Future<bool> verifyLogin(email, password, context) async {
+    User user;
     try {
-      QuerySnapshot querySnapshot = await firestore.collection('Users').get();
-      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-        dynamic saved_email = doc.get(FieldPath(['Email']));
-        dynamic saved_password = doc.get(FieldPath(['Password']));
+     UserCredential result = await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+      user = result.user!;
+      await setupUserSession(context, user.uid! );
+      return true;
 
-        if (saved_email == email && saved_password == password) {
-          return true;
-        }
-      }
     } catch (e) {
       print('Error: $e');
+      return false;
     }
-    return false;
+
   }
 
-  Future<void> setupUserSession(context, email) async {
+  Future<void> setupUserSession(context, userId) async {
+    print(userId + "This is the userID");
     final UserService userSession =
         Provider.of<UserService>(context, listen: false);
 
     try {
-      QuerySnapshot querySnapshot = await firestore.collection('Users').get();
-      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-        dynamic saved_email = doc.get(FieldPath(['Email']));
+
+        QuerySnapshot querySnapshot = await firestore.collection('Users').where('UID', isEqualTo: userId).get();
+        if(querySnapshot.docs.isEmpty){
+          print("NO DOCS FOUND " + userId);
+        }
+        QueryDocumentSnapshot doc = querySnapshot.docs.first;
+
         dynamic saved_user = doc.get(FieldPath(['Username']));
         dynamic saved_followers = doc.get(FieldPath(['Followers']));
         dynamic saved_following = doc.get(FieldPath(['Following']));
 
-        if (saved_email == email) {
           userSession.setUserId(saved_user);
           userSession.setFollowers(saved_followers);
           userSession.setFollowing(saved_following);
-        }
-      }
+
+
     } catch (e) {
       print('Error: $e');
     }
@@ -292,11 +295,10 @@ class LoginPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () async {
                         bool status =
-                            await verifyLogin(inputEmail, inputPassword);
+                            await verifyLogin(inputEmail, inputPassword, context);
 
                         if (status) {
-                          await setupUserSession(context, inputEmail);
-                          Navigator.pushNamed(context, '/feed');
+                          Navigator.pushReplacementNamed(context, '/app');
                         } else {
                           showDialog(
                             context: context,

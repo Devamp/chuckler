@@ -13,8 +13,7 @@ class FeedPage extends StatelessWidget {
         create: (context) => StateProvider(),
         child: const Scaffold(
             backgroundColor: Color(0xFFffd230),
-            body: TheFeed(),
-            bottomNavigationBar: NavigationBarController(initialPageIndex: 1)));
+            body: TheFeed(),));
   }
 }
 
