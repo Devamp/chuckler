@@ -4,17 +4,25 @@ import 'package:chuckler/AppNavBar.dart';
 
 class UserService with ChangeNotifier {
   String? _userId;
+  String? _postAnswer;
   int? _following;
   int? _followers;
 
   String? get userId => _userId;
   int? get following => _following;
   int? get followers => _followers;
+  String? get postAnswer => _postAnswer;
 
   void setUserId(String userId) {
     _userId = userId;
     notifyListeners();
   }
+
+  void setPostAnswer(String postAnswer){
+    _postAnswer = postAnswer;
+    notifyListeners();
+  }
+
 
   void setFollowing(int followingCount) {
     _following = followingCount;
@@ -40,6 +48,11 @@ class UserService with ChangeNotifier {
     _followers = null;
 
   }
+
+  void clearPostAnser(){
+    _postAnswer = null;
+  }
+
 
   void logout() {
     clearUserId();

@@ -16,6 +16,7 @@ class LoginPage extends StatelessWidget {
   String inputEmail = '';
   String inputPassword = '';
   String resetEmail = '';
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
 
   Future<bool> verifyLogin(email, password, context) async {
     User user;
@@ -292,11 +293,13 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 25),
+
                     ElevatedButton(
                       onPressed: () async {
+                        isLoading.value = true;
                         bool status =
                             await verifyLogin(inputEmail, inputPassword, context);
-
+                        isLoading.value = false;
                         if (status) {
                           Navigator.pushReplacementNamed(context, '/app');
                         } else {
@@ -334,13 +337,20 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      child: Row(
+                      child: ValueListenableBuilder(
+                        valueListenable: isLoading,
+                        builder: (context, value, child) {
+                        return value ? CircularProgressIndicator() : child!;
+                        },
+                        child:
+                        Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Icon(Icons.login_sharp),
                           SizedBox(width: 8.0),
                           Text('LOGIN'),
                         ],
+                      ),
                       ),
                     ),
                   ],

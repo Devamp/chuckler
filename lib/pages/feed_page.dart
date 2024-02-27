@@ -47,10 +47,10 @@ class StateProvider extends ChangeNotifier {
     _position += details.delta;
     //Change the color of the buttons
     if(_position.dx > 100) {
-      _green +=  details.delta.dx as int;
+      _green +=  (details.delta.dx).round();
     }
     else if (position.dx < -100) {
-      _red +=  -details.delta.dx as int;
+      _red +=  (-details.delta.dx).round();
     }
     else {
       if(_isDragging) {
