@@ -18,7 +18,9 @@ class _AccountPageState extends State<AccountPage> {
   String username = "";
   int followers = 0;
   int following = 0;
-  int currentIndex = 0;
+  int _currentIndex = 0;
+  bool _firstTime = true;
+  Widget currentScreen = Container();
 
   Widget header(BuildContext context) {
     UserService userSession = Provider.of<UserService>(context);
@@ -126,7 +128,7 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 ElevatedButton.icon(
                   onPressed: () {
-                    userSession.logout();
+                    // userSession.logout(); // disabled for now
                   },
                   icon: Icon(Icons.logout_outlined),
                   label: Text(
@@ -148,54 +150,137 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget navBar(BuildContext context) {
-    return Container(
-      child: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.black,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sticky_note_2),
-            label: 'My Posts',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: 'Bookmarks',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Activity',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: currentIndex,
-        selectedItemColor: Colors.yellow,
-        unselectedItemColor: Colors.white,
-        onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
+    Widget bar = BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.black,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.sticky_note_2),
+          label: 'My Posts',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.bookmark),
+          label: 'Bookmarks',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.notifications),
+          label: 'Notifications',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
+      ],
+      currentIndex: _currentIndex,
+      selectedItemColor: Colors.yellow,
+      unselectedItemColor: Colors.white,
+      onTap: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
 
-          // Handle navigation based on index
-          switch (index) {
-            case 0:
-              // Navigate to My Posts page or perform related action
-              break;
-            case 1:
-              // Navigate to Search page or perform related action
-              break;
-            case 2:
-              // Navigate to Favorites page or perform related action
-              break;
-            case 3:
-              // Navigate to Profile page or perform related action
-              break;
-          }
-        },
-      ),
+        // Handle navigation based on index
+        switch (index) {
+          case 0:
+            setState(() {
+              currentScreen = SingleChildScrollView(
+                child: Container(
+                  height: 1000.0,
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        color: Colors.white,
+                        child: Text('My Posts'),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            });
+            break;
+          case 1:
+            setState(() {
+              currentScreen = SingleChildScrollView(
+                child: Container(
+                  height: 1000.0,
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        color: Colors.white,
+                        child: Text('My Bookmarks'),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            });
+            break;
+          case 2:
+            setState(() {
+              currentScreen = SingleChildScrollView(
+                child: Container(
+                  height: 1000.0,
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        color: Colors.white,
+                        child: Text('My Notifications'),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            });
+            break;
+          case 3:
+            currentScreen = SingleChildScrollView(
+              child: Container(
+                height: 1000.0,
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      color: Colors.white,
+                      child: Text('My Profile'),
+                    )
+                  ],
+                ),
+              ),
+            );
+            break;
+        }
+      },
     );
+
+    if (_firstTime) {
+      setState(() {
+        currentScreen = SingleChildScrollView(
+          child: Container(
+            height: 1000.0,
+            color: Colors.white,
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  color: Colors.white,
+                  child: Text('My Posts'),
+                )
+              ],
+            ),
+          ),
+        );
+      });
+
+      _firstTime = false;
+    }
+    return bar;
   }
 
   @override
@@ -211,7 +296,7 @@ class _AccountPageState extends State<AccountPage> {
         backgroundColor: const Color(0xFFffd230),
         body: SingleChildScrollView(
           child: Column(
-            children: [header(context), navBar(context)],
+            children: [header(context), navBar(context), currentScreen],
           ),
         ),
         bottomNavigationBar: NavigationBarController(initialPageIndex: 3),
