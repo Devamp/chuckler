@@ -23,7 +23,6 @@ class _AccountPageState extends State<AccountPage> {
   Widget currentScreen = Container();
 
   Widget header(BuildContext context) {
-    UserService userSession = Provider.of<UserService>(context);
 
     return Align(
       alignment: Alignment.topCenter,
