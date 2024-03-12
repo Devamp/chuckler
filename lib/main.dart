@@ -28,9 +28,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Chuckler',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.orange),
-      initialRoute: '/login',
+      theme: ThemeData(primarySwatch: Colors.amber),
+      initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
+//

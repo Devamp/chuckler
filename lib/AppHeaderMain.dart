@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:chuckler/route_generator.dart';
-import 'package:chuckler/AppNavBar.dart';
-import 'package:chuckler/globalvars.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class MainHeaderBar extends StatelessWidget {
@@ -10,10 +7,10 @@ class MainHeaderBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(color: Colors.black),
+        decoration: const BoxDecoration(color: Colors.black),
         child: Row(
           children: [
-            Expanded(
+            const Expanded(
               flex: 4,
               child: AutoSizeText(
                 " Chuckler",
@@ -22,7 +19,7 @@ class MainHeaderBar extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: "OpenSans",
                   fontSize: 200,
-                  color: Colors.amber,
+                  color: Color(0xFFffd230),
                 ),
               ),
             ),
@@ -39,7 +36,7 @@ class MainHeaderBar extends StatelessWidget {
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
-                  icon: Icon(Icons.person, color: Colors.blue,),
+                  icon: const Icon(Icons.person, color: Colors.blue,),
                   onPressed: () {
                     // do something when the button is pressed
                     debugPrint('Profile picture button pressed');
