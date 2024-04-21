@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
      UserCredential result = await _auth.signInWithEmailAndPassword(
             email: email, password: password);
       user = result.user!;
-      await setupUserSession(context, user.uid! );
+      await setupUserSession(context, user.uid);
       return true;
 
     } catch (e) {
