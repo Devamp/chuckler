@@ -19,11 +19,11 @@ class SignupPage extends StatelessWidget {
   Future<void> registerUser(String uid) async {
     try {
       await firestore.collection('Users').add({
-        'UID': uid,
-        'Username': username,
-        'Age': age,
-        'Followers': 0,
-        'Following': 0
+        'userID': uid,
+        'username': username,
+        'age': age,
+        'followers': 0,
+        'following': 0
       });
     } catch (e) {
       print('Error: $e');
@@ -243,6 +243,7 @@ class SignupPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 10.0),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/login');
@@ -251,7 +252,7 @@ class SignupPage extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 20.0),
                       alignment: Alignment.center,
                       child: Text(
-                        'Already have an account? Sign in',
+                        'Already have an account? Sign in!',
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,

@@ -136,6 +136,7 @@ class _AccountPageState extends State<AccountPage> {
                 ElevatedButton.icon(
                   onPressed: () async {
                     await _auth.signOut();
+                    Navigator.pushReplacementNamed(context, '/login');
                   },
                   icon: Icon(Icons.logout_outlined),
                   label: Text(

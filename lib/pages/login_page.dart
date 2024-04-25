@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       user = result.user!;
-      await setupUserSession(context, user.uid!);
+      await setupUserSession(context, user.uid);
       return true;
     } catch (e) {
       print('Error: $e');
@@ -40,16 +40,17 @@ class LoginPage extends StatelessWidget {
     try {
       QuerySnapshot querySnapshot = await firestore
           .collection('Users')
-          .where('UID', isEqualTo: userId)
+          .where('userID', isEqualTo: userId)
           .get();
+
       if (querySnapshot.docs.isEmpty) {
         print("NO DOCS FOUND " + userId);
       }
       QueryDocumentSnapshot doc = querySnapshot.docs.first;
 
-      dynamic saved_user = doc.get(FieldPath(['Username']));
-      dynamic saved_followers = doc.get(FieldPath(['Followers']));
-      dynamic saved_following = doc.get(FieldPath(['Following']));
+      dynamic saved_user = doc.get(FieldPath(['username']));
+      dynamic saved_followers = doc.get(FieldPath(['followers']));
+      dynamic saved_following = doc.get(FieldPath(['following']));
 
       userSession.setUserId(saved_user);
       userSession.setFollowers(saved_followers);
