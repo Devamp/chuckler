@@ -168,13 +168,13 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          height: 750,
           color: const Color(0xFFffd230),
+          height: MediaQuery.of(context).size.height,
           child: Center(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.only(left: 10.0),

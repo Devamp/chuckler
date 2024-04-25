@@ -35,7 +35,7 @@ class SignupPage extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          height: 750,
+          height: MediaQuery.of(context).size.height,
           color: const Color(0xFFffd230),
           child: Center(
             child: Padding(
@@ -158,13 +158,15 @@ class SignupPage extends StatelessWidget {
                             email.isNotEmpty &&
                             password.isNotEmpty) {
                           try {
-                           UserCredential result =  await _auth.createUserWithEmailAndPassword(
+                            UserCredential result =
+                                await _auth.createUserWithEmailAndPassword(
                               email: email,
                               password: password,
                             );
                             //Register user with unique uid from authentication
-                            registerUser(result.user!.uid); // add user info to db
-        
+                            registerUser(
+                                result.user!.uid); // add user info to db
+
                             // ignore: use_build_context_synchronously
                             showDialog(
                               context: context,
@@ -189,7 +191,7 @@ class SignupPage extends StatelessWidget {
                             int startIndex = errorMessage.indexOf(']');
                             String endMessage =
                                 errorMessage.substring(startIndex + 1).trim();
-        
+
                             // ignore: use_build_context_synchronously
                             showDialog(
                               context: context,
@@ -220,7 +222,8 @@ class SignupPage extends StatelessWidget {
                             MaterialStateProperty.all<Color>(Colors.white),
                         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
                             const EdgeInsets.all(10.0)),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
