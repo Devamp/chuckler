@@ -87,10 +87,7 @@ class _FeedPageContentState extends State<FeedPageContent> {
                 ),
               ),
             )),
-        Expanded(
-          flex: 1,
-          child:
-        ),
+        Expanded(flex: 1, child: Text("empty")),
         Expanded(
             flex: 3,
             child: ListView.builder(
@@ -119,8 +116,33 @@ class UserPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.sizeOf(context).width;
+    double screenHeight = MediaQuery.sizeOf(context).height;
     return InkWell(
-        onLongPress: () {},
+        onLongPress: () {
+
+          //Display selection in modal before moving to next post
+          showModalBottomSheet<void>(
+            backgroundColor: Colors.transparent,
+            isScrollControlled: true,
+            useSafeArea: true,
+            context: context,
+            builder: (BuildContext context) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Text('Modal BottomSheet'),
+                    ElevatedButton(
+                      child: const Text('Close BottomSheet'),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
         child: Row(children: [
           Expanded(
               flex: 1,
