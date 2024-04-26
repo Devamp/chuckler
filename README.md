@@ -15,3 +15,8 @@ Chuckler is an exciting and interactive social party game app that combines the 
 - **Search Past Prompts:** Users can explore and search through a library of past prompts to reminisce or find inspiration for funny responses.
 
 - **User Accounts:** Chuckler features a user account system, which allows users to manage their profiles, track their activity, revisit their contributions, and connect with their friends.
+
+## Developer Contact
+
+- **Devam Patel**: Devam29@gmail.com
+- **Caden Deutscher**: Caden.deutscher@outlook.com
