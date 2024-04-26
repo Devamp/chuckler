@@ -19,11 +19,11 @@ class SignupPage extends StatelessWidget {
   Future<void> registerUser(String uid) async {
     try {
       await firestore.collection('Users').add({
-        'UID': uid,
-        'Username': username,
-        'Age': age,
-        'Followers': 0,
-        'Following': 0
+        'userID': uid,
+        'username': username,
+        'age': age,
+        'followers': 0,
+        'following': 0
       });
     } catch (e) {
       print('Error: $e');
@@ -33,230 +33,235 @@ class SignupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFFffd230),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "BECOME A CHUCKLER",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 25),
-                Container(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          color: const Color(0xFFffd230),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "BECOME A CHUCKLER",
+                    style: TextStyle(
                       color: Colors.black,
-                      width: 5.0,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  child: const Center(
-                    child: CircleAvatar(
-                      radius: 150,
-                      backgroundColor: Colors.transparent,
-                      backgroundImage:
-                          AssetImage('assets/Chuckler-logo-circle.png'),
+                  const SizedBox(height: 15),
+                  Container(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 5.0,
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  onChanged: (text) {
-                    username = text;
-                  },
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.black,
-                    hintText: "Username",
-                    hintStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(
-                        color: Colors.white,
-                        width: 1.0,
+                    child: const Center(
+                      child: CircleAvatar(
+                        radius: 150,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage:
+                            AssetImage('assets/Chuckler-logo-circle.png'),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  onChanged: (text) {
-                    email = text;
-                  },
-                  keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.black,
-                    hintText: "Email",
-                    hintStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(
-                        color: Colors.white,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  onChanged: (text) {
-                    password = text;
-                  },
-                  obscureText: true, // for password
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.black,
-                    hintText: "Password",
-                    hintStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(
-                        color: Colors.white,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SliderWidget(
-                  onSliderValueChanged: (value) {
-                    age = value;
-                  },
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: 200,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      //Register User if it is valid information
-                      if (username.isNotEmpty &&
-                          email.isNotEmpty &&
-                          password.isNotEmpty) {
-                        try {
-                         UserCredential result =  await _auth.createUserWithEmailAndPassword(
-                            email: email,
-                            password: password,
-                          );
-                          //Register user with unique uid from authentication
-                          registerUser(result.user!.uid); // add user info to db
-
-                          // ignore: use_build_context_synchronously
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Success'),
-                                content: Text(
-                                    'Please log in with your new credentials.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, '/login');
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } catch (e) {
-                          String errorMessage = e.toString();
-                          int startIndex = errorMessage.indexOf(']');
-                          String endMessage =
-                              errorMessage.substring(startIndex + 1).trim();
-
-                          // ignore: use_build_context_synchronously
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Failure'),
-                                content: Text(endMessage),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Try Again'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      } else {
-                        print('Please fill in all fields');
-                      }
+                  const SizedBox(height: 20),
+                  TextField(
+                    onChanged: (text) {
+                      username = text;
                     },
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                          const EdgeInsets.all(10.0)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.black,
+                      hintText: "Username",
+                      hintStyle: const TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 1.0,
                         ),
                       ),
                     ),
-                    // ignore: prefer_const_constructors
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.app_registration_rounded),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'REGISTER',
-                          style: TextStyle(fontSize: 16.0),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    onChanged: (text) {
+                      email = text;
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.black,
+                      hintText: "Email",
+                      hintStyle: const TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 1.0,
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Already have an account? Sign in',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
+                  const SizedBox(height: 10),
+                  TextField(
+                    onChanged: (text) {
+                      password = text;
+                    },
+                    obscureText: true, // for password
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.black,
+                      hintText: "Password",
+                      hintStyle: const TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  SliderWidget(
+                    onSliderValueChanged: (value) {
+                      age = value;
+                    },
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        //Register User if it is valid information
+                        if (username.isNotEmpty &&
+                            email.isNotEmpty &&
+                            password.isNotEmpty) {
+                          try {
+                            UserCredential result =
+                                await _auth.createUserWithEmailAndPassword(
+                              email: email,
+                              password: password,
+                            );
+                            //Register user with unique uid from authentication
+                            registerUser(
+                                result.user!.uid); // add user info to db
+
+                            // ignore: use_build_context_synchronously
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Success'),
+                                  content: Text(
+                                      'Please log in with your new credentials.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/login');
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } catch (e) {
+                            String errorMessage = e.toString();
+                            int startIndex = errorMessage.indexOf(']');
+                            String endMessage =
+                                errorMessage.substring(startIndex + 1).trim();
+
+                            // ignore: use_build_context_synchronously
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Failure'),
+                                  content: Text(endMessage),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Try Again'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        } else {
+                          print('Please fill in all fields');
+                        }
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.black),
+                        foregroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                            const EdgeInsets.all(10.0)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                        ),
+                      ),
+                      // ignore: prefer_const_constructors
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.app_registration_rounded),
+                          SizedBox(width: 8.0),
+                          Text(
+                            'REGISTER',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Already have an account? Sign in!',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
