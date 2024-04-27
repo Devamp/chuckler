@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chuckler/pages/login_page.dart';
 import 'package:chuckler/PageTransitioner.dart';
+import './Session.dart';
+import 'package:provider/provider.dart';
 
 class CreatePageContent extends StatefulWidget {
   const CreatePageContent({super.key});
@@ -13,54 +15,18 @@ class CreatePageContent extends StatefulWidget {
 }
 
 class _CreatePageContentState extends State<CreatePageContent> {
+
   final TextEditingController _controller =
       TextEditingController(text: "Answer the Prompt Here");
 
-  String beforeAnswer = "";
-  String afterAnswer = "";
   bool isUser = false;
-  String promptId = "";
   String userId = "";
   String userName = "";
+  var postVal = 0;
   FocusNode focusNode = FocusNode();
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  /*
-  Gets the current prompt and returns a Map {'Before': 'content before prompt', 'After': 'Content after prompt'}
-   */
-  Future<Map<String, dynamic>> getTodaysPrompt() async {
-    DateTime now = DateTime.now().toUtc().subtract(const Duration(hours: 8));
-    DateTime today = DateTime(now.year, now.month, now.day);
-
-    // Create timestamps for the start and end datess
-    Timestamp startDate = Timestamp.fromDate(today);
-    Timestamp endDate =
-        Timestamp.fromDate(DateTime(now.year, now.month, now.day + 1));
-    // Fetch the document
-    QuerySnapshot<Map<String, dynamic>> snapshot = await firestore
-        .collection('Prompts')
-        .where('promptDate', isGreaterThanOrEqualTo: startDate)
-        .where('promptDate', isLessThan: endDate)
-        .get();
-
-    // Check if a document was found
-    if (snapshot.docs.isNotEmpty) {
-      // Get the prompt from the first document
-      Map<String, dynamic> data = snapshot.docs.first.data();
-      if (data.containsKey('Before') && data.containsKey('After')) {
-        return {
-          'Before': data['Before'],
-          'After': data['After'],
-          'id': snapshot.docs.first.id
-        };
-      } else {
-        throw Exception('Error: Document does not contain a "prompt" field');
-      }
-    } else {
-      throw Exception('Error: No document found for the given date');
-    }
-  }
 
   /*
   This Function sends the post to the data base with the current text
@@ -74,7 +40,6 @@ class _CreatePageContentState extends State<CreatePageContent> {
           'content': _controller.text,
           'dislikedUserIds': [],
           'likedUserIds': [],
-          'promptId': promptId,
           'userId': userId
         })
         .then((value) => print("Data Added"))
@@ -103,7 +68,6 @@ class _CreatePageContentState extends State<CreatePageContent> {
     focusNode.addListener(() {
       setState(() {});
     });
-    loadPromptData();
     checkTheUser();
   }
 
@@ -113,17 +77,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
     super.dispose();
   }
 
-/*
- Sets prompt state
- */
-  Future<void> loadPromptData() async {
-    Map<String, dynamic> promptData = await getTodaysPrompt();
-    setState(() {
-      beforeAnswer = promptData['Before'];
-      afterAnswer = promptData['After'];
-      promptId = promptData['id'];
-    });
-  }
+
 
   /*
   Sets the isUser state to true if the user is logged in and false if the user is not logged int
@@ -137,10 +91,14 @@ class _CreatePageContentState extends State<CreatePageContent> {
 
   @override
   Widget build(BuildContext context) {
+
+    UserService userSession = Provider.of<UserService>(context);
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
     print(screenWidth);
     print(screenHeight);
+    List<Post> posts = userSession.posts!;
+
     return Column(
       children: [
         //Prompt Area
@@ -235,7 +193,13 @@ class _CreatePageContentState extends State<CreatePageContent> {
                       Expanded(
                           flex: 2,
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if((postVal -1) >= 0){
+                                setState(() {
+                                  postVal = postVal-1;
+                                });
+                              }
+                            },
                             splashRadius: 10,
                             icon: Icon(
                               Icons.chevron_left_outlined,
@@ -254,12 +218,12 @@ class _CreatePageContentState extends State<CreatePageContent> {
                                   fontFamily: 'OpenSans',
                                   fontWeight: FontWeight.w700),
                               children: <TextSpan>[
-                                TextSpan(text: beforeAnswer),
+                                TextSpan(text: posts[postVal].before),
                                 TextSpan(
                                     text: _controller.text,
                                     style: const TextStyle(
                                         color: Color(0xFFffd230))),
-                                TextSpan(text: afterAnswer),
+                                TextSpan(text: posts[postVal].after),
                               ],
                             ),
                             textAlign: TextAlign.center,
@@ -269,7 +233,14 @@ class _CreatePageContentState extends State<CreatePageContent> {
                       Expanded(
                           flex: 2,
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if((postVal+1) < posts.length){
+                                setState(() {
+                                  postVal++;
+                                });
+                              }
+
+                            },
                             splashRadius: 10,
                             icon: Icon(
                               Icons.chevron_right_outlined,

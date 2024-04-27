@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Session.dart';
 import 'package:provider/provider.dart';
+import '../DatabaseQueries.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
@@ -42,11 +43,26 @@ class LoginPage extends StatelessWidget {
           .collection('Users')
           .where('userID', isEqualTo: userId)
           .get();
-
+      QuerySnapshot? cr = await getDailyPrompts(firestore);
       if (querySnapshot.docs.isEmpty) {
         print("NO DOCS FOUND " + userId);
       }
+      if(cr != null){
+        if(cr.docs.isNotEmpty){
+          for(QueryDocumentSnapshot ds in cr.docs ){
+            dynamic sponsorId = ds.get(FieldPath(['sponsorId']));
+            dynamic before = ds.get(FieldPath(['before']));
+            dynamic after = ds.get(FieldPath(['after']));
+            print(before);
+            userSession.addPost(before, after, sponsorId);
+          }
+        }
+      }
+
+
       QueryDocumentSnapshot doc = querySnapshot.docs.first;
+
+
 
       dynamic saved_user = doc.get(FieldPath(['username']));
       dynamic saved_followers = doc.get(FieldPath(['followers']));

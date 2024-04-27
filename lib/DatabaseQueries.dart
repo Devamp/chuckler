@@ -6,10 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
   @params - firestore - firestore instance to query data from
   @return - List of prompts for today
  */
-Future<CollectionReference?>  getDailyPrompts(FirebaseFirestore firestore) async {
+Future<QuerySnapshot?>  getDailyPrompts(FirebaseFirestore firestore) async {
   DateTime now = DateTime.now().toUtc().subtract(const Duration(hours: 8));
   DateTime today = DateTime(now.year, now.month, now.day);
-  CollectionReference cr;
   // Create timestamps for the start and end dates
   Timestamp startDate = Timestamp.fromDate(today);
   Timestamp endDate = Timestamp.fromDate(DateTime(now.year, now.month, now.day + 1));
@@ -19,7 +18,7 @@ Future<CollectionReference?>  getDailyPrompts(FirebaseFirestore firestore) async
     print("NO DOCS FOUND FOR TODAY $startDate");
   }else{
     CollectionReference cr = querySnapshot.docs.first.reference.collection("Prompts");
-    return cr;
+    return cr.get();
   }
 
 
