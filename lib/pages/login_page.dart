@@ -271,17 +271,17 @@ class LoginPage extends StatelessWidget {
                           Navigator.pushNamed(context, '/signup');
                         },
                         style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.grey),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.black),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(255, 75, 75, 75)),
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                              const Color(0xFFffd230)),
                           padding:
                               MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                  EdgeInsets.all(10.0)),
+                                  EdgeInsets.fromLTRB(18.0, 10.0, 18.0, 10.0)),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                           ),
                         ),
@@ -294,7 +294,7 @@ class LoginPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(width: 25),
+                      SizedBox(width: 15),
                       ElevatedButton(
                         onPressed: () async {
                           isLoading.value = true;
@@ -331,11 +331,11 @@ class LoginPage extends StatelessWidget {
                               MaterialStateProperty.all<Color>(Colors.white),
                           padding:
                               MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                  EdgeInsets.all(10.0)),
+                                  EdgeInsets.fromLTRB(18.0, 10.0, 18.0, 10.0)),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                           ),
                         ),
