@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:chuckler/AppNavBar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Post {
+class Prompt {
   String before;
   String after;
-  String sponsorId;
-  Post(this.before, this.after, this.sponsorId);
+  DocumentReference sponsor;
+  String promptDateId;
+  String promptId;
+  Prompt(this.before, this.after, this.sponsor, this.promptDateId, this.promptId);
 }
 class UserService with ChangeNotifier {
   String? _userId;
   String? _postAnswer;
   int? _following;
   int? _followers;
-  List<Post> _posts = List.empty(growable: true);
+  List<Prompt> _posts = List.empty(growable: true);
 
   String? get userId => _userId;
   int? get following => _following;
   int? get followers => _followers;
   String? get postAnswer => _postAnswer;
-  List<Post>? get posts => _posts;
+  List<Prompt>? get posts => _posts;
 
   void setUserId(String userId) {
     _userId = userId;
@@ -42,8 +45,8 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-  void addPost(String before, String after, String sponsorId ){
-    _posts.add(Post(before, after, sponsorId));
+  void addPrompt(Prompt p){
+    _posts.add(p);
     notifyListeners();
   }
 

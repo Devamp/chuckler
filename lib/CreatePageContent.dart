@@ -15,35 +15,56 @@ class CreatePageContent extends StatefulWidget {
 }
 
 class _CreatePageContentState extends State<CreatePageContent> {
-
   final TextEditingController _controller =
       TextEditingController(text: "Answer the Prompt Here");
-
+//state variables
   bool isUser = false;
   String userId = "";
   String userName = "";
-  var postVal = 0;
+  String promptId = "";
+  String promtDateId = "";
+  List<bool> canPost = List.empty(growable: true);
+  List<String> textControllerStates = List.empty(growable: true);
+  var promptVal = 0;
   FocusNode focusNode = FocusNode();
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
 
   /*
   This Function sends the post to the data base with the current text
    */
   Future<void> postData() async {
-    CollectionReference collection =
-        FirebaseFirestore.instance.collection('Posts');
-    return collection
-        .add({
-          'commentIds': [], // Field
-          'content': _controller.text,
-          'dislikedUserIds': [],
-          'likedUserIds': [],
-          'userId': userId
-        })
-        .then((value) => print("Data Added"))
-        .catchError((error) => print("Failed to add data: $error"));
+    //check if user can post
+    if (canPost[promptVal]) {
+      //check if user has already posted
+      FirebaseFirestore firebase = FirebaseFirestore.instance;
+      final docRef = await firebase
+          .collection('Posts')
+          .where('uid', isEqualTo: userId)
+          .where('promptId', isEqualTo: promptId)
+          .where('promptDateId', isEqualTo: promtDateId)
+          .limit(1)
+          .get();
+      if (docRef.docs.isEmpty) {
+        //if he/she has not already posted post
+        CollectionReference collection = firebase.collection('Posts');
+        canPost[promptVal] = false;
+        return collection
+            .add({
+              'answer': _controller.text,
+              'dislikes': 0,
+              'likes': 0,
+              'uid': userId,
+              'promptId': promptId,
+              'promptDateId': promtDateId,
+            })
+            .then((value) => print("Data Added"))
+            .catchError((error) => print("Failed to add data: $error"));
+      }
+      else{
+        canPost[promptVal] = false;
+      }
+    }
   }
 
   /*
@@ -77,8 +98,6 @@ class _CreatePageContentState extends State<CreatePageContent> {
     super.dispose();
   }
 
-
-
   /*
   Sets the isUser state to true if the user is logged in and false if the user is not logged int
    */
@@ -91,13 +110,17 @@ class _CreatePageContentState extends State<CreatePageContent> {
 
   @override
   Widget build(BuildContext context) {
-
+    //Set variables
     UserService userSession = Provider.of<UserService>(context);
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
-    print(screenWidth);
-    print(screenHeight);
-    List<Post> posts = userSession.posts!;
+    List<Prompt> prompts = userSession.posts!;
+    promptId = prompts[promptVal].promptId;
+    promtDateId = prompts[promptVal].promptDateId;
+    for(int i = 0; i < prompts.length; i++){
+      canPost.add(true);
+      textControllerStates.add("Answer the Prompt Here");
+    }
 
     return Column(
       children: [
@@ -194,9 +217,11 @@ class _CreatePageContentState extends State<CreatePageContent> {
                           flex: 2,
                           child: IconButton(
                             onPressed: () {
-                              if((postVal -1) >= 0){
+                              textControllerStates[promptVal] = _controller.text;
+                              if ((promptVal - 1) >= 0) {
                                 setState(() {
-                                  postVal = postVal-1;
+                                  promptVal = promptVal - 1;
+                                  _controller.text =   textControllerStates[promptVal];
                                 });
                               }
                             },
@@ -218,12 +243,12 @@ class _CreatePageContentState extends State<CreatePageContent> {
                                   fontFamily: 'OpenSans',
                                   fontWeight: FontWeight.w700),
                               children: <TextSpan>[
-                                TextSpan(text: posts[postVal].before),
+                                TextSpan(text: prompts[promptVal].before),
                                 TextSpan(
                                     text: _controller.text,
                                     style: const TextStyle(
                                         color: Color(0xFFffd230))),
-                                TextSpan(text: posts[postVal].after),
+                                TextSpan(text: prompts[promptVal].after),
                               ],
                             ),
                             textAlign: TextAlign.center,
@@ -234,12 +259,13 @@ class _CreatePageContentState extends State<CreatePageContent> {
                           flex: 2,
                           child: IconButton(
                             onPressed: () {
-                              if((postVal+1) < posts.length){
+                              textControllerStates[promptVal] = _controller.text;
+                              if ((promptVal + 1) < prompts.length) {
                                 setState(() {
-                                  postVal++;
+                                  promptVal++;
+                                   _controller.text = textControllerStates[promptVal];
                                 });
                               }
-
                             },
                             splashRadius: 10,
                             icon: Icon(
@@ -340,9 +366,8 @@ class _CreatePageContentState extends State<CreatePageContent> {
                       ElevatedButton(
                         onPressed: () {
                           if (isUser) {
-                            print("data posted");
                             //Uncomment below to post data
-                            //postData();
+                            postData();
                           } else {
                             // User is not logged in
                             // Show a dialog and offer to take the user back to the login screen
@@ -388,14 +413,15 @@ class _CreatePageContentState extends State<CreatePageContent> {
   }
 }
 
-class TimeLeftIndicator extends StatefulWidget{
+class TimeLeftIndicator extends StatefulWidget {
   const TimeLeftIndicator({super.key});
+
   @override
   _TimeLeftIndicatorState createState() => _TimeLeftIndicatorState();
 }
 
-class _TimeLeftIndicatorState extends State<TimeLeftIndicator>{
-  Widget build(BuildContext context){
+class _TimeLeftIndicatorState extends State<TimeLeftIndicator> {
+  Widget build(BuildContext context) {
     return Container();
   }
 }

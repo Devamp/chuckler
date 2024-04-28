@@ -43,20 +43,12 @@ class LoginPage extends StatelessWidget {
           .collection('Users')
           .where('userID', isEqualTo: userId)
           .get();
-      QuerySnapshot? cr = await getDailyPrompts(firestore);
+      List<Prompt> postToAdd = await getDailyPrompts(firestore);
       if (querySnapshot.docs.isEmpty) {
         print("NO DOCS FOUND " + userId);
       }
-      if(cr != null){
-        if(cr.docs.isNotEmpty){
-          for(QueryDocumentSnapshot ds in cr.docs ){
-            dynamic sponsorId = ds.get(FieldPath(['sponsorId']));
-            dynamic before = ds.get(FieldPath(['before']));
-            dynamic after = ds.get(FieldPath(['after']));
-            print(before);
-            userSession.addPost(before, after, sponsorId);
-          }
-        }
+      for(Prompt p in postToAdd){
+        userSession.addPrompt(p);
       }
 
 

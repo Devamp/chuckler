@@ -65,7 +65,7 @@ class _FeedPageContentState extends State<FeedPageContent> {
     return Column(
       children: [
         Expanded(
-            flex: 3,
+            flex: 5,
             child: Container(
               child: Center(
                 child: AutoSizeText.rich(
@@ -87,9 +87,21 @@ class _FeedPageContentState extends State<FeedPageContent> {
                 ),
               ),
             )),
-        Expanded(flex: 1, child: Text("empty")),
+
+        Divider(
+          color: Colors.amber,
+          thickness: 5,
+        ),
         Expanded(
-            flex: 3,
+            flex: 1,
+            child: Text(
+              "Username 1 VS Username 2",
+              style:
+              TextStyle(color: Colors.amber, fontSize: screenHeight / 40),
+            )),
+        Expanded(flex: 1, child: Container()),
+        Expanded(
+            flex: 5,
             child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) {
@@ -119,24 +131,36 @@ class UserPost extends StatelessWidget {
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
     return InkWell(
+        onTap: () {
+          print("TAP");
+        },
         onLongPress: () {
-
           //Display selection in modal before moving to next post
           showModalBottomSheet<void>(
             backgroundColor: Colors.transparent,
             isScrollControlled: true,
             useSafeArea: true,
             context: context,
+            barrierColor: Colors.black.withOpacity(0.9),
             builder: (BuildContext context) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    const Text('Modal BottomSheet'),
+                    Expanded(flex: 1, child: Container()),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Username",
+                          style: TextStyle(
+                              color: Colors.amber, fontSize: screenHeight / 20),
+                        )),
+                    Expanded(flex: 1, child: Container()),
                     ElevatedButton(
                       child: const Text('Close BottomSheet'),
                       onPressed: () => Navigator.pop(context),
                     ),
+                    Expanded(flex: 1, child: Container()),
                   ],
                 ),
               );
