@@ -14,7 +14,7 @@ class CreatePageContent extends StatefulWidget {
   _CreatePageContentState createState() => _CreatePageContentState();
 }
 
-class _CreatePageContentState extends State<CreatePageContent> {
+class _CreatePageContentState extends State<CreatePageContent> with TickerProviderStateMixin {
   final TextEditingController _controller =
       TextEditingController(text: "Answer the Prompt Here");
 //state variables
@@ -23,12 +23,38 @@ class _CreatePageContentState extends State<CreatePageContent> {
   String userName = "";
   String promptId = "";
   String promtDateId = "";
+  String timeRemaining = "";
+  var _progressValue = 0.0;
   List<bool> canPost = List.empty(growable: true);
   List<String> textControllerStates = List.empty(growable: true);
   var promptVal = 0;
   FocusNode focusNode = FocusNode();
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  //Set the progress indicator
+  void _updateProgress() {
+    // Get current UTC time
+    final now = DateTime.now().toUtc();
+
+    // Calculate time remaining in the day (in seconds)
+    final midnightUtc = DateTime.utc(now.year, now.month, now.day, 0, 0);
+    final secondsRemaining = -midnightUtc.difference(now).inSeconds.toDouble();
+
+
+
+    // Calculate progress value (percentage)
+    const totalSecondsInDay = 24 * 60 * 60;
+    final hoursRemaining = ((totalSecondsInDay - secondsRemaining)/(60*60)).round();
+    final progressValue = 1 - ((totalSecondsInDay - secondsRemaining) / totalSecondsInDay);
+
+    // Update state and potentially rebuild the widget
+    setState(() {
+      _progressValue = progressValue;
+      timeRemaining = hoursRemaining.toString();
+    });
+
+  }
 
   /*
   This Function sends the post to the data base with the current text
@@ -93,6 +119,9 @@ class _CreatePageContentState extends State<CreatePageContent> {
       setState(() {});
     });
     checkTheUser();
+ _updateProgress();
+
+
   }
 
   @override
@@ -294,7 +323,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
               Expanded(
                   flex: 2,
                   child: Text(
-                    "10hr Remaining",
+                    timeRemaining + " hours remaining",
                     style: TextStyle(
                         color: Colors.white, fontSize: screenHeight / 90),
                   )),
@@ -306,7 +335,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
                         flex: 4,
                         child: LinearProgressIndicator(
                             borderRadius: BorderRadius.circular(10),
-                            value: 0.4,
+                            value: _progressValue,
                             backgroundColor: Colors.white,
                             valueColor:
                                 AlwaysStoppedAnimation<Color>(Colors.red),
@@ -416,15 +445,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
   }
 }
 
-class TimeLeftIndicator extends StatefulWidget {
-  const TimeLeftIndicator({super.key});
 
-  @override
-  _TimeLeftIndicatorState createState() => _TimeLeftIndicatorState();
-}
 
-class _TimeLeftIndicatorState extends State<TimeLeftIndicator> {
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
+
+
