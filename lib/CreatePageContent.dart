@@ -47,6 +47,8 @@ class _CreatePageContentState extends State<CreatePageContent> {
           .get();
       if (docRef.docs.isEmpty) {
         //if he/she has not already posted post
+        final now = DateTime.now();
+        final timestamp = Timestamp.fromDate(now);
         CollectionReference collection = firebase.collection('Posts');
         canPost[promptVal] = false;
         return collection
@@ -57,6 +59,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
               'uid': userId,
               'promptId': promptId,
               'promptDateId': promtDateId,
+              'date': timestamp
             })
             .then((value) => print("Data Added"))
             .catchError((error) => print("Failed to add data: $error"));

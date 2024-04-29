@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Session.dart';
 import 'package:provider/provider.dart';
 import '../DatabaseQueries.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
@@ -31,6 +32,20 @@ class LoginPage extends StatelessWidget {
       print('Error: $e');
       return false;
     }
+  }
+
+  //Locally caches the last time the user logged in as a string
+  Future<void> cacheLoginTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now();
+    final loginTimeString = now.toIso8601String(); // Convert to string
+    await prefs.setString('lastLoginTime', loginTimeString);
+  }
+
+  //Retrieves the last login time if it exists
+  Future<String?> getCachedLoginTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('lastLoginTime');
   }
 
   Future<void> setupUserSession(context, userId) async {
@@ -63,6 +78,8 @@ class LoginPage extends StatelessWidget {
       userSession.setUserId(saved_user);
       userSession.setFollowers(saved_followers);
       userSession.setFollowing(saved_following);
+      String? lTime = await getCachedLoginTime();
+      userSession.setLoginTime(lTime);
     } catch (e) {
       print('Error: $e');
     }

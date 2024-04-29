@@ -13,7 +13,9 @@ class Prompt {
 }
 class UserService with ChangeNotifier {
   String? _userId;
+  bool firstLogin = false;
   String? _postAnswer;
+  String? _loginTime;
   int? _following;
   int? _followers;
   List<Prompt> _posts = List.empty(growable: true);
@@ -22,10 +24,19 @@ class UserService with ChangeNotifier {
   int? get following => _following;
   int? get followers => _followers;
   String? get postAnswer => _postAnswer;
+  String? get logTime => _loginTime;
   List<Prompt>? get posts => _posts;
 
   void setUserId(String userId) {
     _userId = userId;
+    notifyListeners();
+  }
+
+  void setLoginTime(String? logint){
+    _loginTime = logint;
+    if(_loginTime == null){
+      firstLogin = true;
+    }
     notifyListeners();
   }
 
