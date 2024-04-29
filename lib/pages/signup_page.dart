@@ -23,7 +23,8 @@ class SignupPage extends StatelessWidget {
         'username': username,
         'age': age,
         'followers': 0,
-        'following': 0
+        'following': 0,
+        'profileImage': "https://firebasestorage.googleapis.com/v0/b/chuckler-622ff.appspot.com/o/Chuckler%20(4).png?alt=media&token=36bd76de-9248-47a8-9a76-d477cdbc6cd0"
       });
     } catch (e) {
       print('Error: $e');

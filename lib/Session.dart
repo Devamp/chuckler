@@ -1,20 +1,42 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:chuckler/AppNavBar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+class Prompt {
+  String before;
+  String after;
+  DocumentReference sponsor;
+  String promptDateId;
+  String promptId;
+  Prompt(this.before, this.after, this.sponsor, this.promptDateId, this.promptId);
+}
 class UserService with ChangeNotifier {
   String? _userId;
+  bool firstLogin = false;
   String? _postAnswer;
+  String? _loginTime;
   int? _following;
   int? _followers;
+  List<Prompt> _posts = List.empty(growable: true);
 
   String? get userId => _userId;
   int? get following => _following;
   int? get followers => _followers;
   String? get postAnswer => _postAnswer;
+  String? get logTime => _loginTime;
+  List<Prompt>? get posts => _posts;
 
   void setUserId(String userId) {
     _userId = userId;
+    notifyListeners();
+  }
+
+  void setLoginTime(String? logint){
+    _loginTime = logint;
+    if(_loginTime == null){
+      firstLogin = true;
+    }
     notifyListeners();
   }
 
@@ -34,6 +56,11 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
+  void addPrompt(Prompt p){
+    _posts.add(p);
+    notifyListeners();
+  }
+
   void clearUserId() {
     _userId = null;
 
@@ -49,10 +76,13 @@ class UserService with ChangeNotifier {
 
   }
 
-  void clearPostAnser(){
+  void clearPostAnswer(){
     _postAnswer = null;
   }
 
+  void clearPosts(){
+    _posts?.clear();
+  }
 
   void logout() {
     clearUserId();

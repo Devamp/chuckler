@@ -41,6 +41,9 @@ dependencies:
   auto_size_text: ^3.0.0
   image_picker: ^1.0.5
   flutter_profile_picture: ^2.0.0
+  firebase_storage: ^11.6.0
+  shared_preferences: ^2.2.3
+
 
 
 dev_dependencies:

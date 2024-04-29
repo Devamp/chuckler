@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chuckler/pages/login_page.dart';
 import 'package:chuckler/PageTransitioner.dart';
+import './Session.dart';
+import 'package:provider/provider.dart';
 
 class CreatePageContent extends StatefulWidget {
   const CreatePageContent({super.key});
@@ -12,73 +14,86 @@ class CreatePageContent extends StatefulWidget {
   _CreatePageContentState createState() => _CreatePageContentState();
 }
 
-class _CreatePageContentState extends State<CreatePageContent> {
+class _CreatePageContentState extends State<CreatePageContent> with TickerProviderStateMixin {
   final TextEditingController _controller =
       TextEditingController(text: "Answer the Prompt Here");
-
-  String beforeAnswer = "";
-  String afterAnswer = "";
+//state variables
   bool isUser = false;
-  String promptId = "";
   String userId = "";
   String userName = "";
+  String promptId = "";
+  String promtDateId = "";
+  String timeRemaining = "";
+  var _progressValue = 0.0;
+  List<bool> canPost = List.empty(growable: true);
+  List<String> textControllerStates = List.empty(growable: true);
+  var promptVal = 0;
   FocusNode focusNode = FocusNode();
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  /*
-  Gets the current prompt and returns a Map {'Before': 'content before prompt', 'After': 'Content after prompt'}
-   */
-  Future<Map<String, dynamic>> getTodaysPrompt() async {
-    DateTime now = DateTime.now().toUtc().subtract(const Duration(hours: 8));
-    DateTime today = DateTime(now.year, now.month, now.day);
+  //Set the progress indicator
+  void _updateProgress() {
+    // Get current UTC time
+    final now = DateTime.now().toUtc();
 
-    // Create timestamps for the start and end datess
-    Timestamp startDate = Timestamp.fromDate(today);
-    Timestamp endDate =
-        Timestamp.fromDate(DateTime(now.year, now.month, now.day + 1));
-    // Fetch the document
-    QuerySnapshot<Map<String, dynamic>> snapshot = await firestore
-        .collection('Prompts')
-        .where('promptDate', isGreaterThanOrEqualTo: startDate)
-        .where('promptDate', isLessThan: endDate)
-        .get();
+    // Calculate time remaining in the day (in seconds)
+    final midnightUtc = DateTime.utc(now.year, now.month, now.day, 0, 0);
+    final secondsRemaining = -midnightUtc.difference(now).inSeconds.toDouble();
 
-    // Check if a document was found
-    if (snapshot.docs.isNotEmpty) {
-      // Get the prompt from the first document
-      Map<String, dynamic> data = snapshot.docs.first.data();
-      if (data.containsKey('Before') && data.containsKey('After')) {
-        return {
-          'Before': data['Before'],
-          'After': data['After'],
-          'id': snapshot.docs.first.id
-        };
-      } else {
-        throw Exception('Error: Document does not contain a "prompt" field');
-      }
-    } else {
-      throw Exception('Error: No document found for the given date');
-    }
+
+
+    // Calculate progress value (percentage)
+    const totalSecondsInDay = 24 * 60 * 60;
+    final hoursRemaining = ((totalSecondsInDay - secondsRemaining)/(60*60)).round();
+    final progressValue = 1 - ((totalSecondsInDay - secondsRemaining) / totalSecondsInDay);
+
+    // Update state and potentially rebuild the widget
+    setState(() {
+      _progressValue = progressValue;
+      timeRemaining = hoursRemaining.toString();
+    });
+
   }
 
   /*
   This Function sends the post to the data base with the current text
    */
   Future<void> postData() async {
-    CollectionReference collection =
-        FirebaseFirestore.instance.collection('Posts');
-    return collection
-        .add({
-          'commentIds': [], // Field
-          'content': _controller.text,
-          'dislikedUserIds': [],
-          'likedUserIds': [],
-          'promptId': promptId,
-          'userId': userId
-        })
-        .then((value) => print("Data Added"))
-        .catchError((error) => print("Failed to add data: $error"));
+    //check if user can post
+    if (canPost[promptVal]) {
+      //check if user has already posted
+      FirebaseFirestore firebase = FirebaseFirestore.instance;
+      final docRef = await firebase
+          .collection('Posts')
+          .where('uid', isEqualTo: userId)
+          .where('promptId', isEqualTo: promptId)
+          .where('promptDateId', isEqualTo: promtDateId)
+          .limit(1)
+          .get();
+      if (docRef.docs.isEmpty) {
+        //if he/she has not already posted post
+        final now = DateTime.now().toUtc();
+        final timestamp = Timestamp.fromDate(now);
+        CollectionReference collection = firebase.collection('Posts');
+        canPost[promptVal] = false;
+        return collection
+            .add({
+              'answer': _controller.text,
+              'dislikes': 0,
+              'likes': 0,
+              'uid': userId,
+              'promptId': promptId,
+              'promptDateId': promtDateId,
+              'date': timestamp
+            })
+            .then((value) => print("Data Added"))
+            .catchError((error) => print("Failed to add data: $error"));
+      }
+      else{
+        canPost[promptVal] = false;
+      }
+    }
   }
 
   /*
@@ -103,26 +118,16 @@ class _CreatePageContentState extends State<CreatePageContent> {
     focusNode.addListener(() {
       setState(() {});
     });
-    loadPromptData();
     checkTheUser();
+ _updateProgress();
+
+
   }
 
   @override
   void dispose() {
     focusNode.dispose();
     super.dispose();
-  }
-
-/*
- Sets prompt state
- */
-  Future<void> loadPromptData() async {
-    Map<String, dynamic> promptData = await getTodaysPrompt();
-    setState(() {
-      beforeAnswer = promptData['Before'];
-      afterAnswer = promptData['After'];
-      promptId = promptData['id'];
-    });
   }
 
   /*
@@ -137,10 +142,18 @@ class _CreatePageContentState extends State<CreatePageContent> {
 
   @override
   Widget build(BuildContext context) {
+    //Set variables
+    UserService userSession = Provider.of<UserService>(context);
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
-    print(screenWidth);
-    print(screenHeight);
+    List<Prompt> prompts = userSession.posts!;
+    promptId = prompts[promptVal].promptId;
+    promtDateId = prompts[promptVal].promptDateId;
+    for(int i = 0; i < prompts.length; i++){
+      canPost.add(true);
+      textControllerStates.add("Answer the Prompt Here");
+    }
+
     return Column(
       children: [
         //Prompt Area
@@ -235,7 +248,15 @@ class _CreatePageContentState extends State<CreatePageContent> {
                       Expanded(
                           flex: 2,
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              textControllerStates[promptVal] = _controller.text;
+                              if ((promptVal - 1) >= 0) {
+                                setState(() {
+                                  promptVal = promptVal - 1;
+                                  _controller.text =   textControllerStates[promptVal];
+                                });
+                              }
+                            },
                             splashRadius: 10,
                             icon: Icon(
                               Icons.chevron_left_outlined,
@@ -254,12 +275,12 @@ class _CreatePageContentState extends State<CreatePageContent> {
                                   fontFamily: 'OpenSans',
                                   fontWeight: FontWeight.w700),
                               children: <TextSpan>[
-                                TextSpan(text: beforeAnswer),
+                                TextSpan(text: prompts[promptVal].before),
                                 TextSpan(
                                     text: _controller.text,
                                     style: const TextStyle(
                                         color: Color(0xFFffd230))),
-                                TextSpan(text: afterAnswer),
+                                TextSpan(text: prompts[promptVal].after),
                               ],
                             ),
                             textAlign: TextAlign.center,
@@ -269,7 +290,15 @@ class _CreatePageContentState extends State<CreatePageContent> {
                       Expanded(
                           flex: 2,
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              textControllerStates[promptVal] = _controller.text;
+                              if ((promptVal + 1) < prompts.length) {
+                                setState(() {
+                                  promptVal++;
+                                   _controller.text = textControllerStates[promptVal];
+                                });
+                              }
+                            },
                             splashRadius: 10,
                             icon: Icon(
                               Icons.chevron_right_outlined,
@@ -294,7 +323,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
               Expanded(
                   flex: 2,
                   child: Text(
-                    "10hr Remaining",
+                    timeRemaining + " hours remaining",
                     style: TextStyle(
                         color: Colors.white, fontSize: screenHeight / 90),
                   )),
@@ -306,7 +335,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
                         flex: 4,
                         child: LinearProgressIndicator(
                             borderRadius: BorderRadius.circular(10),
-                            value: 0.4,
+                            value: _progressValue,
                             backgroundColor: Colors.white,
                             valueColor:
                                 AlwaysStoppedAnimation<Color>(Colors.red),
@@ -369,9 +398,8 @@ class _CreatePageContentState extends State<CreatePageContent> {
                       ElevatedButton(
                         onPressed: () {
                           if (isUser) {
-                            print("data posted");
                             //Uncomment below to post data
-                            //postData();
+                            postData();
                           } else {
                             // User is not logged in
                             // Show a dialog and offer to take the user back to the login screen
@@ -416,3 +444,8 @@ class _CreatePageContentState extends State<CreatePageContent> {
     );
   }
 }
+
+
+
+
+

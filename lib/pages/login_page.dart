@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Session.dart';
 import 'package:provider/provider.dart';
+import '../DatabaseQueries.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
@@ -32,6 +34,20 @@ class LoginPage extends StatelessWidget {
     }
   }
 
+  //Locally caches the last time the user logged in as a string
+  Future<void> cacheLoginTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now().toUtc();
+    final loginTimeString = now.toIso8601String(); // Convert to string
+    await prefs.setString('lastLoginTime', loginTimeString);
+  }
+
+  //Retrieves the last login time if it exists
+  Future<String?> getCachedLoginTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('lastLoginTime');
+  }
+
   Future<void> setupUserSession(context, userId) async {
     print(userId + "This is the userID");
     final UserService userSession =
@@ -42,11 +58,18 @@ class LoginPage extends StatelessWidget {
           .collection('Users')
           .where('userID', isEqualTo: userId)
           .get();
-
+      List<Prompt> postToAdd = await getDailyPrompts(firestore);
       if (querySnapshot.docs.isEmpty) {
         print("NO DOCS FOUND " + userId);
       }
+      for(Prompt p in postToAdd){
+        userSession.addPrompt(p);
+      }
+
+
       QueryDocumentSnapshot doc = querySnapshot.docs.first;
+
+
 
       dynamic saved_user = doc.get(FieldPath(['username']));
       dynamic saved_followers = doc.get(FieldPath(['followers']));
@@ -55,6 +78,13 @@ class LoginPage extends StatelessWidget {
       userSession.setUserId(saved_user);
       userSession.setFollowers(saved_followers);
       userSession.setFollowing(saved_following);
+      String? lTime = await getCachedLoginTime();
+      userSession.setLoginTime(lTime);
+      if(!userSession.firstLogin){
+        print("last login " + userSession.logTime!);
+      }
+      cacheLoginTime();
+
     } catch (e) {
       print('Error: $e');
     }
