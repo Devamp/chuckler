@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:chuckler/AppNavBar.dart';
 import 'package:chuckler/AppHeaderMain.dart';
 import 'package:chuckler/CreatePageContent.dart';
+import '../Session.dart';
 
 
 
@@ -11,9 +11,8 @@ class CreatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-        backgroundColor: Colors.amber,
-        body: CreateForm(),
-        bottomNavigationBar: NavigationBarController(initialPageIndex: 0));
+        backgroundColor: Color(0xff000000),
+        body: CreateForm());
   }
 }
 

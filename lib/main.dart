@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:chuckler/route_generator.dart';
+import 'package:chuckler/pages/feed_page.dart';
+import 'package:provider/provider.dart';
 import './firebase/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'Session.dart';
 
 Future<void> main() async {
   DefaultFirebaseOptions fb = DefaultFirebaseOptions();
@@ -9,14 +12,15 @@ Future<void> main() async {
 
   try {
     await fb.initializeFirebase();
-    runApp(MyApp());
-  }
-  catch(e) {
+    runApp(
+      ChangeNotifierProvider(
+        create: (context) => UserService(),
+        child: MyApp(),
+      ),
+    );
+  } catch (e) {
     print("Error initiating Firebase");
   }
-
-
-
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Chuckler',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.orange),
+      theme: ThemeData(primarySwatch: Colors.amber),
       initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );

@@ -1,15 +1,94 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+//import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../Session.dart';
+import 'package:provider/provider.dart';
+import '../DatabaseQueries.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String inputEmail = '';
   String inputPassword = '';
   String resetEmail = '';
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
+
+  Future<bool> verifyLogin(email, password, context) async {
+    User user;
+    try {
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      user = result.user!;
+      await setupUserSession(context, user.uid);
+      return true;
+    } catch (e) {
+      print('Error: $e');
+      return false;
+    }
+  }
+
+  //Locally caches the last time the user logged in as a string
+  Future<void> cacheLoginTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now().toUtc();
+    final loginTimeString = now.toIso8601String(); // Convert to string
+    await prefs.setString('lastLoginTime', loginTimeString);
+  }
+
+  //Retrieves the last login time if it exists
+  Future<String?> getCachedLoginTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('lastLoginTime');
+  }
+
+  Future<void> setupUserSession(context, userId) async {
+    print(userId + "This is the userID");
+    final UserService userSession =
+        Provider.of<UserService>(context, listen: false);
+
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('Users')
+          .where('userID', isEqualTo: userId)
+          .get();
+      List<Prompt> postToAdd = await getDailyPrompts(firestore);
+      if (querySnapshot.docs.isEmpty) {
+        print("NO DOCS FOUND " + userId);
+      }
+      for(Prompt p in postToAdd){
+        userSession.addPrompt(p);
+      }
+
+
+      QueryDocumentSnapshot doc = querySnapshot.docs.first;
+
+
+
+      dynamic saved_user = doc.get(FieldPath(['username']));
+      dynamic saved_followers = doc.get(FieldPath(['followers']));
+      dynamic saved_following = doc.get(FieldPath(['following']));
+
+      userSession.setUserId(saved_user);
+      userSession.setFollowers(saved_followers);
+      userSession.setFollowing(saved_following);
+      String? lTime = await getCachedLoginTime();
+      userSession.setLoginTime(lTime);
+      if(!userSession.firstLogin){
+        print("last login " + userSession.logTime!);
+      }
+      cacheLoginTime();
+
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   void showForgotPasswordSheet(BuildContext context) {
     showModalBottomSheet(
@@ -118,230 +197,232 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFFffd230),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(left: 10.0),
-                  width: 250,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 5.0,
-                    ),
-                  ),
-                  child: Center(
-                    child: CircleAvatar(
-                      radius: 150,
-                      backgroundColor: Colors.transparent,
-                      backgroundImage:
-                          AssetImage('assets/Chuckler-logo-circle.png'),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                TextField(
-                  onChanged: (text) {
-                    inputEmail = text;
-                  },
-                  keyboardType: TextInputType.emailAddress,
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.black,
-                    hintText: "Email",
-                    hintStyle: TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  onChanged: (text) {
-                    inputPassword = text;
-                  },
-                  obscureText: true, // for password
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.black,
-                    hintText: "Password",
-                    hintStyle: TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    showForgotPasswordSheet(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Forgot Password?',
-                      style: TextStyle(
+      body: SingleChildScrollView(
+        child: Container(
+          color: const Color(0xFFffd230),
+          height: MediaQuery.of(context).size.height,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(left: 10.0),
+                    width: 250,
+                    height: 250,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
                         color: Colors.black,
-                        fontSize: 15,
+                        width: 5.0,
+                      ),
+                    ),
+                    child: Center(
+                      child: CircleAvatar(
+                        radius: 150,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage:
+                            AssetImage('assets/Chuckler-logo-circle.png'),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.grey),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.black),
-                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                            EdgeInsets.all(10.0)),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
+                  const SizedBox(height: 30),
+                  TextField(
+                    onChanged: (text) {
+                      inputEmail = text;
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.black,
+                      hintText: "Email",
+                      hintStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1.0,
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.assignment_add),
-                          SizedBox(width: 8.0),
-                          Text('SIGN UP'),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 25),
-                    ElevatedButton(
-                      onPressed: () async {
-                        try {
-                          await _auth.signInWithEmailAndPassword(
-                              email: inputEmail, password: inputPassword);
-
-                          Navigator.pushNamed(context, '/feed');
-                        } catch (e) {
-                          String errorMessage = e.toString();
-
-                          int startIndex = errorMessage.indexOf(']');
-                          String endMessage =
-                              errorMessage.substring(startIndex + 1).trim();
-
-                          if (errorMessage
-                              .contains("INVALID_LOGIN_CREDENTIALS")) {
-                            endMessage = "Invalid user or password.";
-                          }
-                          // ignore: use_build_context_synchronously
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Failure'),
-                                content: Text(endMessage),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Ok'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.black),
-                        foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                            EdgeInsets.all(10.0)),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.login_sharp),
-                          SizedBox(width: 8.0),
-                          Text('LOGIN'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Divider(
-                  color: Colors.black,
-                  thickness: 2,
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    print("Guest Clicked");
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.white),
-                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        EdgeInsets.all(10.0)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
                       ),
                     ),
                   ),
-                  child: Row(
+                  const SizedBox(height: 10),
+                  TextField(
+                    onChanged: (text) {
+                      inputPassword = text;
+                    },
+                    obscureText: true, // for password
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.black,
+                      hintText: "Password",
+                      hintStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      showForgotPasswordSheet(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.person),
-                      SizedBox(width: 8.0),
-                      Text(
-                        'CONTINUE AS GUEST',
-                        style: TextStyle(fontSize: 16.0),
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/signup');
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromARGB(255, 75, 75, 75)),
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                              const Color(0xFFffd230)),
+                          padding:
+                              MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                  EdgeInsets.fromLTRB(18.0, 10.0, 18.0, 10.0)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.assignment_add),
+                            SizedBox(width: 8.0),
+                            Text('SIGN UP'),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 15),
+                      ElevatedButton(
+                        onPressed: () async {
+                          isLoading.value = true;
+                          bool status = await verifyLogin(
+                              inputEmail, inputPassword, context);
+                          isLoading.value = false;
+                          if (status) {
+                            Navigator.pushReplacementNamed(context, '/app');
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Verification Failed"),
+                                  content: Text(
+                                      "Invalid email or password. Please try again."),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("OK"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        },
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.black),
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                          padding:
+                              MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                  EdgeInsets.fromLTRB(18.0, 10.0, 18.0, 10.0)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                        ),
+                        child: ValueListenableBuilder(
+                          valueListenable: isLoading,
+                          builder: (context, value, child) {
+                            return value ? CircularProgressIndicator() : child!;
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.login_sharp),
+                              SizedBox(width: 8.0),
+                              Text('LOGIN'),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  Divider(
+                    color: Colors.black,
+                    thickness: 2,
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      print("Guest Clicked");
+                    },
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.black),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                          EdgeInsets.all(10.0)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.person),
+                        SizedBox(width: 8.0),
+                        Text(
+                          'CONTINUE AS GUEST',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

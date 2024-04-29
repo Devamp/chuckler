@@ -9,8 +9,7 @@ class ExplorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
         backgroundColor: Colors.amber,
-        body: ExploreMainPage(),
-        bottomNavigationBar: NavigationBarController(initialPageIndex: 2));
+        body: ExploreMainPage());
   }
 }
 
