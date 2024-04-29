@@ -6,25 +6,14 @@ class MainHeaderBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.sizeOf(context).height;
     return Container(
         decoration: const BoxDecoration(color: Colors.black),
         child: Row(
           children: [
-            const Expanded(
-              flex: 4,
-              child: AutoSizeText(
-                " Chuckler",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                style: TextStyle(
-                  fontFamily: "OpenSans",
-                  fontSize: 200,
-                  color: Color(0xFFffd230),
-                ),
-              ),
-            ),
+            const Expanded(flex: 6, child: Logo()),
             Expanded(
-              flex: 10,
+              flex: 8,
               child: Container(),
             ),
             Expanded(
@@ -36,7 +25,10 @@ class MainHeaderBar extends StatelessWidget {
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
-                  icon: const Icon(Icons.person, color: Colors.blue,),
+                  icon: const Icon(
+                    Icons.person,
+                    color: Colors.blue,
+                  ),
                   onPressed: () {
                     // do something when the button is pressed
                     debugPrint('Profile picture button pressed');
@@ -46,5 +38,29 @@ class MainHeaderBar extends StatelessWidget {
             ),
           ],
         ));
+  }
+}
+
+class Logo extends StatefulWidget {
+  const Logo({super.key});
+
+  @override
+  State<Logo> createState() => _LogoState();
+}
+
+class _LogoState extends State<Logo> {
+  @override
+  Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.sizeOf(context).height;
+    double screenWidth = MediaQuery.sizeOf(context).width;
+    return Container(
+      margin: EdgeInsets.fromLTRB(screenWidth/40, 0, 0, 0),
+        child: Text(
+      "CHUCKLER",
+      style: TextStyle(
+          color: Colors.white,
+          fontFamily: "Livvic",
+          fontSize: screenHeight / 35),
+    ));
   }
 }
