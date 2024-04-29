@@ -37,7 +37,7 @@ class LoginPage extends StatelessWidget {
   //Locally caches the last time the user logged in as a string
   Future<void> cacheLoginTime() async {
     final prefs = await SharedPreferences.getInstance();
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     final loginTimeString = now.toIso8601String(); // Convert to string
     await prefs.setString('lastLoginTime', loginTimeString);
   }
@@ -80,6 +80,11 @@ class LoginPage extends StatelessWidget {
       userSession.setFollowing(saved_following);
       String? lTime = await getCachedLoginTime();
       userSession.setLoginTime(lTime);
+      if(!userSession.firstLogin){
+        print("last login " + userSession.logTime!);
+      }
+      cacheLoginTime();
+
     } catch (e) {
       print('Error: $e');
     }

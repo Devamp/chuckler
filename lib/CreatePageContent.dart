@@ -47,7 +47,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
           .get();
       if (docRef.docs.isEmpty) {
         //if he/she has not already posted post
-        final now = DateTime.now();
+        final now = DateTime.now().toUtc();
         final timestamp = Timestamp.fromDate(now);
         CollectionReference collection = firebase.collection('Posts');
         canPost[promptVal] = false;
