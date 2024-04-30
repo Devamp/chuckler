@@ -87,21 +87,13 @@ class _FeedPageContentState extends State<FeedPageContent> {
                 ),
               ),
             )),
-
         Divider(
           color: Colors.amber,
           thickness: 5,
         ),
-        Expanded(
-            flex: 1,
-            child: Text(
-              "Username 1 VS Username 2",
-              style:
-              TextStyle(color: Colors.amber, fontSize: screenHeight / 40),
-            )),
         Expanded(flex: 1, child: Container()),
         Expanded(
-            flex: 5,
+            flex: 8,
             child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) {
@@ -110,8 +102,31 @@ class _FeedPageContentState extends State<FeedPageContent> {
                     UserPost(data: items[index]),
                     Container(
                       height: 20,
-                    )
-                    // Separator for all except last item
+                    ),
+                    if (index < (items.length - 1))
+                      Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(height: 5, color: Colors.amber, width: screenWidth/4,),
+
+
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.amber, shape: BoxShape.circle),
+                          child: Container(
+                              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                              child: Text("VS",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: screenHeight / 30,
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: "OpenSans"))),
+                        ),
+                                Container(height: 4, color: Colors.amber, width: screenWidth/4,),
+
+                      ]))
                   ],
                 );
               },
@@ -177,7 +192,7 @@ class UserPost extends StatelessWidget {
                 margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
                 child: Text(
                   data,
-                  style: TextStyle(fontSize: 20, color: Colors.white),
+                  style: TextStyle(fontSize: screenHeight/35, fontFamily: "OpenSans", color: Colors.white),
                 )),
           ),
           Expanded(
