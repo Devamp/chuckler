@@ -62,14 +62,11 @@ class LoginPage extends StatelessWidget {
       if (querySnapshot.docs.isEmpty) {
         print("NO DOCS FOUND " + userId);
       }
-      for(Prompt p in postToAdd){
+      for (Prompt p in postToAdd) {
         userSession.addPrompt(p);
       }
 
-
       QueryDocumentSnapshot doc = querySnapshot.docs.first;
-
-
 
       dynamic saved_user = doc.get(FieldPath(['username']));
       dynamic saved_followers = doc.get(FieldPath(['followers']));
@@ -80,11 +77,10 @@ class LoginPage extends StatelessWidget {
       userSession.setFollowing(saved_following);
       String? lTime = await getCachedLoginTime();
       userSession.setLoginTime(lTime);
-      if(!userSession.firstLogin){
+      if (!userSession.firstLogin) {
         print("last login " + userSession.logTime!);
       }
       cacheLoginTime();
-
     } catch (e) {
       print('Error: $e');
     }
@@ -106,7 +102,7 @@ class LoginPage extends StatelessWidget {
               children: [
                 Text('Reset Password',
                     style: TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     )),
                 SizedBox(height: 10),
@@ -118,7 +114,7 @@ class LoginPage extends StatelessWidget {
                   padding: EdgeInsets.all(16),
                   child: Icon(
                     Icons.lock,
-                    size: 60, // Adjust the size as needed
+                    size: 52, // Adjust the size as needed
                     color: const Color(0xFFffd230),
                   ),
                 ),
@@ -128,7 +124,7 @@ class LoginPage extends StatelessWidget {
                         20), // Adjust the spacing between logo and other content
 
                 Text(
-                  'Enter the email associated with your account. Shortly after, you will receive a password reset link.',
+                  'Enter your email and we will send you a rest link',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
@@ -186,6 +182,9 @@ class LoginPage extends StatelessWidget {
                   ),
                   child: Text('Submit Request'),
                 ),
+                SizedBox(
+                  height: 20,
+                )
               ],
             ),
           ),
@@ -245,7 +244,7 @@ class LoginPage extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: Colors.black,
                           width: 1.0,
                         ),
                       ),
@@ -269,7 +268,7 @@ class LoginPage extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: Colors.black,
                           width: 1.0,
                         ),
                       ),
@@ -320,7 +319,7 @@ class LoginPage extends StatelessWidget {
                           children: const [
                             Icon(Icons.assignment_add),
                             SizedBox(width: 8.0),
-                            Text('SIGN UP'),
+                            Text('Sign Up'),
                           ],
                         ),
                       ),
@@ -379,7 +378,7 @@ class LoginPage extends StatelessWidget {
                             children: const [
                               Icon(Icons.login_sharp),
                               SizedBox(width: 8.0),
-                              Text('LOGIN'),
+                              Text('Login'),
                             ],
                           ),
                         ),

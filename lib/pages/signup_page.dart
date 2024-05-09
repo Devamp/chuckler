@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +24,8 @@ class SignupPage extends StatelessWidget {
         'age': age,
         'followers': 0,
         'following': 0,
-        'profileImage': "https://firebasestorage.googleapis.com/v0/b/chuckler-622ff.appspot.com/o/Chuckler%20(4).png?alt=media&token=36bd76de-9248-47a8-9a76-d477cdbc6cd0"
+        'profileImage':
+            "https://firebasestorage.googleapis.com/v0/b/chuckler-622ff.appspot.com/o/Chuckler%20(4).png?alt=media&token=36bd76de-9248-47a8-9a76-d477cdbc6cd0"
       });
     } catch (e) {
       print('Error: $e');
@@ -90,7 +91,7 @@ class SignupPage extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         borderSide: const BorderSide(
-                          color: Colors.white,
+                          color: Colors.black,
                           width: 1.0,
                         ),
                       ),
@@ -114,7 +115,7 @@ class SignupPage extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         borderSide: const BorderSide(
-                          color: Colors.white,
+                          color: Colors.black,
                           width: 1.0,
                         ),
                       ),
@@ -138,7 +139,7 @@ class SignupPage extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         borderSide: const BorderSide(
-                          color: Colors.white,
+                          color: Colors.black,
                           width: 1.0,
                         ),
                       ),
@@ -237,14 +238,14 @@ class SignupPage extends StatelessWidget {
                           Icon(Icons.app_registration_rounded),
                           SizedBox(width: 8.0),
                           Text(
-                            'REGISTER',
+                            'Register Account',
                             style: TextStyle(fontSize: 16.0),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  SizedBox(height: 15.0),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/login');
@@ -252,12 +253,22 @@ class SignupPage extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.only(left: 20.0),
                       alignment: Alignment.center,
-                      child: Text(
-                        'Already have an account? Sign in!',
-                        style: TextStyle(
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 14.0,
                             color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: 'Already have an account?',
+                                style: TextStyle(fontSize: 18)),
+                            TextSpan(
+                                text: ' Login Here',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
