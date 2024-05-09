@@ -14,9 +14,11 @@ class CreatePageContent extends StatefulWidget {
   _CreatePageContentState createState() => _CreatePageContentState();
 }
 
-class _CreatePageContentState extends State<CreatePageContent> with TickerProviderStateMixin {
+class _CreatePageContentState extends State<CreatePageContent>
+    with TickerProviderStateMixin {
   final TextEditingController _controller =
       TextEditingController(text: "Answer the Prompt Here");
+
 //state variables
   bool isUser = false;
   String userId = "";
@@ -41,19 +43,18 @@ class _CreatePageContentState extends State<CreatePageContent> with TickerProvid
     final midnightUtc = DateTime.utc(now.year, now.month, now.day, 0, 0);
     final secondsRemaining = -midnightUtc.difference(now).inSeconds.toDouble();
 
-
-
     // Calculate progress value (percentage)
     const totalSecondsInDay = 24 * 60 * 60;
-    final hoursRemaining = ((totalSecondsInDay - secondsRemaining)/(60*60)).round();
-    final progressValue = 1 - ((totalSecondsInDay - secondsRemaining) / totalSecondsInDay);
+    final hoursRemaining =
+        ((totalSecondsInDay - secondsRemaining) / (60 * 60)).round();
+    final progressValue =
+        1 - ((totalSecondsInDay - secondsRemaining) / totalSecondsInDay);
 
     // Update state and potentially rebuild the widget
     setState(() {
       _progressValue = progressValue;
       timeRemaining = hoursRemaining.toString();
     });
-
   }
 
   /*
@@ -83,14 +84,14 @@ class _CreatePageContentState extends State<CreatePageContent> with TickerProvid
               'dislikes': 0,
               'likes': 0,
               'uid': userId,
+              'username': userName,
               'promptId': promptId,
               'promptDateId': promtDateId,
               'date': timestamp
             })
             .then((value) => print("Data Added"))
             .catchError((error) => print("Failed to add data: $error"));
-      }
-      else{
+      } else {
         canPost[promptVal] = false;
       }
     }
@@ -119,9 +120,7 @@ class _CreatePageContentState extends State<CreatePageContent> with TickerProvid
       setState(() {});
     });
     checkTheUser();
- _updateProgress();
-
-
+    _updateProgress();
   }
 
   @override
@@ -144,12 +143,13 @@ class _CreatePageContentState extends State<CreatePageContent> with TickerProvid
   Widget build(BuildContext context) {
     //Set variables
     UserService userSession = Provider.of<UserService>(context);
+    userName = userSession.userId!;
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
     List<Prompt> prompts = userSession.posts!;
     promptId = prompts[promptVal].promptId;
     promtDateId = prompts[promptVal].promptDateId;
-    for(int i = 0; i < prompts.length; i++){
+    for (int i = 0; i < prompts.length; i++) {
       canPost.add(true);
       textControllerStates.add("Answer the Prompt Here");
     }
@@ -249,11 +249,13 @@ class _CreatePageContentState extends State<CreatePageContent> with TickerProvid
                           flex: 2,
                           child: IconButton(
                             onPressed: () {
-                              textControllerStates[promptVal] = _controller.text;
+                              textControllerStates[promptVal] =
+                                  _controller.text;
                               if ((promptVal - 1) >= 0) {
                                 setState(() {
                                   promptVal = promptVal - 1;
-                                  _controller.text =   textControllerStates[promptVal];
+                                  _controller.text =
+                                      textControllerStates[promptVal];
                                 });
                               }
                             },
@@ -291,11 +293,13 @@ class _CreatePageContentState extends State<CreatePageContent> with TickerProvid
                           flex: 2,
                           child: IconButton(
                             onPressed: () {
-                              textControllerStates[promptVal] = _controller.text;
+                              textControllerStates[promptVal] =
+                                  _controller.text;
                               if ((promptVal + 1) < prompts.length) {
                                 setState(() {
                                   promptVal++;
-                                   _controller.text = textControllerStates[promptVal];
+                                  _controller.text =
+                                      textControllerStates[promptVal];
                                 });
                               }
                             },
@@ -444,8 +448,3 @@ class _CreatePageContentState extends State<CreatePageContent> with TickerProvid
     );
   }
 }
-
-
-
-
-

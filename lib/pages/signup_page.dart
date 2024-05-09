@@ -16,11 +16,23 @@ class SignupPage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  /// Check If Document Exists
+  Future<bool> checkIfDocExists(String docId) async {
+    try {
+      // Get reference to Firestore collection
+      var collectionRef = firestore.collection('Users');
+      var doc = await collectionRef.doc(docId).get();
+      return doc.exists;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  ///Register the user with username as doc id
   Future<void> registerUser(String uid) async {
     try {
-      await firestore.collection('Users').add({
+      await firestore.collection('Users').doc(username).set({
         'userID': uid,
-        'username': username,
         'age': age,
         'followers': 0,
         'following': 0,
@@ -159,6 +171,8 @@ class SignupPage extends StatelessWidget {
                             email.isNotEmpty &&
                             password.isNotEmpty) {
                           try {
+                           bool isUserName= await checkIfDocExists(username);
+                          if(isUserName){throw(Error.safeToString("Username already exsists"));}
                             UserCredential result =
                                 await _auth.createUserWithEmailAndPassword(
                               email: email,

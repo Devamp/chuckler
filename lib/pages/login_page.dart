@@ -71,7 +71,7 @@ class LoginPage extends StatelessWidget {
 
 
 
-      dynamic saved_user = doc.get(FieldPath(['username']));
+      dynamic saved_user = doc.id;
       dynamic saved_followers = doc.get(FieldPath(['followers']));
       dynamic saved_following = doc.get(FieldPath(['following']));
 
