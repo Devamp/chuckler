@@ -43,6 +43,7 @@ dependencies:
   flutter_profile_picture: ^2.0.0
   firebase_storage: ^11.6.0
   shared_preferences: ^2.2.3
+  cloud_functions: ^4.6.0
 
 
 

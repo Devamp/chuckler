@@ -125,7 +125,7 @@ Future<List<dbPrompt>> getPrompts() async {
   final prefs = await SharedPreferences.getInstance();
   String? ofPrompts = prefs.getString('prompts');
   if (ofPrompts == null) {
-    return List<dbPrompt>.empty();
+    return List<dbPrompt>.empty(growable: true);
   }
   var jsonList = jsonDecode(ofPrompts) as List;
   List<dbPrompt> objList =
@@ -133,16 +133,28 @@ Future<List<dbPrompt>> getPrompts() async {
   return objList;
 }
 
-Future<List<dbPost>> getPosts(List<dbPost> posts) async {
+Future<List<dbPost>> getLocalPosts() async {
   final prefs = await SharedPreferences.getInstance();
   String? ofPosts = prefs.getString('posts');
   if (ofPosts == null) {
-    return List<dbPost>.empty();
+    return List<dbPost>.empty(growable: true);
   }
   var jsonList = jsonDecode(ofPosts) as List;
   List<dbPost> objList =
       jsonList.map((theJson) => dbPost.fromJson(theJson)).toList();
   return objList;
+}
+
+//Retrieve numPosts
+Future<int?> getNumPosts() async {
+  final prefs = await SharedPreferences.getInstance();
+  return await prefs.getInt('numOfPrompts');
+}
+
+//Retrieve the Post we have not seen yet
+Future<int?> getCurrentPost() async {
+  final prefs = await SharedPreferences.getInstance();
+  return await prefs.getInt('onPost');
 }
 
 //Retrieves the last login time if it exists
@@ -187,6 +199,17 @@ Future<bool> firstLoginToday() async{
   }else{
     return false;
   }
+}
+
+/*
+Increment the last post the user has seen
+ */
+Future<void> incrementLastPost() async {
+  final prefs = await SharedPreferences.getInstance();
+  int? val = prefs.getInt('onPost');
+  val = val!+1;
+  await prefs.setInt('onPost', val);
+
 }
 
 

@@ -50,7 +50,7 @@ Future<List<dbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
 /**
  * Description: Get the 10 posts from the database...put them in the
  */
-Future<List<Post>> getPosts(
+Future<List<dbPost>> getPosts(
     FirebaseFirestore firestore, String prmtId, String prmtDateId) async {
   final prefs = await SharedPreferences.getInstance();
   String? loginTime = prefs.getString('lastLoginTime');
@@ -66,13 +66,14 @@ Future<List<Post>> getPosts(
         .collection('Posts')
         .where('promptId', isEqualTo: prmtId)
         .where('promptDateId', isEqualTo: prmtDateId)
-        .where('date', isGreaterThan: lastDate)
+        .where('date', isGreaterThanOrEqualTo: lastDate)
         .limit(10).get();
     if(querySnapshot.docs.isEmpty){
       var rng = Random();
       var random1 = rng.nextInt(pow(2, 32).toInt());
       var random2 = rng.nextInt(pow(2, 32).toInt());
       var bigRandom = (random1 << 32) | random2;
+      print(bigRandom.toString());
       querySnapshot = await firestore
           .collection('Posts')
           .where('promptId', isEqualTo: prmtId)
@@ -90,7 +91,7 @@ Future<List<Post>> getPosts(
     }
 
     //create the postList
-  List<Post> toReturn  = List<Post>.empty(growable: true);
+  List<dbPost> toReturn  = List<dbPost>.empty(growable: true);
   if(querySnapshot.docs.isEmpty) {
     return toReturn;
   }
@@ -100,7 +101,7 @@ Future<List<Post>> getPosts(
       dynamic answer = doc.get(FieldPath(['answer']));
       dynamic username = doc.get(FieldPath(['username']));
       int postNum = i;
-      toReturn.add(Post(answer,username,postNum));
+      toReturn.add(dbPost(answer,username,postNum));
       i++;
 
     }

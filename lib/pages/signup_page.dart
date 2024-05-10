@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 // ignore: must_be_immutable
 class SignupPage extends StatelessWidget {
@@ -12,6 +13,7 @@ class SignupPage extends StatelessWidget {
   String email = '';
   String password = '';
   int age = 18;
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -19,12 +21,17 @@ class SignupPage extends StatelessWidget {
   /// Check If Document Exists
   Future<bool> checkIfDocExists(String docId) async {
     try {
-      // Get reference to Firestore collection
-      var collectionRef = firestore.collection('Users');
-      var doc = await collectionRef.doc(docId).get();
-      return doc.exists;
+      final HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('checkUsername');
+      final results = await callable(username); // Pass username directly
+      // Check for errors (optional)
+      if (results.data['error'] != null) {
+        throw Exception('Error checking username');
+      }
+      return results.data['exists'] as bool;
+      return true;
     } catch (e) {
-      throw e;
+      return true;
     }
   }
 
@@ -167,22 +174,26 @@ class SignupPage extends StatelessWidget {
                     width: 200,
                     child: ElevatedButton(
                       onPressed: () async {
+                        isLoading.value = true;
                         //Register User if it is valid information
                         if (username.isNotEmpty &&
                             email.isNotEmpty &&
                             password.isNotEmpty) {
                           try {
-                           bool isUserName= await checkIfDocExists(username);
-                          if(isUserName){throw(Error.safeToString("Username already exsists"));}
+                            bool isUserName = await checkIfDocExists(username);
+                            if (isUserName) {
+                              throw (Error.safeToString(
+                                  "Username already exists"));
+                            }
                             UserCredential result =
                                 await _auth.createUserWithEmailAndPassword(
                               email: email,
                               password: password,
                             );
-                            //Register user with unique uid from authentication
+                            //Register user with unique uid from authentication this can be done asynchronously
                             registerUser(
                                 result.user!.uid); // add user info to db
-
+                            isLoading.value = false;
                             // ignore: use_build_context_synchronously
                             showDialog(
                               context: context,
@@ -203,6 +214,7 @@ class SignupPage extends StatelessWidget {
                               },
                             );
                           } catch (e) {
+                            isLoading.value = false;
                             String errorMessage = e.toString();
                             int startIndex = errorMessage.indexOf(']');
                             String endMessage =
@@ -246,16 +258,27 @@ class SignupPage extends StatelessWidget {
                         ),
                       ),
                       // ignore: prefer_const_constructors
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.app_registration_rounded),
-                          SizedBox(width: 8.0),
-                          Text(
-                            'Register Account',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                        ],
+                      child: ValueListenableBuilder(
+                        valueListenable: isLoading,
+                        builder: (context, value, child) {
+                          return value ? CircularProgressIndicator() : child!;
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.app_registration_rounded),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  'Register Account',
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -298,6 +321,7 @@ class SignupPage extends StatelessWidget {
 
 class SliderWidget extends StatefulWidget {
   const SliderWidget({super.key, required this.onSliderValueChanged});
+
   final void Function(int) onSliderValueChanged;
 
   @override

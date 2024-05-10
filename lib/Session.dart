@@ -79,6 +79,11 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
+  void addPost(Post p){
+    _posts.add(p);
+    notifyListeners();
+  }
+
   void clearUserId() {
     _userId = null;
 

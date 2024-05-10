@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../DatabaseQueries.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../db.dart';
+import 'dart:math';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
@@ -32,6 +33,29 @@ class LoginPage extends StatelessWidget {
     } catch (e) {
       print('Error: $e');
       return false;
+    }
+  }
+
+  /**
+   * Get the initial posts
+   */
+  Future<void> getInitialPosts(context, FirebaseFirestore firestore,
+      String prmtId, String prmtDateId) async {
+    final UserService userSession =
+        Provider.of<UserService>(context, listen: false);
+    List<dbPost> posts = await getLocalPosts();
+    if (posts.isEmpty) {
+      posts = await getPosts(firestore, prmtId, prmtDateId);
+      if (posts.isEmpty) {
+        /**TO DO ADD SOMETHING IF NO POSTS*/
+        return;
+      } else {
+        addPosts(posts);
+      }
+    }
+    //add to session
+    for (dbPost p in posts) {
+      userSession.addPost(p);
     }
   }
 
@@ -63,9 +87,19 @@ class LoginPage extends StatelessWidget {
         }
       }
       //add to the session
+      var getRand = promptsToAdd.length;
+      Random r = Random();
+      getRand = r.nextInt(getRand);
+      var i = 0;
       for (Prompt p in promptsToAdd) {
+        if (i == getRand) {
+          getInitialPosts(context, firestore, p.promptId, p.promptDateId);
+
+        }
         userSession.addPrompt(p);
+        i++;
       }
+
 
       QueryDocumentSnapshot doc = querySnapshot.docs.first;
 
