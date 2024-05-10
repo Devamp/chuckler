@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -77,6 +79,10 @@ class _CreatePageContentState extends State<CreatePageContent>
         final now = DateTime.now().toUtc();
         final timestamp = Timestamp.fromDate(now);
         CollectionReference collection = firebase.collection('Posts');
+        var rng = Random();
+        var random1 = rng.nextInt(pow(2, 32).toInt());
+        var random2 = rng.nextInt(pow(2, 32).toInt());
+        var bigRandom = (random1 << 32) | random2;
         canPost[promptVal] = false;
         return collection
             .add({
@@ -86,6 +92,7 @@ class _CreatePageContentState extends State<CreatePageContent>
               'uid': userId,
               'username': userName,
               'promptId': promptId,
+              'random': bigRandom,
               'promptDateId': promtDateId,
               'date': timestamp
             })
@@ -146,7 +153,7 @@ class _CreatePageContentState extends State<CreatePageContent>
     userName = userSession.userId!;
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
-    List<Prompt> prompts = userSession.posts!;
+    List<Prompt> prompts = userSession.prompts!;
     promptId = prompts[promptVal].promptId;
     promtDateId = prompts[promptVal].promptDateId;
     for (int i = 0; i < prompts.length; i++) {

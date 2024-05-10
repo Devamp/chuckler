@@ -8,6 +8,7 @@ import '../Session.dart';
 import 'package:provider/provider.dart';
 import '../DatabaseQueries.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../db.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
@@ -34,20 +35,6 @@ class LoginPage extends StatelessWidget {
     }
   }
 
-  //Locally caches the last time the user logged in as a string
-  Future<void> cacheLoginTime() async {
-    final prefs = await SharedPreferences.getInstance();
-    final now = DateTime.now().toUtc();
-    final loginTimeString = now.toIso8601String(); // Convert to string
-    await prefs.setString('lastLoginTime', loginTimeString);
-  }
-
-  //Retrieves the last login time if it exists
-  Future<String?> getCachedLoginTime() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('lastLoginTime');
-  }
-
   Future<void> setupUserSession(context, userId) async {
     print(userId + "This is the userID");
     final UserService userSession =
@@ -58,16 +45,29 @@ class LoginPage extends StatelessWidget {
           .collection('Users')
           .where('userID', isEqualTo: userId)
           .get();
-      List<Prompt> postToAdd = await getDailyPrompts(firestore);
-      if (querySnapshot.docs.isEmpty) {
-        print("NO DOCS FOUND " + userId);
+      List<dbPrompt> promptsToAdd = List<dbPrompt>.empty(growable: true);
+      //check if user has already logged in
+      if (await firstLoginToday()) {
+        //if so get stored prompts
+        promptsToAdd = await getPrompts();
+        print("getting prompts from db");
       }
-      for (Prompt p in postToAdd) {
+      //if nothing is stored move on
+      if (promptsToAdd.isEmpty) {
+        promptsToAdd = await getDailyPrompts(firestore);
+        if (querySnapshot.docs.isEmpty) {
+          print("NO DOCS FOUND " + userId);
+        } else {
+          addPrompts(promptsToAdd);
+          print("added prompts");
+        }
+      }
+      //add to the session
+      for (Prompt p in promptsToAdd) {
         userSession.addPrompt(p);
       }
 
       QueryDocumentSnapshot doc = querySnapshot.docs.first;
-
 
       dynamic saved_user = doc.id;
       dynamic saved_followers = doc.get(FieldPath(['followers']));
