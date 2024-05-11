@@ -53,6 +53,7 @@ class _FeedPageContentState extends State<FeedPageContent> {
   List<Post> items = List<Post>.empty(growable: true);
   String feedPrompt = "";
   int cPost = 0;
+  bool incra = false;
 
   /*get the prompts from local db*/
   Future<void> getNextTwoPosts() async {
@@ -118,12 +119,10 @@ class _FeedPageContentState extends State<FeedPageContent> {
       }
     }
     for (Prompt p in userSession.prompts!) {
-      if(p.promptId == userSession.currentFeedPromptId){
+      if (p.promptId == userSession.currentFeedPromptId) {
         feedPrompt = "${p.before} _____________ ${p.after}";
       }
     }
-
-
   }
 
   @override
@@ -169,7 +168,54 @@ class _FeedPageContentState extends State<FeedPageContent> {
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    UserPost(data: items[index]),
+                    InkWell(
+                        onTap: () async {
+                          if(!incra) {
+                            incra = true;
+                            await getNextTwoPosts();
+                            incra = false;
+                          }
+                        },
+                        onLongPress: () {
+                          //Display selection in modal before moving to next post
+                          showModalBottomSheet<void>(
+                            backgroundColor: Colors.transparent,
+                            isScrollControlled: true,
+                            useSafeArea: true,
+                            context: context,
+                            barrierColor: Colors.black.withOpacity(0.9),
+                            builder: (BuildContext context) {
+                              return CommentForm(
+                                  cfData: items.elementAt(index));
+                            },
+                          );
+                        },
+                        child: Row(children: [
+                          Expanded(
+                              flex: 1,
+                              child: Container(
+                                  width: 50, height: 50, color: Colors.amber)),
+                          Expanded(
+                            flex: 40,
+                            child: Container(
+                                margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                child: Text(
+                                  items.elementAt(index).answer,
+                                  style: TextStyle(
+                                      fontSize: screenHeight / 35,
+                                      fontFamily: "OpenSans",
+                                      color: Colors.white),
+                                )),
+                          ),
+                          Expanded(
+                              flex: 4,
+                              child: IconButton(
+                                icon: Icon(Icons.report),
+                                splashRadius: 20,
+                                color: Colors.white,
+                                onPressed: () {},
+                              ))
+                        ])),
                     Container(
                       height: 20,
                     ),
@@ -211,64 +257,68 @@ class _FeedPageContentState extends State<FeedPageContent> {
   }
 }
 
-class UserPost extends StatelessWidget {
-  final data;
+/**class UserPost extends StatelessWidget {
+    final data;
 
-  const UserPost({required this.data});
+    const UserPost({required this.data, required this.getNextTwoPosts()});
 
-  @override
-  Widget build(BuildContext context) {
+    @override
+    Widget build(BuildContext context) {
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
     return InkWell(
-        onTap: () {
-          print("TAP");
-        },
-        onLongPress: () {
-          //Display selection in modal before moving to next post
-          showModalBottomSheet<void>(
-            backgroundColor: Colors.transparent,
-            isScrollControlled: true,
-            useSafeArea: true,
-            context: context,
-            barrierColor: Colors.black.withOpacity(0.9),
-            builder: (BuildContext context) {
-              return CommentForm();
-            },
-          );
-        },
-        child: Row(children: [
-          Expanded(
-              flex: 1,
-              child: Container(width: 50, height: 50, color: Colors.amber)),
-          Expanded(
-            flex: 40,
-            child: Container(
-                margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                child: Text(
-                  data.answer,
-                  style: TextStyle(
-                      fontSize: screenHeight / 35,
-                      fontFamily: "OpenSans",
-                      color: Colors.white),
-                )),
-          ),
-          Expanded(
-              flex: 4,
-              child: IconButton(
-                icon: Icon(Icons.report),
-                splashRadius: 20,
-                color: Colors.white,
-                onPressed: () {},
-              ))
-        ]));
-  }
-}
+    onTap: () {
+    print("TAP");
+    },
+    onLongPress: () {
+    //Display selection in modal before moving to next post
+    showModalBottomSheet<void>(
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    useSafeArea: true,
+    context: context,
+    barrierColor: Colors.black.withOpacity(0.9),
+    builder: (BuildContext context) {
+    return CommentForm(cfData: data);
+    },
+    );
+    },
+    child: Row(children: [
+    Expanded(
+    flex: 1,
+    child: Container(width: 50, height: 50, color: Colors.amber)),
+    Expanded(
+    flex: 40,
+    child: Container(
+    margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
+    child: Text(
+    data.answer,
+    style: TextStyle(
+    fontSize: screenHeight / 35,
+    fontFamily: "OpenSans",
+    color: Colors.white),
+    )),
+    ),
+    Expanded(
+    flex: 4,
+    child: IconButton(
+    icon: Icon(Icons.report),
+    splashRadius: 20,
+    color: Colors.white,
+    onPressed: () {},
+    ))
+    ]));
+    }
+    }**/
 
 /**
  * The following is the code for the LONG tap modal
  */
 class CommentForm extends StatefulWidget {
+  final cfData;
+
+  const CommentForm({required this.cfData});
+
   @override
   _CommentFormState createState() => _CommentFormState();
 }
@@ -313,7 +363,7 @@ class _CommentFormState extends State<CommentForm> {
           Expanded(
               flex: 2,
               child: Text(
-                "Username",
+                widget.cfData.username,
                 style:
                     TextStyle(color: Colors.white, fontSize: screenHeight / 20),
               )),
@@ -331,8 +381,7 @@ class _CommentFormState extends State<CommentForm> {
                     ),
                     children: <TextSpan>[
                       TextSpan(
-                          text:
-                              "This is where the answer to the prompt will go for the user",
+                          text: widget.cfData.answer,
                           style: const TextStyle(color: Colors.white)),
                     ],
                   ),

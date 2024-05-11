@@ -63,38 +63,42 @@ Future<List<dbPost>> getPosts(
     lastDate = DateTime.parse(loginTime);
   }
 
-    //Query
-    QuerySnapshot querySnapshot = await firestore
+  //Query
+  QuerySnapshot querySnapshot = await firestore
+      .collection('Posts')
+      .where('promptId', isEqualTo: prmtId)
+      .where('promptDateId', isEqualTo: prmtDateId)
+      .where('date', isGreaterThanOrEqualTo: lastDate)
+      .limit(10)
+      .get();
+  if (querySnapshot.docs.isEmpty) {
+    querySnapshot = await firestore
         .collection('Posts')
         .where('promptId', isEqualTo: prmtId)
         .where('promptDateId', isEqualTo: prmtDateId)
-        .where('date', isGreaterThanOrEqualTo: lastDate)
-        .limit(10).get();
-    if(querySnapshot.docs.isEmpty){
-      querySnapshot = await firestore
-          .collection('Posts')
-          .where('promptId', isEqualTo: prmtId)
-          .where('promptDateId', isEqualTo: prmtDateId)
-          .limit(10).get();
-    }
+        .limit(10)
+        .get();
+  }
 
-    //create the postList
-  List<dbPost> toReturn  = List<dbPost>.empty(growable: true);
-  if(querySnapshot.docs.isEmpty) {
+  //create the postList
+  List<dbPost> toReturn = List<dbPost>.empty(growable: true);
+  if (querySnapshot.docs.isEmpty) {
     print("STILL EMPTY");
     return toReturn;
-  }
-  else{
+  } else {
     int i = 0;
-    for(QueryDocumentSnapshot  doc in querySnapshot.docs){
+    for (QueryDocumentSnapshot doc in querySnapshot.docs) {
       dynamic answer = doc.get(FieldPath(['answer']));
       dynamic username = doc.get(FieldPath(['username']));
       int postNum = i;
-      toReturn.add(dbPost(answer,username,postNum));
+      toReturn.add(dbPost(answer, username, postNum));
       i++;
-
     }
     return toReturn;
-
   }
+}
+
+Future<void> likeAPost(FirebaseFirestore firestore, String username,
+    String prmtId, String prmtDateId) async {
+
 }
