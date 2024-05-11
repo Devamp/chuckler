@@ -19,6 +19,7 @@ class SignupPage extends StatelessWidget {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   /// Check If Document Exists
+   /**THis is not set up Right TODO SET UP PAYED ACCOUNT FOR THIS
   Future<bool> checkIfDocExists(String docId) async {
     try {
       final HttpsCallable callable =
@@ -33,7 +34,7 @@ class SignupPage extends StatelessWidget {
     } catch (e) {
       return true;
     }
-  }
+  }*/
 
   ///Register the user with username as doc id
   Future<void> registerUser(String uid) async {
@@ -174,13 +175,15 @@ class SignupPage extends StatelessWidget {
                     width: 200,
                     child: ElevatedButton(
                       onPressed: () async {
+                        if(isLoading.value){return;}
                         isLoading.value = true;
                         //Register User if it is valid information
                         if (username.isNotEmpty &&
                             email.isNotEmpty &&
                             password.isNotEmpty) {
                           try {
-                            bool isUserName = await checkIfDocExists(username);
+                            bool isUserName = false;
+                            //TODO add pay account and use this checkIfDocExists(username);
                             if (isUserName) {
                               throw (Error.safeToString(
                                   "Username already exists"));

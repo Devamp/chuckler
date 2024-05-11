@@ -41,19 +41,38 @@ class LoginPage extends StatelessWidget {
    */
   Future<void> getInitialPosts(context, FirebaseFirestore firestore,
       String prmtId, String prmtDateId) async {
+    //instance of usersession
     final UserService userSession =
         Provider.of<UserService>(context, listen: false);
+    //check if posts are in local database
     List<dbPost> posts = await getLocalPosts();
-    if (posts.isEmpty) {
-      posts = await getPosts(firestore, prmtId, prmtDateId);
-      if (posts.isEmpty) {
-        /**TO DO ADD SOMETHING IF NO POSTS*/
-        return;
-      } else {
-        addPosts(posts);
+    //make sure we are not already finished looking at all of the posts
+    int? numP = await getNumPosts();
+    int? onP = await getCurrentPost();
+    bool runGetNew = false;
+    if (numP != null && onP != null) {
+      print("NUM P " + numP.toString());
+      print("on P " + onP.toString());
+      if ((onP >= (numP - 1)) || onP < 0 || numP <= 0) {
+        runGetNew = true;
       }
+    } else {
+      runGetNew = true;
     }
-    //add to session
+    //get new posts from firebase
+    if (posts.isEmpty || runGetNew) {
+      print("running firebase retrieval");
+      posts = await getPosts(firestore, prmtId, prmtDateId);
+
+      addPosts(posts);
+      userSession.setTheCurrentNumPost(posts.length);
+      userSession.setTheCurrentPostTracker(0);
+    } else {
+      userSession.setTheCurrentNumPost(numP!);
+      userSession.setTheCurrentPostTracker(onP!);
+    }
+    print("POSTS");
+    print(posts.length);
     for (dbPost p in posts) {
       userSession.addPost(p);
     }
@@ -74,7 +93,9 @@ class LoginPage extends StatelessWidget {
       if (await firstLoginToday()) {
         //if so get stored prompts
         promptsToAdd = await getPrompts();
-        print("getting prompts from db");
+        if (promptsToAdd.isNotEmpty) {
+          print("getting prompts from db");
+        }
       }
       //if nothing is stored move on
       if (promptsToAdd.isEmpty) {
@@ -90,16 +111,20 @@ class LoginPage extends StatelessWidget {
       var getRand = promptsToAdd.length;
       Random r = Random();
       getRand = r.nextInt(getRand);
+      print("randomnum");
+      print(getRand);
       var i = 0;
       for (Prompt p in promptsToAdd) {
         if (i == getRand) {
-          getInitialPosts(context, firestore, p.promptId, p.promptDateId);
-
+          print("prompt");
+          print(p.promptId);
+          print(p.promptDateId);
+          userSession.setCurrentFeedPromptId(p.promptId);
+          await getInitialPosts(context, firestore, p.promptId, p.promptDateId);
         }
         userSession.addPrompt(p);
         i++;
       }
-
 
       QueryDocumentSnapshot doc = querySnapshot.docs.first;
 
@@ -361,6 +386,9 @@ class LoginPage extends StatelessWidget {
                       SizedBox(width: 15),
                       ElevatedButton(
                         onPressed: () async {
+                          if (isLoading.value) {
+                            return;
+                          }
                           isLoading.value = true;
                           bool status = await verifyLogin(
                               inputEmail, inputPassword, context);

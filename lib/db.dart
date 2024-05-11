@@ -26,17 +26,13 @@ class dbUser {
   }
 }
 
-class dbPrompt extends Prompt{
-
-
-
+class dbPrompt extends Prompt {
   dbPrompt(super.before, super.after, super.promptDateId, super.promptId);
-
 
   //Turn the Prompt JSON into a PROMPT object
   factory dbPrompt.fromJson(dynamic json) {
     return dbPrompt(json['before'] as String, json['after'] as String,
-        json['promptId'] as String, json['promptDateId'] as String);
+        json['promptDateId'] as String, json['promptId'] as String);
   }
 
   //Create the prompt JSON
@@ -50,25 +46,20 @@ class dbPrompt extends Prompt{
   }
 }
 
-class dbPost extends Post{
-
-
+class dbPost extends Post {
   dbPost(super.answer, super.username, super.postNum);
-  dbPost.fromPost(Post post) : super(post.answer, post.username,post.postNum);
 
+  dbPost.fromPost(Post post) : super(post.answer, post.username, post.postNum);
 
 //Turn Post JSON into Post Object
   factory dbPost.fromJson(dynamic json) {
-    return dbPost(json['answer'] as String, json['username'] as String, json['postNum'] as int );
+    return dbPost(json['answer'] as String, json['username'] as String,
+        json['postNum'] as int);
   }
 
   //Turn Post into JSON string
   Map toJson() {
-    return {
-      'answer': answer,
-      'username': username,
-      'postNum': postNum
-    };
+    return {'answer': answer, 'username': username, 'postNum': postNum};
   }
 }
 
@@ -103,8 +94,6 @@ Future<void> cacheLoginTime() async {
   final loginTimeString = now.toIso8601String(); // Convert to string
   await prefs.setString('lastLoginTime', loginTimeString);
 }
-
-
 
 /*
 Retrieve the string from shared preferences and turn it into a list of objects
@@ -148,7 +137,7 @@ Future<List<dbPost>> getLocalPosts() async {
 //Retrieve numPosts
 Future<int?> getNumPosts() async {
   final prefs = await SharedPreferences.getInstance();
-  return await prefs.getInt('numOfPrompts');
+  return await prefs.getInt('numOfPosts');
 }
 
 //Retrieve the Post we have not seen yet
@@ -185,18 +174,19 @@ Future<void> addOneUser(dbUser user) async {
   //add to persistent storage
   await prefs.setString('users', listUsers);
 }
+
 /*Check if last login was a different day*/
-Future<bool> firstLoginToday() async{
+Future<bool> firstLoginToday() async {
   String? strTime = await getCachedLoginTime();
-  if(strTime == null){
+  if (strTime == null) {
     return true;
   }
   DateTime dt = DateTime.parse(strTime);
   DateTime now = DateTime.now().toUtc();
 
-  if((dt.year == now.year) && (dt.month == now.month) && (dt.day == now.day)){
+  if ((dt.year == now.year) && (dt.month == now.month) && (dt.day == now.day)) {
     return true;
-  }else{
+  } else {
     return false;
   }
 }
@@ -207,10 +197,6 @@ Increment the last post the user has seen
 Future<void> incrementLastPost() async {
   final prefs = await SharedPreferences.getInstance();
   int? val = prefs.getInt('onPost');
-  val = val!+1;
+  val = val! + 2;
   await prefs.setInt('onPost', val);
-
 }
-
-
-

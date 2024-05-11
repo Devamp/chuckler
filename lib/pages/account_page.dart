@@ -170,6 +170,8 @@ class _AccountPageState extends State<AccountPage> {
                                 ),
                                 child: Text('Yes'),
                                 onPressed: () async {
+                                  UserService userSession = Provider.of<UserService>(context, listen: false);
+                                  userSession.logout();
                                   await _auth.signOut();
                                   Navigator.pushReplacementNamed(
                                       context, '/login');

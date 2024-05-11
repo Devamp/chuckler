@@ -26,14 +26,19 @@ class UserService with ChangeNotifier {
   int? _followers;
   List<Prompt> _prompts = List.empty(growable: true);
   List<Post> _posts = List.empty(growable:true);
-
+  int? _theCurrentNumPosts;
+  int? _theCurrentPostTracker;
+  String? _currentFeedPromptId;
   String? get userId => _userId;
+  String? get currentFeedPromptId => _currentFeedPromptId;
   int? get following => _following;
   int? get followers => _followers;
   String? get postAnswer => _postAnswer;
   String? get logTime => _loginTime;
   List<Prompt>? get prompts => _prompts;
-
+  List<Post>? get posts => _posts;
+  int? get theCurrentNumPost => _theCurrentNumPosts;
+  int? get theCurrentPostTracker => _theCurrentPostTracker;
   //get the lastLogin as a datetime object
   DateTime getDTLogIn(){
     if(_loginTime == null){
@@ -43,6 +48,18 @@ class UserService with ChangeNotifier {
       return DateTime.parse(_loginTime!);
     }
 
+  }
+  void setTheCurrentNumPost(int x){
+    _theCurrentNumPosts = x;
+    notifyListeners();
+  }
+  void setTheCurrentPostTracker(int x){
+    _theCurrentPostTracker = x;
+    notifyListeners();
+  }
+  void setCurrentFeedPromptId(String s){
+    _currentFeedPromptId = s;
+    notifyListeners();
   }
 
   void setUserId(String userId) {
@@ -55,6 +72,10 @@ class UserService with ChangeNotifier {
     if(_loginTime == null){
       firstLogin = true;
     }
+    notifyListeners();
+  }
+  void setAListOfPosts(List<Post> p){
+    _posts = p;
     notifyListeners();
   }
 
@@ -103,14 +124,24 @@ class UserService with ChangeNotifier {
     _postAnswer = null;
   }
 
-  void clearPosts(){
-    _prompts?.clear();
+  void clearPrompts(){
+    _prompts.clear();
   }
+
+  void clearPosts(){
+    _posts.clear();
+  }
+
+
+
+
 
   void logout() {
     clearUserId();
     clearFollowing();
     clearFollowers();
+    clearPrompts();
+    clearPosts();
     notifyListeners();
 
   }

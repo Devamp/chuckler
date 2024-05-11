@@ -1,4 +1,6 @@
+import 'package:chuckler/DatabaseQueries.dart';
 import 'package:chuckler/Session.dart';
+import 'package:chuckler/db.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,11 +9,7 @@ import 'package:chuckler/pages/login_page.dart';
 import 'package:chuckler/PageTransitioner.dart';
 import 'package:chuckler/AppHeaderMain.dart';
 import 'package:provider/provider.dart';
-
-var items = [
-  "Example 1: this is what a long response to the prompt will look like...it might go on for a while this is what a long response to the prompt will look like...it might go on for a while Example 1: this is what a long response to the prompt will look like...it might go on for a while this is what a long response to the prompt will look like...it might go on for a while",
-  "Example 2: short example",
-];
+import 'dart:math';
 
 /*
 ANSWERS UNSEEN UNSEEN LIST
@@ -52,14 +50,80 @@ class FeedPageContent extends StatefulWidget {
 
 class _FeedPageContentState extends State<FeedPageContent> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  /*get the prompts from the database and put them in the session*/
- void getPrompts(){
-   UserService userSession = Provider.of<UserService>(context);
+  List<Post> items = List<Post>.empty(growable: true);
+  String feedPrompt = "";
+  int cPost = 0;
 
- }
+  /*get the prompts from local db*/
+  Future<void> getNextTwoPosts() async {
+    //Access UserService
+    UserService userSession = Provider.of<UserService>(context, listen: false);
+    items = List<Post>.empty(growable: true);
+
+    if ((userSession.theCurrentPostTracker! >=
+            (userSession.theCurrentNumPost! - 1)) ||
+        userSession.theCurrentNumPost! < 0 ||
+        userSession.theCurrentPostTracker! < 0) {
+      print("Getting posts from firebase ");
+
+      //add to the session
+      var getRand = userSession.prompts!.length;
+      Random r = Random();
+      getRand = r.nextInt(getRand);
+      var i = 0;
+      List<dbPost> postsFromDb = List<dbPost>.empty(growable: true);
+      for (Prompt p in userSession.prompts!) {
+        if (i == getRand) {
+          print("THIS HAPPENED");
+          print(p.promptId);
+          print("promptid^");
+          print(p.promptDateId);
+          postsFromDb = await getPosts(firestore, p.promptId, p.promptDateId);
+          print(postsFromDb.length);
+          userSession.setAListOfPosts(postsFromDb);
+          userSession.setTheCurrentPostTracker(0);
+          userSession.setTheCurrentNumPost(postsFromDb.length);
+          addPosts(postsFromDb);
+          break;
+        }
+        i++;
+      }
+    }
+
+    //Check if posts are available
+    if (userSession.posts != null) {
+      //take posts from session
+      for (Post p in userSession.posts!) {
+        if (p.postNum == userSession.theCurrentPostTracker! ||
+            p.postNum == (userSession.theCurrentPostTracker! + 1)) {
+          print(p.answer);
+          items.add(p);
+        }
+      }
+      userSession
+          .setTheCurrentPostTracker(userSession.theCurrentPostTracker! + 2);
+    }
+    setState(() {});
+    incrementLastPost();
+  }
+
   @override
   void initState() {
+    UserService userSession = Provider.of<UserService>(context, listen: false);
     super.initState();
+    for (Post p in userSession.posts!) {
+      if (p.postNum == userSession.theCurrentPostTracker! ||
+          p.postNum == (userSession.theCurrentPostTracker! + 1)) {
+        items.add(p);
+      }
+    }
+    for (Prompt p in userSession.prompts!) {
+      if(p.promptId == userSession.currentFeedPromptId){
+        feedPrompt = "${p.before} _____________ ${p.after}";
+      }
+    }
+
+
   }
 
   @override
@@ -83,7 +147,7 @@ class _FeedPageContentState extends State<FeedPageContent> {
                         fontWeight: FontWeight.w700),
                     children: <TextSpan>[
                       TextSpan(
-                          text: "This is where the prompt will go.",
+                          text: feedPrompt,
                           style: const TextStyle(color: Color(0xFFffd230))),
                     ],
                   ),
@@ -182,7 +246,7 @@ class UserPost extends StatelessWidget {
             child: Container(
                 margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
                 child: Text(
-                  data,
+                  data.answer,
                   style: TextStyle(
                       fontSize: screenHeight / 35,
                       fontFamily: "OpenSans",
@@ -200,6 +264,7 @@ class UserPost extends StatelessWidget {
         ]));
   }
 }
+
 /**
  * The following is the code for the LONG tap modal
  */

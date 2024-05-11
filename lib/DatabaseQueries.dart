@@ -39,7 +39,6 @@ Future<List<dbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
       for (QueryDocumentSnapshot ds in gs.docs) {
         dynamic before = ds.get(FieldPath(['before']));
         dynamic after = ds.get(FieldPath(['after']));
-
         posts.add(dbPrompt(before, after, pid, ds.id));
       }
     }
@@ -52,6 +51,9 @@ Future<List<dbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
  */
 Future<List<dbPost>> getPosts(
     FirebaseFirestore firestore, String prmtId, String prmtDateId) async {
+  print("specs");
+  print(prmtId);
+  print(prmtDateId);
   final prefs = await SharedPreferences.getInstance();
   String? loginTime = prefs.getString('lastLoginTime');
   DateTime lastDate;
@@ -69,30 +71,17 @@ Future<List<dbPost>> getPosts(
         .where('date', isGreaterThanOrEqualTo: lastDate)
         .limit(10).get();
     if(querySnapshot.docs.isEmpty){
-      var rng = Random();
-      var random1 = rng.nextInt(pow(2, 32).toInt());
-      var random2 = rng.nextInt(pow(2, 32).toInt());
-      var bigRandom = (random1 << 32) | random2;
-      print(bigRandom.toString());
       querySnapshot = await firestore
           .collection('Posts')
           .where('promptId', isEqualTo: prmtId)
           .where('promptDateId', isEqualTo: prmtDateId)
-          .where('random', isGreaterThan: bigRandom)
           .limit(10).get();
-      if(querySnapshot.docs.isEmpty) {
-        querySnapshot = await firestore
-            .collection('Posts')
-            .where('promptId', isEqualTo: prmtId)
-            .where('promptDateId', isEqualTo: prmtDateId)
-            .where('random', isLessThanOrEqualTo: bigRandom)
-            .limit(10).get();
-      }
     }
 
     //create the postList
   List<dbPost> toReturn  = List<dbPost>.empty(growable: true);
   if(querySnapshot.docs.isEmpty) {
+    print("STILL EMPTY");
     return toReturn;
   }
   else{
