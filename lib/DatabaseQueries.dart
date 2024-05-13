@@ -1,4 +1,4 @@
-import 'dart:html';
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -98,7 +98,49 @@ Future<List<dbPost>> getPosts(
   }
 }
 
-Future<void> likeAPost(FirebaseFirestore firestore, String username,
-    String prmtId, String prmtDateId) async {
+/**
+ * When likeing a post add the post to both the user and the posts subcollection of LikedPosts and Likes respectively
+ */
+Future<void> likeAPost(FirebaseFirestore firestore, String usernameLiker, String postId) async {
+
+  try {
+    // Reference the comments subcollection within the post document
+    final pLikeRef = firestore.collection('Posts').doc(postId).collection('Likes');
+    // Reference the comments subcollection within the user document
+    final uLikeRef = firestore.collection('Users').doc(usernameLiker).collection('LikedPosts');
+    // Create a new document within the comments subcollection
+    await pLikeRef.doc(usernameLiker).set({});
+    await uLikeRef.doc(postId).set({});
+
+
+  } catch (e) {
+    print('Error adding comment: $e');
+  }
+
+}
+
+/**
+ * @author Caden Deutscher
+ * @description - adds a comment to the subcollection 'Comments' in both the user and post objects
+ */
+Future<void> addCommentToPost(FirebaseFirestore firestore, String postId, String usernameCommenter, String comment) async{
+  try {
+    // Reference the comments subcollection within the post document
+    final pCommentsRef = firestore.collection('Posts').doc(postId).collection('Comments');
+    // Reference the comments subcollection within the user document
+    final uCommentsRef = firestore.collection('Users').doc(usernameCommenter).collection('Comments');
+    // Create a new document within the comments subcollection
+    await pCommentsRef.add({
+      'username': usernameCommenter,
+      'comment': comment
+    });
+
+    await uCommentsRef.add({
+      'comment': comment
+    });
+
+  } catch (e) {
+    print('Error adding comment: $e');
+  }
 
 }
