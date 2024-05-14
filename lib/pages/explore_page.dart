@@ -246,7 +246,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           ),
                         ),
                         Align(
-                          alignment: AlignmentDirectional(0,0),
+                          alignment: AlignmentDirectional(0,-0.1),
                           child: Text('?',
                               style: TextStyle(
                                   letterSpacing: 0,
