@@ -170,7 +170,7 @@ class _FeedPageContentState extends State<FeedPageContent> {
                   children: [
                     InkWell(
                         onTap: () async {
-                          if(!incra) {
+                          if (!incra) {
                             incra = true;
                             await getNextTwoPosts();
                             incra = false;
@@ -361,125 +361,194 @@ class _CommentFormState extends State<CommentForm> {
         children: <Widget>[
           Expanded(flex: 5, child: Container()),
           Expanded(
-              flex: 2,
-              child: Text(
-                widget.cfData.username,
-                style:
-                    TextStyle(color: Colors.white, fontSize: screenHeight / 20),
-              )),
-          Expanded(
-              flex: 1,
+              flex: 12,
               child: Container(
-                constraints: BoxConstraints(
-                    minWidth: screenWidth / 1.5, maxWidth: screenWidth / 1.5),
-                child: AutoSizeText.rich(
-                  TextSpan(
-                    style: const TextStyle(
-                      fontSize: 40,
-                      color: Colors.white,
-                      fontFamily: 'OpenSans',
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: widget.cfData.answer,
-                          style: const TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 10,
-                  minFontSize: 2,
-                ),
-              )),
-          Expanded(
-            flex: 1,
-            child: Container(
-              alignment: Alignment.center,
-              constraints: BoxConstraints(
-                  minWidth: screenWidth / 1.5, maxWidth: screenWidth / 1.5),
-              decoration: const BoxDecoration(
-                  border: Border(
-                      // top: BorderSide(color: Colors.amber, width: 2),
-                      bottom: BorderSide(color: Colors.amber, width: 4))),
-              child: Text(
-                "Comments",
-                style: TextStyle(color: Colors.amber),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          Expanded(flex: 3, child: Container()),
-          //Send Comment
-          Expanded(
-              flex: 2,
-              child: Container(
-                  constraints: BoxConstraints(
-                      minWidth: screenWidth / 1.5, maxWidth: screenWidth / 1.5),
-                  //color: Colors.white,
-                  child: TextField(
-                    style: TextStyle(color: Colors.white),
-                    focusNode: _focusNode,
-                    // autofocus: true,
-                    controller: myController,
-                    maxLines: null,
-                    keyboardType: TextInputType.multiline,
-                    decoration: InputDecoration(
-                      labelStyle: TextStyle(
-                          color: _focusNode.hasFocus
-                              ? Colors.amber
-                              : Colors.white),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.amber, width: 2)),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                      labelText: 'Add a comment',
-                      suffixIcon: _hasInput
-                          ? IconButton(
-                              splashRadius: 16,
-                              splashColor: Colors.black,
-                              icon: Icon(
-                                Icons.send,
-                                color: Colors.amber,
-                              ),
-                              onPressed: () {
-                                // Handle the submit action here
-                              },
-                            )
-                          : null,
-                    ),
-                  ))),
-          Expanded(
-            flex: 2,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                color: Colors.black,
+                  constraints: BoxConstraints.tight(Size(screenWidth/1.2,screenHeight/1.5)),
+                  child: Column(
                 children: [
-                  ElevatedButton(
+                  Expanded(
+                      flex: 2,
                       child: Text(
-                        'Like Post',
-                        style: TextStyle(fontSize: screenHeight / 40),
+                        widget.cfData.username,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'OpenSans',
+                            fontSize: screenHeight / 20),
+                      )),
+                  Expanded(
+                      flex: 2,
+                      child: Container(
+                        constraints: BoxConstraints(
+                            minWidth: screenWidth / 1.5,
+                            maxWidth: screenWidth / 1.5),
+                        child: AutoSizeText.rich(
+                          TextSpan(
+                            style: const TextStyle(
+                              fontSize: 40,
+                              color: Colors.black,
+                              fontFamily: 'OpenSans',
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: widget.cfData.answer,
+                                  style: const TextStyle(color: Colors.white)),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 10,
+                          minFontSize: 2,
+                        ),
+                      )),
+                  Expanded(
+                    flex: 2,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.amber),
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.black),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(Icons.thumb_up_off_alt_rounded),
+                                  ],
+                                ),
+                              )),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.amber),
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.black),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.person_add_alt_rounded,
+                                  size: screenHeight / 30,
+                                ),
+                              )),
+                        ]),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.center,
+                      constraints: BoxConstraints(
+                          minWidth: screenWidth / 1.5,
+                          maxWidth: screenWidth / 1.5),
+                      decoration: const BoxDecoration(
+                          border: Border(
+                              // top: BorderSide(color: Colors.amber, width: 2),
+                              bottom:
+                                  BorderSide(color: Colors.amber, width: 4))),
+                      child: Text(
+                        "Comments",
+                        style: TextStyle(color: Colors.amber),
+                        textAlign: TextAlign.center,
                       ),
-                      style: ButtonStyle(
-                          maximumSize: MaterialStateProperty.all(
-                              Size(screenWidth / 4, screenHeight / 20))),
-                      onPressed: () => Navigator.pop(context)),
-                  ElevatedButton(
-                      child: Text('Close',
-                          style: TextStyle(fontSize: screenHeight / 40)),
-                      style: ButtonStyle(
-                          maximumSize: MaterialStateProperty.all(
-                              Size(screenWidth / 4, screenHeight / 20))),
-                      onPressed: () => Navigator.pop(context)),
-                  ElevatedButton(
-                      child: Text('Follow User',
-                          style: TextStyle(fontSize: screenHeight / 40)),
-                      style: ButtonStyle(
-                          maximumSize: MaterialStateProperty.all(
-                              Size(screenWidth / 4, screenHeight / 20))),
-                      onPressed: () => Navigator.pop(context)),
-                ]),
-          ),
+                    ),
+                  ),
+                  Expanded(flex: 3, child: Container()),
+                  //Send Comment
+                  Expanded(
+                      flex: 3,
+                      child: Container(
+                          constraints: BoxConstraints(
+                              minWidth: screenWidth / 1.5,
+                              maxWidth: screenWidth / 1.5),
+                          //color: Colors.white,
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            focusNode: _focusNode,
+                            // autofocus: true,
+                            controller: myController,
+                            maxLines: null,
+                            keyboardType: TextInputType.multiline,
+                            decoration: InputDecoration(
+                              labelStyle: TextStyle(
+                                  color: _focusNode.hasFocus
+                                      ? Colors.amber
+                                      : Colors.white),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.amber, width: 2)),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              labelText: 'Add a comment',
+                              suffixIcon: _hasInput
+                                  ? IconButton(
+                                      splashRadius: 16,
+                                      splashColor: Colors.black,
+                                      icon: Icon(
+                                        Icons.send,
+                                        color: Colors.amber,
+                                      ),
+                                      onPressed: () {
+                                        // Handle the submit action here
+                                      },
+                                    )
+                                  : null,
+                            ),
+                          ))),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                        constraints: BoxConstraints.tight(
+                            Size(screenWidth / 1.5, screenHeight / 30)),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.amber),
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.black),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.close),
+                            ],
+                          ),
+                        )),
+                  ),
+                ],
+              ))),
           Expanded(flex: 5, child: Container()),
         ],
       ),

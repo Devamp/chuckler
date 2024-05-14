@@ -44,6 +44,9 @@ dependencies:
   firebase_storage: ^11.6.0
   shared_preferences: ^2.2.3
   cloud_functions: ^4.6.0
+  carousel_slider: ^4.2.1
+  font_awesome_flutter: ^9.2.0
+  flutter_svg: 2.0.10+1
 
 
 
