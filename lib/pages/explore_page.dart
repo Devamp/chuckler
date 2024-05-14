@@ -85,7 +85,7 @@ class _ExplorePageState extends State<ExplorePage> {
               ),
             ),
             Expanded(
-              flex: 3,
+              flex: 5,
               child: Container(
                 width: double.infinity,
                 height: 10,
@@ -145,27 +145,7 @@ class _ExplorePageState extends State<ExplorePage> {
                         ],
                       ),
                     ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Color(0xFF383838),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Align(
-                        alignment: AlignmentDirectional(0, 0),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
-                          child: Text(
-                            'Category',
-                            style: TextStyle(
-                                color: Colors.black,
-                                letterSpacing: 0,
-                                fontSize: screenHeight / 50),
-                          ),
-                        ),
-                      ),
-                    ),
+
                     Container(
                       width: 100,
                       height: 100,
@@ -187,7 +167,7 @@ class _ExplorePageState extends State<ExplorePage> {
                                 style: TextStyle(
                                     color: Colors.black,
                                     letterSpacing: 0,
-                                    fontSize: screenHeight / 40),
+                                    fontSize: screenHeight / 50),
                               ),
                             ),
                           ),
