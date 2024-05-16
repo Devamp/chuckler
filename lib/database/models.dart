@@ -5,10 +5,14 @@ part 'models.g.dart';
 @Collection()
 class DbPost {
   Id id = Isar.autoIncrement;
+
+  @Index(unique: true, replace: true)
+  String? postId;
+
   String? answer;
   String? username;
   bool seen = false;
-  DbPost(this.answer, this.username);
+  DbPost(this.postId, this.answer, this.username);
 
 }
 
@@ -19,5 +23,6 @@ class DbPrompt {
   String? after;
   String? promptDateId;
   String? promptId;
-  DbPrompt(this.before, this.after, this.promptDateId, this.promptId);
+  String? date;
+  DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date);
 }

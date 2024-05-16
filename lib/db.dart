@@ -26,25 +26,6 @@ class dbUser {
   }
 }
 
-class dbPrompt extends Prompt {
-  dbPrompt(super.before, super.after, super.promptDateId, super.promptId);
-
-  //Turn the Prompt JSON into a PROMPT object
-  factory dbPrompt.fromJson(dynamic json) {
-    return dbPrompt(json['before'] as String, json['after'] as String,
-        json['promptDateId'] as String, json['promptId'] as String);
-  }
-
-  //Create the prompt JSON
-  Map toJson() {
-    return {
-      'before': before,
-      'after': after,
-      'promptId': promptId,
-      'promptDateId': promptDateId
-    };
-  }
-}
 
 
 
@@ -55,13 +36,6 @@ Future<void> addUsers(List<dbUser> users) async {
   final prefs = await SharedPreferences.getInstance();
   String listUsers = jsonEncode(users);
   await prefs.setString('users', listUsers);
-}
-
-Future<void> addPrompts(List<dbPrompt> prompts) async {
-  final prefs = await SharedPreferences.getInstance();
-  String listPrompts = jsonEncode(prompts);
-
-  await prefs.setString('prompts', listPrompts);
 }
 
 
@@ -88,18 +62,6 @@ Future<List<dbUser>> getUsers(List<dbUser> users) async {
   return objList;
 }
 */
-
-Future<List<dbPrompt>> getPrompts() async {
-  final prefs = await SharedPreferences.getInstance();
-  String? ofPrompts = prefs.getString('prompts');
-  if (ofPrompts == null) {
-    return List<dbPrompt>.empty(growable: true);
-  }
-  var jsonList = jsonDecode(ofPrompts) as List;
-  List<dbPrompt> objList =
-      jsonList.map((theJson) => dbPrompt.fromJson(theJson)).toList();
-  return objList;
-}
 
 
 

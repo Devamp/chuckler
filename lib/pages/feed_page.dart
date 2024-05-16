@@ -62,10 +62,9 @@ class _FeedPageContentState extends State<FeedPageContent> {
     //Access UserService
     UserService userSession = Provider.of<UserService>(context, listen: false);
     IsarService isarService = Provider.of<IsarService>(context, listen: false);
+    List<DbPost> posts = await isarService.getTwoUnseenPosts();
 
-    userSession.setCurrentPosts(await isarService.getTwoUnseenPosts());
-
-    if (userSession.currentPosts?.isEmpty ?? true) {
+    if (posts?.isEmpty ?? true) {
       print("Getting posts from firebase ");
 
       //add to the session
@@ -74,16 +73,21 @@ class _FeedPageContentState extends State<FeedPageContent> {
       getRand = r.nextInt(getRand);
       var i = 0;
       List<DbPost> postsFromDb = List<DbPost>.empty(growable: true);
-      for (Prompt p in userSession.prompts!) {
+      for (DbPrompt p in userSession.prompts!) {
         if (i == getRand) {
-          postsFromDb = await getPosts(firestore, p.promptId, p.promptDateId);
-          isarService.addPostsToDB(postsFromDb);
-          userSession.setCurrentPosts(await isarService.getTwoUnseenPosts());
+          postsFromDb = await getPosts(firestore, p.promptId!, p.promptDateId!);
+          await isarService.addPostsToDB(postsFromDb);
+          posts = await isarService.getTwoUnseenPosts();
+          print(posts.length);
+          print("set posts");
           break;
         }
         i++;
       }
     }
+
+      userSession.setCurrentPosts(posts);
+
   }
 
   @override
@@ -93,7 +97,7 @@ class _FeedPageContentState extends State<FeedPageContent> {
       getNextTwoPosts();
     }
     super.initState();
-    for (Prompt p in userSession.prompts!) {
+    for (DbPrompt p in userSession.prompts!) {
       if (p.promptId == userSession.currentFeedPromptId) {
         feedPrompt = "${p.before} _____________ ${p.after}";
       }

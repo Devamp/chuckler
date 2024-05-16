@@ -4,13 +4,6 @@ import 'package:chuckler/AppNavBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'database/models.dart';
 
-class Prompt {
-  String before;
-  String after;
-  String promptDateId;
-  String promptId;
-  Prompt(this.before, this.after, this.promptDateId, this.promptId);
-}
 
 class UserService with ChangeNotifier {
   String? _userId;
@@ -19,7 +12,7 @@ class UserService with ChangeNotifier {
   String? _loginTime;
   int? _following;
   int? _followers;
-  List<Prompt> _prompts = List.empty(growable: true);
+  List<DbPrompt> _prompts = List.empty(growable: true);
   List<DbPost> _currentPosts = List<DbPost>.empty(growable: true);
   String? _currentFeedPromptId;
   String? get userId => _userId;
@@ -28,7 +21,7 @@ class UserService with ChangeNotifier {
   int? get followers => _followers;
   String? get postAnswer => _postAnswer;
   String? get logTime => _loginTime;
-  List<Prompt>? get prompts => _prompts;
+  List<DbPrompt>? get prompts => _prompts;
   List<DbPost>? get currentPosts => _currentPosts;
   //get the lastLogin as a datetime object
   DateTime getDTLogIn(){
@@ -79,7 +72,7 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-  void addPrompt(Prompt p){
+  void addPrompt(DbPrompt p){
     _prompts.add(p);
     notifyListeners();
   }

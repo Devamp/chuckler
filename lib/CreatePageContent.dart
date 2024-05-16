@@ -8,6 +8,7 @@ import 'package:chuckler/pages/login_page.dart';
 import 'package:chuckler/PageTransitioner.dart';
 import './Session.dart';
 import 'package:provider/provider.dart';
+import 'database/models.dart';
 
 class CreatePageContent extends StatefulWidget {
   const CreatePageContent({super.key});
@@ -153,9 +154,9 @@ class _CreatePageContentState extends State<CreatePageContent>
     userName = userSession.userId!;
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
-    List<Prompt> prompts = userSession.prompts!;
-    promptId = prompts[promptVal].promptId;
-    promtDateId = prompts[promptVal].promptDateId;
+    List<DbPrompt> prompts = userSession.prompts!;
+    promptId = prompts[promptVal].promptId!;
+    promtDateId = prompts[promptVal].promptDateId!;
     for (int i = 0; i < prompts.length; i++) {
       canPost.add(true);
       textControllerStates.add("Answer the Prompt Here");

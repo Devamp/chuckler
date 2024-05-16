@@ -63,30 +63,26 @@ class LoginPage extends StatelessWidget {
     print(userId + "This is the userID");
     final UserService userSession =
         Provider.of<UserService>(context, listen: false);
+    final isarService = Provider.of<IsarService>(context, listen: false);
 
     try {
       QuerySnapshot querySnapshot = await firestore
           .collection('Users')
           .where('userID', isEqualTo: userId)
           .get();
-      List<dbPrompt> promptsToAdd = List<dbPrompt>.empty(growable: true);
+      List<DbPrompt> promptsToAdd = List<DbPrompt>.empty(growable: true);
+      promptsToAdd = await isarService.getDailyPromptsFromDB();
       //check if user has already logged in
-      if (await firstLoginToday()) {
+      if (promptsToAdd.isEmpty) {
         //if so get stored prompts
-        promptsToAdd = await getPrompts();
+        promptsToAdd = await getDailyPrompts(firestore);
         if (promptsToAdd.isNotEmpty) {
           print("getting prompts from db");
+          isarService.addPromptsToDB(promptsToAdd);
         }
       }
-      //if nothing is stored move on
       if (promptsToAdd.isEmpty) {
-        promptsToAdd = await getDailyPrompts(firestore);
-        if (querySnapshot.docs.isEmpty) {
-          print("NO DOCS FOUND " + userId);
-        } else {
-          addPrompts(promptsToAdd);
-          print("added prompts");
-        }
+        //TODO ADD SOMETHING TO HANDLE IF NOTHING IS IN THE DB
       }
       //add to the session
       var getRand = promptsToAdd.length;
@@ -95,13 +91,10 @@ class LoginPage extends StatelessWidget {
       print("randomnum");
       print(getRand);
       var i = 0;
-      for (Prompt p in promptsToAdd) {
+      for (DbPrompt p in promptsToAdd) {
         if (i == getRand) {
-          print("prompt");
-          print(p.promptId);
-          print(p.promptDateId);
-          userSession.setCurrentFeedPromptId(p.promptId);
-          await getInitialPosts(context, firestore, p.promptId, p.promptDateId);
+          userSession.setCurrentFeedPromptId(p.promptId!);
+          await getInitialPosts(context, firestore, p.promptId!, p.promptDateId!);
         }
         userSession.addPrompt(p);
         i++;

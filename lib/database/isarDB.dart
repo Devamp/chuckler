@@ -55,17 +55,24 @@ class IsarService {
     return posts;
   }
 
+  Future<List<DbPrompt>> getDailyPromptsFromDB() async {
+    DateTime now = DateTime.now().toUtc();
+    final utcMidnight = now.subtract(Duration(hours: now.hour, minutes: now.minute, seconds: now.second, milliseconds: now.microsecond));
+  final prompts = await db.dbPrompts.filter().dateEqualTo(utcMidnight.toIso8601String().substring(0,10)).findAll();
+  return prompts;
+}
 
 
-///UPDATE FUNCTIONS
+  ///UPDATE FUNCTIONS
   //Get two unseen posts and set the values to seen
   Future<List<DbPost>> getTwoUnseenPosts() async {
-    final posts = await db.dbPosts.filter().seenEqualTo(false).limit(2).findAll();
-    for(DbPost p in posts){
+    final posts =
+        await db.dbPosts.filter().seenEqualTo(false).limit(2).findAll();
+    for (DbPost p in posts) {
       p.seen = true;
     }
     await db.writeTxn(() async {
-    await db.dbPosts.putAll(posts);
+      await db.dbPosts.putAll(posts);
     });
 
     return posts;

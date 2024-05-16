@@ -14,14 +14,20 @@ import 'dart:math';
     @params - firestore - firestore instance to query data from
     @return - List of prompts for today
  */
-Future<List<dbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
-  List<dbPrompt> posts = List.empty(growable: true);
-  DateTime now = DateTime.now().toUtc().subtract(const Duration(hours: 8));
+Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
+  List<DbPrompt> prompts = List.empty(growable: true);
+  DateTime now = DateTime.now().toUtc();
+  // Calculate UTC midnight
+  final utcMidnight = now.subtract(Duration(hours: now.hour, minutes: now.minute, seconds: now.second, milliseconds: now.microsecond));
+  // Calculate UTC 11:59 (the last second of the day before midnight)
+  final utc1159 = utcMidnight.add(const Duration(days: 1, seconds: -1));
+
+  print("UTC Midnight: $utcMidnight");
+  print("UTC 11:59: $utc1159");
   DateTime today = DateTime(now.year, now.month, now.day);
   // Create timestamps for the start and end dates
-  Timestamp startDate = Timestamp.fromDate(today);
-  Timestamp endDate =
-      Timestamp.fromDate(DateTime(now.year, now.month, now.day + 1));
+  Timestamp startDate = Timestamp.fromDate(utcMidnight);
+  Timestamp endDate = Timestamp.fromDate(utc1159);
   QuerySnapshot querySnapshot = await firestore
       .collection('PromptDays')
       .where('date', isGreaterThanOrEqualTo: startDate)
@@ -40,11 +46,11 @@ Future<List<dbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
       for (QueryDocumentSnapshot ds in gs.docs) {
         dynamic before = ds.get(FieldPath(['before']));
         dynamic after = ds.get(FieldPath(['after']));
-        posts.add(dbPrompt(before, after, pid, ds.id));
+        prompts.add(DbPrompt(before, after, pid, ds.id, utcMidnight.toIso8601String().substring(0,10)));
       }
     }
   }
-  return posts;
+  return prompts;
 }
 
 /**
@@ -87,13 +93,10 @@ Future<List<DbPost>> getPosts(
     print("STILL EMPTY");
     return toReturn;
   } else {
-    int i = 0;
     for (QueryDocumentSnapshot doc in querySnapshot.docs) {
       dynamic answer = doc.get(FieldPath(['answer']));
       dynamic username = doc.get(FieldPath(['username']));
-      int postNum = i;
-      toReturn.add(DbPost(answer, username));
-      i++;
+      toReturn.add(DbPost(doc.id, answer, username));
     }
     return toReturn;
   }
