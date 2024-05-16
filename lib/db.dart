@@ -46,22 +46,7 @@ class dbPrompt extends Prompt {
   }
 }
 
-class dbPost extends Post {
-  dbPost(super.answer, super.username, super.postNum);
 
-  dbPost.fromPost(Post post) : super(post.answer, post.username, post.postNum);
-
-//Turn Post JSON into Post Object
-  factory dbPost.fromJson(dynamic json) {
-    return dbPost(json['answer'] as String, json['username'] as String,
-        json['postNum'] as int);
-  }
-
-  //Turn Post into JSON string
-  Map toJson() {
-    return {'answer': answer, 'username': username, 'postNum': postNum};
-  }
-}
 
 /*
 Adding a list of objects into the shared preferences
@@ -79,13 +64,6 @@ Future<void> addPrompts(List<dbPrompt> prompts) async {
   await prefs.setString('prompts', listPrompts);
 }
 
-Future<void> addPosts(List<dbPost> posts) async {
-  final prefs = await SharedPreferences.getInstance();
-  String listPosts = jsonEncode(posts);
-  await prefs.setInt('numOfPosts', posts.length);
-  await prefs.setInt('onPost', 0);
-  await prefs.setString('posts', listPosts);
-}
 
 //Locally caches the last time the user logged in as a string
 Future<void> cacheLoginTime() async {
@@ -94,7 +72,7 @@ Future<void> cacheLoginTime() async {
   final loginTimeString = now.toIso8601String(); // Convert to string
   await prefs.setString('lastLoginTime', loginTimeString);
 }
-
+/**
 /*
 Retrieve the string from shared preferences and turn it into a list of objects
  */
@@ -109,6 +87,7 @@ Future<List<dbUser>> getUsers(List<dbUser> users) async {
       jsonList.map((theJson) => dbUser.fromJson(theJson)).toList();
   return objList;
 }
+*/
 
 Future<List<dbPrompt>> getPrompts() async {
   final prefs = await SharedPreferences.getInstance();
@@ -122,17 +101,7 @@ Future<List<dbPrompt>> getPrompts() async {
   return objList;
 }
 
-Future<List<dbPost>> getLocalPosts() async {
-  final prefs = await SharedPreferences.getInstance();
-  String? ofPosts = prefs.getString('posts');
-  if (ofPosts == null) {
-    return List<dbPost>.empty(growable: true);
-  }
-  var jsonList = jsonDecode(ofPosts) as List;
-  List<dbPost> objList =
-      jsonList.map((theJson) => dbPost.fromJson(theJson)).toList();
-  return objList;
-}
+
 
 //Retrieve numPosts
 Future<int?> getNumPosts() async {
@@ -151,7 +120,7 @@ Future<String?> getCachedLoginTime() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('lastLoginTime');
 }
-
+/**
 /*add a single value: works by extracting the JSON then decoding it, adding to the list then reencoding it*/
 Future<void> addOneUser(dbUser user) async {
   //get instance
@@ -173,7 +142,7 @@ Future<void> addOneUser(dbUser user) async {
   String listUsers = jsonEncode(users);
   //add to persistent storage
   await prefs.setString('users', listUsers);
-}
+}*/
 
 /*Check if last login was a different day*/
 Future<bool> firstLoginToday() async {

@@ -8,8 +8,10 @@ import '../Session.dart';
 import 'package:provider/provider.dart';
 import '../DatabaseQueries.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../database/models.dart';
 import '../db.dart';
 import 'dart:math';
+import '../database/isarDB.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
@@ -44,37 +46,16 @@ class LoginPage extends StatelessWidget {
     //instance of usersession
     final UserService userSession =
         Provider.of<UserService>(context, listen: false);
+    final isarService = Provider.of<IsarService>(context, listen: false);
     //check if posts are in local database
-    List<dbPost> posts = await getLocalPosts();
-    //make sure we are not already finished looking at all of the posts
-    int? numP = await getNumPosts();
-    int? onP = await getCurrentPost();
-    bool runGetNew = false;
-    if (numP != null && onP != null) {
-      print("NUM P " + numP.toString());
-      print("on P " + onP.toString());
-      if ((onP >= (numP - 1)) || onP < 0 || numP <= 0) {
-        runGetNew = true;
-      }
-    } else {
-      runGetNew = true;
-    }
-    //get new posts from firebase
-    if (posts.isEmpty || runGetNew) {
+    List<DbPost> posts = await isarService.getUnseenPosts();
+
+    //get new posts from firebase if none exist in DB
+    if (posts.isEmpty) {
       print("running firebase retrieval");
       posts = await getPosts(firestore, prmtId, prmtDateId);
 
-      addPosts(posts);
-      userSession.setTheCurrentNumPost(posts.length);
-      userSession.setTheCurrentPostTracker(0);
-    } else {
-      userSession.setTheCurrentNumPost(numP!);
-      userSession.setTheCurrentPostTracker(onP!);
-    }
-    print("POSTS");
-    print(posts.length);
-    for (dbPost p in posts) {
-      userSession.addPost(p);
+      isarService.addPostsToDB(posts);
     }
   }
 
@@ -365,10 +346,10 @@ class LoginPage extends StatelessWidget {
                           foregroundColor: MaterialStateProperty.all<Color>(
                               const Color(0xFFffd230)),
                           padding:
-                              MaterialStateProperty.all<EdgeInsetsGeometry>(
+                              WidgetStateProperty.all<EdgeInsetsGeometry>(
                                   EdgeInsets.fromLTRB(18.0, 10.0, 18.0, 10.0)),
                           shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12.0),
                             ),

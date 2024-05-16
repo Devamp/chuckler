@@ -53,9 +53,11 @@ class _ExplorePageState extends State<ExplorePage> {
                 child: Align(
                   alignment: AlignmentDirectional(0, 1),
                   child: Text(
-                    'Leaderboard',
+                  "Leaderboard",
                     style: TextStyle(
                         color: Colors.white,
+                        fontFamily: 'OpenSans',
+                        fontWeight: FontWeight.w700,
                         fontSize: screenHeight / 20,
                         letterSpacing: 0),
                   ),
@@ -145,7 +147,6 @@ class _ExplorePageState extends State<ExplorePage> {
                         ],
                       ),
                     ),
-
                     Container(
                       width: 100,
                       height: 100,
@@ -204,40 +205,39 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
             Expanded(
               flex: 2,
-              child: InkWell(
-                onTap: () {},
-                child: Container(
+              child: Container(
                   constraints: BoxConstraints.tight(
                       Size(screenWidth / 1.5, double.infinity)),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadiusDirectional.circular(20),
                       color: Colors.amber),
-                  child: Align(
-                    alignment: AlignmentDirectional(0, 0),
-                    child: Stack(
-                      children: [
-                        Align(
-                          alignment: AlignmentDirectional(0, 0),
-                          child: SvgPicture.asset(
-
-                            '../assets/svgfiles/trophy-solid.svg',
-                            fit: BoxFit.contain,
-                            height: screenHeight / 10, // Set the desired height
+                  child: InkWell(
+                    onTap: () {},
+                    child: Align(
+                      alignment: AlignmentDirectional(0, 0),
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: AlignmentDirectional(0, 0),
+                            child: SvgPicture.asset(
+                              'assets/svgfiles/trophy-solid.svg',
+                              fit: BoxFit.contain,
+                              height:
+                                  screenHeight / 10, // Set the desired height
+                            ),
                           ),
-                        ),
-                        Align(
-                          alignment: AlignmentDirectional(0,-0.1),
-                          child: Text('?',
-                              style: TextStyle(
-                                  letterSpacing: 0,
-                                  color: Colors.grey.withOpacity(0.5),
-                                  fontSize: screenHeight / 30)),
-                        ),
-                      ],
+                          Align(
+                            alignment: AlignmentDirectional(0, -0.1),
+                            child: Text('?',
+                                style: TextStyle(
+                                    letterSpacing: 0,
+                                    color: Colors.grey.withOpacity(0.5),
+                                    fontSize: screenHeight / 30)),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
+                  )),
             ),
           ],
         ),

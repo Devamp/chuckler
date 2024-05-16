@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'db.dart';
+import 'database/models.dart';
 
 import 'dart:math';
 
@@ -49,7 +50,7 @@ Future<List<dbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
 /**
  * Description: Get the 10 posts from the database...put them in the
  */
-Future<List<dbPost>> getPosts(
+Future<List<DbPost>> getPosts(
     FirebaseFirestore firestore, String prmtId, String prmtDateId) async {
   print("specs");
   print(prmtId);
@@ -81,7 +82,7 @@ Future<List<dbPost>> getPosts(
   }
 
   //create the postList
-  List<dbPost> toReturn = List<dbPost>.empty(growable: true);
+  List<DbPost> toReturn = List<DbPost>.empty(growable: true);
   if (querySnapshot.docs.isEmpty) {
     print("STILL EMPTY");
     return toReturn;
@@ -91,7 +92,7 @@ Future<List<dbPost>> getPosts(
       dynamic answer = doc.get(FieldPath(['answer']));
       dynamic username = doc.get(FieldPath(['username']));
       int postNum = i;
-      toReturn.add(dbPost(answer, username, postNum));
+      toReturn.add(DbPost(answer, username));
       i++;
     }
     return toReturn;

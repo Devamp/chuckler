@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:chuckler/AppNavBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'database/models.dart';
 
 class Prompt {
   String before;
@@ -10,13 +11,7 @@ class Prompt {
   String promptId;
   Prompt(this.before, this.after, this.promptDateId, this.promptId);
 }
-class Post {
-  String answer;
-  String username;
-  int postNum;
-  Post(String this.answer, String this.username,int this.postNum);
 
-}
 class UserService with ChangeNotifier {
   String? _userId;
   bool firstLogin = false;
@@ -25,9 +20,7 @@ class UserService with ChangeNotifier {
   int? _following;
   int? _followers;
   List<Prompt> _prompts = List.empty(growable: true);
-  List<Post> _posts = List.empty(growable:true);
-  int? _theCurrentNumPosts;
-  int? _theCurrentPostTracker;
+  List<DbPost> _currentPosts = List<DbPost>.empty(growable: true);
   String? _currentFeedPromptId;
   String? get userId => _userId;
   String? get currentFeedPromptId => _currentFeedPromptId;
@@ -36,9 +29,7 @@ class UserService with ChangeNotifier {
   String? get postAnswer => _postAnswer;
   String? get logTime => _loginTime;
   List<Prompt>? get prompts => _prompts;
-  List<Post>? get posts => _posts;
-  int? get theCurrentNumPost => _theCurrentNumPosts;
-  int? get theCurrentPostTracker => _theCurrentPostTracker;
+  List<DbPost>? get currentPosts => _currentPosts;
   //get the lastLogin as a datetime object
   DateTime getDTLogIn(){
     if(_loginTime == null){
@@ -49,16 +40,13 @@ class UserService with ChangeNotifier {
     }
 
   }
-  void setTheCurrentNumPost(int x){
-    _theCurrentNumPosts = x;
-    notifyListeners();
-  }
-  void setTheCurrentPostTracker(int x){
-    _theCurrentPostTracker = x;
-    notifyListeners();
-  }
   void setCurrentFeedPromptId(String s){
     _currentFeedPromptId = s;
+    notifyListeners();
+  }
+
+  void setCurrentPosts(List<DbPost> posts){
+    _currentPosts = posts;
     notifyListeners();
   }
 
@@ -72,10 +60,6 @@ class UserService with ChangeNotifier {
     if(_loginTime == null){
       firstLogin = true;
     }
-    notifyListeners();
-  }
-  void setAListOfPosts(List<Post> p){
-    _posts = p;
     notifyListeners();
   }
 
@@ -100,10 +84,6 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-  void addPost(Post p){
-    _posts.add(p);
-    notifyListeners();
-  }
 
   void clearUserId() {
     _userId = null;
@@ -128,9 +108,6 @@ class UserService with ChangeNotifier {
     _prompts.clear();
   }
 
-  void clearPosts(){
-    _posts.clear();
-  }
 
 
 
@@ -141,7 +118,6 @@ class UserService with ChangeNotifier {
     clearFollowing();
     clearFollowers();
     clearPrompts();
-    clearPosts();
     notifyListeners();
 
   }

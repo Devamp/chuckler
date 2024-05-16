@@ -5,19 +5,22 @@ import 'package:provider/provider.dart';
 import './firebase/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Session.dart';
+import 'database/isarDB.dart';
 
 Future<void> main() async {
   DefaultFirebaseOptions fb = DefaultFirebaseOptions();
   WidgetsFlutterBinding.ensureInitialized();
+  await IsarService.openDB();
 
   try {
     await fb.initializeFirebase();
-    runApp(
-      ChangeNotifierProvider(
-        create: (context) => UserService(),
-        child: MyApp(),
-      ),
-    );
+    runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserService()),
+        Provider<IsarService>(create: (context) => IsarService()),
+      ],
+      child: MyApp(),
+    ));
   } catch (e) {
     print("Error initiating Firebase");
   }
