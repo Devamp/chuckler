@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 class MainHeaderBar extends StatelessWidget {
   const MainHeaderBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.sizeOf(context).height;
     return Container(
         decoration: const BoxDecoration(color: Colors.black),
         child: Row(

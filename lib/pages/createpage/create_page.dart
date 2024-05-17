@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:chuckler/AppHeaderMain.dart';
-import 'package:chuckler/CreatePageContent.dart';
-import '../Session.dart';
-
+import 'package:chuckler/pages/createpage/CreatePageContent.dart';
+//THis is a test
 class CreatePage extends StatelessWidget {
   const CreatePage({super.key});
 

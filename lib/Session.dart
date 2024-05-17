@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'package:chuckler/AppNavBar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'database/models.dart';
 
 

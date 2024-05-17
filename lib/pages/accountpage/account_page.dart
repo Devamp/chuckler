@@ -1,15 +1,13 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 //import 'package:chuckler/AppNavBar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:chuckler/globalvars.dart';
-import '../Session.dart';
+import '../../Session.dart';
+
+//test
 
 class AccountPage extends StatefulWidget {
   AccountPage({Key? key}) : super(key: key);

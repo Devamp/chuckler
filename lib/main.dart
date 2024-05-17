@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/route_generator.dart';
-import 'package:chuckler/pages/feed_page.dart';
 import 'package:provider/provider.dart';
 import './firebase/firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'Session.dart';
 import 'database/isarDB.dart';
 

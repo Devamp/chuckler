@@ -4,8 +4,6 @@ It will not be a highlevel db but it will be enough for this app and store infor
 in Strings using JSON
  */
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'Session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class dbUser {

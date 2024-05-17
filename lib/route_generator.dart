@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:chuckler/pages/login_page.dart';
-import 'package:chuckler/pages/signup_page.dart';
-import 'package:chuckler/pages/explore_page.dart';
-import 'package:chuckler/pages/account_page.dart';
-import 'package:chuckler/pages/create_page.dart';
-import 'package:chuckler/pages/feed_page.dart';
+import 'package:chuckler/pages/loginpage/login_page.dart';
+import 'package:chuckler/pages/loginpage/signup_page.dart';
 import 'package:chuckler/AppNavBar.dart';
 import'package:chuckler/main.dart';
 

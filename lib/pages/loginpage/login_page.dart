@@ -4,14 +4,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../Session.dart';
+import '../../Session.dart';
 import 'package:provider/provider.dart';
-import '../DatabaseQueries.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../database/models.dart';
-import '../db.dart';
+import '../../DatabaseQueries.dart';
+import '../../database/models.dart';
+import '../../db.dart';
 import 'dart:math';
-import '../database/isarDB.dart';
+import '../../database/isarDB.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {

@@ -1,14 +1,16 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:chuckler/pages/login_page.dart';
+import 'package:chuckler/pages/loginpage/login_page.dart';
 import 'package:chuckler/PageTransitioner.dart';
-import './Session.dart';
+import '../../Session.dart';
 import 'package:provider/provider.dart';
-import 'database/models.dart';
+import '../../database/models.dart';
 
 class CreatePageContent extends StatefulWidget {
   const CreatePageContent({super.key});
