@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../DatabaseQueries.dart';
 import '../../Session.dart';
-import '../../database/models.dart';
+import 'package:chuckler/database/models.dart';
 
 class CommentForm extends StatefulWidget {
-  final cfData;
-  final screenHeight;
-  final screenWidth;
+  final DbPost cfData;
+  final double screenHeight;
+  final double screenWidth;
 
   const CommentForm({super.key, required this.cfData, required this.screenHeight, required this.screenWidth});
 
@@ -27,7 +27,7 @@ class _CommentFormState extends State<CommentForm> {
   void getPostComments() async {
     FirebaseFirestore firestore =
     Provider.of<FirebaseFirestore>(context, listen: false);
-    comments = await getComments(firestore, widget.cfData.postId);
+    comments = await getComments(firestore, widget.cfData.postId!);
     if (comments.isEmpty) {
       comments.add(DbComment("", "No comments right now..."));
     }
@@ -107,7 +107,7 @@ class _CommentFormState extends State<CommentForm> {
                       FirebaseFirestore firestore =
                       Provider.of<FirebaseFirestore>(context,
                           listen: false);
-                      addCommentToPost(firestore, widget.cfData.postId,
+                      addCommentToPost(firestore, widget.cfData.postId!,
                           userService.userId!, myController.text);
                       comments.add(
                           DbComment("YOUR USERNAME", myController.text));
