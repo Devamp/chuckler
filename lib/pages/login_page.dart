@@ -18,7 +18,6 @@ class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String inputEmail = '';
   String inputPassword = '';
   String resetEmail = '';
@@ -60,6 +59,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Future<void> setupUserSession(context, userId) async {
+    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context,listen: false);
     print(userId + "This is the userID");
     final UserService userSession =
         Provider.of<UserService>(context, listen: false);

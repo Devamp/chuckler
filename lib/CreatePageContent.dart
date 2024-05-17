@@ -35,7 +35,6 @@ class _CreatePageContentState extends State<CreatePageContent>
   var promptVal = 0;
   FocusNode focusNode = FocusNode();
 
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   //Set the progress indicator
   void _updateProgress() {
@@ -67,7 +66,7 @@ class _CreatePageContentState extends State<CreatePageContent>
     //check if user can post
     if (canPost[promptVal]) {
       //check if user has already posted
-      FirebaseFirestore firebase = FirebaseFirestore.instance;
+      FirebaseFirestore firebase = Provider.of<FirebaseFirestore>(context,listen: false);
       final docRef = await firebase
           .collection('Posts')
           .where('uid', isEqualTo: userId)

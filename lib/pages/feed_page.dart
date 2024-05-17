@@ -52,13 +52,13 @@ class FeedPageContent extends StatefulWidget {
 }
 
 class _FeedPageContentState extends State<FeedPageContent> {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String feedPrompt = "";
   int cPost = 0;
   bool incra = false;
 
   /*get the prompts from local db*/
   Future<void> getNextTwoPosts() async {
+    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context,listen: false);
     //Access UserService
     UserService userSession = Provider.of<UserService>(context, listen: false);
     IsarService isarService = Provider.of<IsarService>(context, listen: false);
@@ -86,8 +86,7 @@ class _FeedPageContentState extends State<FeedPageContent> {
       }
     }
 
-      userSession.setCurrentPosts(posts);
-
+    userSession.setCurrentPosts(posts);
   }
 
   @override
@@ -284,10 +283,25 @@ class _CommentFormState extends State<CommentForm> {
   FocusNode _focusNode = FocusNode();
 
   bool _hasInput = false;
+  List<DbComment> comments = List<DbComment>.empty(growable: true);
+
+  void getPostComments() async {
+    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context,listen: false);
+    comments = await getComments(firestore, widget.cfData.postId);
+    setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
+    getPostComments();
+    if (comments.isEmpty) {
+      setState(() {
+        comments.add(DbComment("", "No comments right now..."));
+      });
+      print(comments.length);
+
+    }
     myController.addListener(_checkInput);
     _focusNode.addListener(() {
       setState(() {});
@@ -369,12 +383,12 @@ class _CommentFormState extends State<CommentForm> {
                                   onPressed: () {},
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             Colors.amber),
                                     foregroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             Colors.black),
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                         borderRadius:
@@ -395,12 +409,12 @@ class _CommentFormState extends State<CommentForm> {
                                   onPressed: () {},
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             Colors.amber),
                                     foregroundColor:
                                         WidgetStateProperty.all<Color>(
                                             Colors.black),
-                                    shape: MaterialStateProperty.all<
+                                    shape: WidgetStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                         borderRadius:
@@ -410,7 +424,7 @@ class _CommentFormState extends State<CommentForm> {
                                   ),
                                   child: Icon(
                                     Icons.person_add_alt_rounded,
-                                    size: screenHeight / 30,
+                                    size: screenHeight / 25,
                                   ),
                                 )),
                           ]),
@@ -434,7 +448,18 @@ class _CommentFormState extends State<CommentForm> {
                         ),
                       ),
                     ),
-                    Expanded(flex: 3, child: Container()),
+                    Expanded(
+                        flex: 3,
+                        child: ListView.builder(
+                            itemCount: comments.length,
+                            itemBuilder: (context, index) {
+                              return
+                                  Text(
+                                "THIS IS A COMMENT",
+                                style: TextStyle(color: Colors.white, fontSize: 10),
+                                textAlign: TextAlign.center,
+                              );
+                            })),
                     //Send Comment
                     Expanded(
                         flex: 3,
@@ -471,7 +496,11 @@ class _CommentFormState extends State<CommentForm> {
                                           color: Colors.amber,
                                         ),
                                         onPressed: () {
-                                          // Handle the submit action here
+                                          FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context,listen: false);
+                                          addCommentToPost(firestore,
+                                              widget.cfData.postId,
+                                              widget.cfData.username,
+                                              myController.text);
                                         },
                                       )
                                     : null,
@@ -487,11 +516,11 @@ class _CommentFormState extends State<CommentForm> {
                               Navigator.pop(context);
                             },
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.amber),
-                              foregroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.black),
-                              shape: MaterialStateProperty.all<
+                              backgroundColor:
+                                  WidgetStateProperty.all<Color>(Colors.amber),
+                              foregroundColor:
+                                  WidgetStateProperty.all<Color>(Colors.black),
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12.0),

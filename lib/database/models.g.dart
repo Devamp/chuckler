@@ -2263,3 +2263,1562 @@ extension DbPromptQueryProperty
     });
   }
 }
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+extension GetDbUserCollection on Isar {
+  IsarCollection<DbUser> get dbUsers => this.collection();
+}
+
+const DbUserSchema = CollectionSchema(
+  name: r'DbUser',
+  id: -9131662857584035194,
+  properties: {
+    r'follower': PropertySchema(
+      id: 0,
+      name: r'follower',
+      type: IsarType.bool,
+    ),
+    r'following': PropertySchema(
+      id: 1,
+      name: r'following',
+      type: IsarType.bool,
+    ),
+    r'isCurrentUser': PropertySchema(
+      id: 2,
+      name: r'isCurrentUser',
+      type: IsarType.bool,
+    ),
+    r'profilePicture': PropertySchema(
+      id: 3,
+      name: r'profilePicture',
+      type: IsarType.string,
+    ),
+    r'username': PropertySchema(
+      id: 4,
+      name: r'username',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _dbUserEstimateSize,
+  serialize: _dbUserSerialize,
+  deserialize: _dbUserDeserialize,
+  deserializeProp: _dbUserDeserializeProp,
+  idName: r'id',
+  indexes: {
+    r'username': IndexSchema(
+      id: -2899563114555695793,
+      name: r'username',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'username',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
+  links: {},
+  embeddedSchemas: {},
+  getId: _dbUserGetId,
+  getLinks: _dbUserGetLinks,
+  attach: _dbUserAttach,
+  version: '3.1.0+1',
+);
+
+int _dbUserEstimateSize(
+  DbUser object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.profilePicture.length * 3;
+  {
+    final value = object.username;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  return bytesCount;
+}
+
+void _dbUserSerialize(
+  DbUser object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeBool(offsets[0], object.follower);
+  writer.writeBool(offsets[1], object.following);
+  writer.writeBool(offsets[2], object.isCurrentUser);
+  writer.writeString(offsets[3], object.profilePicture);
+  writer.writeString(offsets[4], object.username);
+}
+
+DbUser _dbUserDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = DbUser(
+    reader.readStringOrNull(offsets[4]),
+  );
+  object.follower = reader.readBool(offsets[0]);
+  object.following = reader.readBool(offsets[1]);
+  object.id = id;
+  object.isCurrentUser = reader.readBool(offsets[2]);
+  object.profilePicture = reader.readString(offsets[3]);
+  return object;
+}
+
+P _dbUserDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readBool(offset)) as P;
+    case 1:
+      return (reader.readBool(offset)) as P;
+    case 2:
+      return (reader.readBool(offset)) as P;
+    case 3:
+      return (reader.readString(offset)) as P;
+    case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+Id _dbUserGetId(DbUser object) {
+  return object.id;
+}
+
+List<IsarLinkBase<dynamic>> _dbUserGetLinks(DbUser object) {
+  return [];
+}
+
+void _dbUserAttach(IsarCollection<dynamic> col, Id id, DbUser object) {
+  object.id = id;
+}
+
+extension DbUserByIndex on IsarCollection<DbUser> {
+  Future<DbUser?> getByUsername(String? username) {
+    return getByIndex(r'username', [username]);
+  }
+
+  DbUser? getByUsernameSync(String? username) {
+    return getByIndexSync(r'username', [username]);
+  }
+
+  Future<bool> deleteByUsername(String? username) {
+    return deleteByIndex(r'username', [username]);
+  }
+
+  bool deleteByUsernameSync(String? username) {
+    return deleteByIndexSync(r'username', [username]);
+  }
+
+  Future<List<DbUser?>> getAllByUsername(List<String?> usernameValues) {
+    final values = usernameValues.map((e) => [e]).toList();
+    return getAllByIndex(r'username', values);
+  }
+
+  List<DbUser?> getAllByUsernameSync(List<String?> usernameValues) {
+    final values = usernameValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'username', values);
+  }
+
+  Future<int> deleteAllByUsername(List<String?> usernameValues) {
+    final values = usernameValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'username', values);
+  }
+
+  int deleteAllByUsernameSync(List<String?> usernameValues) {
+    final values = usernameValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'username', values);
+  }
+
+  Future<Id> putByUsername(DbUser object) {
+    return putByIndex(r'username', object);
+  }
+
+  Id putByUsernameSync(DbUser object, {bool saveLinks = true}) {
+    return putByIndexSync(r'username', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByUsername(List<DbUser> objects) {
+    return putAllByIndex(r'username', objects);
+  }
+
+  List<Id> putAllByUsernameSync(List<DbUser> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'username', objects, saveLinks: saveLinks);
+  }
+}
+
+extension DbUserQueryWhereSort on QueryBuilder<DbUser, DbUser, QWhere> {
+  QueryBuilder<DbUser, DbUser, QAfterWhere> anyId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+}
+
+extension DbUserQueryWhere on QueryBuilder<DbUser, DbUser, QWhereClause> {
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> idEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> idNotEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> idGreaterThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> idLessThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> idBetween(
+    Id lowerId,
+    Id upperId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> usernameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'username',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> usernameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'username',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> usernameEqualTo(
+      String? username) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'username',
+        value: [username],
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> usernameNotEqualTo(
+      String? username) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'username',
+              lower: [],
+              upper: [username],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'username',
+              lower: [username],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'username',
+              lower: [username],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'username',
+              lower: [],
+              upper: [username],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+}
+
+extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> followerEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'follower',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> followingEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'following',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> idEqualTo(Id value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> idGreaterThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> idLessThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> idBetween(
+    Id lower,
+    Id upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> isCurrentUserEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isCurrentUser',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> profilePictureEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'profilePicture',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> profilePictureGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'profilePicture',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> profilePictureLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'profilePicture',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> profilePictureBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'profilePicture',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> profilePictureStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'profilePicture',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> profilePictureEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'profilePicture',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> profilePictureContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'profilePicture',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> profilePictureMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'profilePicture',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> profilePictureIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'profilePicture',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      profilePictureIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'profilePicture',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'username',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'username',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'username',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'username',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'username',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> usernameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'username',
+        value: '',
+      ));
+    });
+  }
+}
+
+extension DbUserQueryObject on QueryBuilder<DbUser, DbUser, QFilterCondition> {}
+
+extension DbUserQueryLinks on QueryBuilder<DbUser, DbUser, QFilterCondition> {}
+
+extension DbUserQuerySortBy on QueryBuilder<DbUser, DbUser, QSortBy> {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollower() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'follower', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollowerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'follower', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollowing() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'following', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollowingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'following', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByIsCurrentUser() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isCurrentUser', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByIsCurrentUserDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isCurrentUser', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByProfilePicture() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profilePicture', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByProfilePictureDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profilePicture', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByUsername() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByUsernameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.desc);
+    });
+  }
+}
+
+extension DbUserQuerySortThenBy on QueryBuilder<DbUser, DbUser, QSortThenBy> {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollower() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'follower', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollowerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'follower', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollowing() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'following', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollowingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'following', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByIsCurrentUser() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isCurrentUser', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByIsCurrentUserDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isCurrentUser', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByProfilePicture() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profilePicture', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByProfilePictureDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'profilePicture', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByUsername() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByUsernameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.desc);
+    });
+  }
+}
+
+extension DbUserQueryWhereDistinct on QueryBuilder<DbUser, DbUser, QDistinct> {
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByFollower() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'follower');
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByFollowing() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'following');
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByIsCurrentUser() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isCurrentUser');
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByProfilePicture(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'profilePicture',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByUsername(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'username', caseSensitive: caseSensitive);
+    });
+  }
+}
+
+extension DbUserQueryProperty on QueryBuilder<DbUser, DbUser, QQueryProperty> {
+  QueryBuilder<DbUser, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<DbUser, bool, QQueryOperations> followerProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'follower');
+    });
+  }
+
+  QueryBuilder<DbUser, bool, QQueryOperations> followingProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'following');
+    });
+  }
+
+  QueryBuilder<DbUser, bool, QQueryOperations> isCurrentUserProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isCurrentUser');
+    });
+  }
+
+  QueryBuilder<DbUser, String, QQueryOperations> profilePictureProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'profilePicture');
+    });
+  }
+
+  QueryBuilder<DbUser, String?, QQueryOperations> usernameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'username');
+    });
+  }
+}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+extension GetDbCommentCollection on Isar {
+  IsarCollection<DbComment> get dbComments => this.collection();
+}
+
+const DbCommentSchema = CollectionSchema(
+  name: r'DbComment',
+  id: -9052731186466062930,
+  properties: {
+    r'comment': PropertySchema(
+      id: 0,
+      name: r'comment',
+      type: IsarType.string,
+    ),
+    r'username': PropertySchema(
+      id: 1,
+      name: r'username',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _dbCommentEstimateSize,
+  serialize: _dbCommentSerialize,
+  deserialize: _dbCommentDeserialize,
+  deserializeProp: _dbCommentDeserializeProp,
+  idName: r'id',
+  indexes: {},
+  links: {},
+  embeddedSchemas: {},
+  getId: _dbCommentGetId,
+  getLinks: _dbCommentGetLinks,
+  attach: _dbCommentAttach,
+  version: '3.1.0+1',
+);
+
+int _dbCommentEstimateSize(
+  DbComment object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  {
+    final value = object.comment;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.username;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  return bytesCount;
+}
+
+void _dbCommentSerialize(
+  DbComment object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.comment);
+  writer.writeString(offsets[1], object.username);
+}
+
+DbComment _dbCommentDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = DbComment(
+    reader.readStringOrNull(offsets[1]),
+    reader.readStringOrNull(offsets[0]),
+  );
+  object.id = id;
+  return object;
+}
+
+P _dbCommentDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readStringOrNull(offset)) as P;
+    case 1:
+      return (reader.readStringOrNull(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+Id _dbCommentGetId(DbComment object) {
+  return object.id;
+}
+
+List<IsarLinkBase<dynamic>> _dbCommentGetLinks(DbComment object) {
+  return [];
+}
+
+void _dbCommentAttach(IsarCollection<dynamic> col, Id id, DbComment object) {
+  object.id = id;
+}
+
+extension DbCommentQueryWhereSort
+    on QueryBuilder<DbComment, DbComment, QWhere> {
+  QueryBuilder<DbComment, DbComment, QAfterWhere> anyId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+}
+
+extension DbCommentQueryWhere
+    on QueryBuilder<DbComment, DbComment, QWhereClause> {
+  QueryBuilder<DbComment, DbComment, QAfterWhereClause> idEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterWhereClause> idNotEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterWhereClause> idGreaterThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterWhereClause> idLessThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterWhereClause> idBetween(
+    Id lowerId,
+    Id upperId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension DbCommentQueryFilter
+    on QueryBuilder<DbComment, DbComment, QFilterCondition> {
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'comment',
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'comment',
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'comment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'comment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'comment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'comment',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'comment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'comment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'comment',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'comment',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> commentIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'comment',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition>
+      commentIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'comment',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> idEqualTo(
+      Id value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> idGreaterThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> idLessThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> idBetween(
+    Id lower,
+    Id upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'username',
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition>
+      usernameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'username',
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'username',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'username',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition> usernameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'username',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterFilterCondition>
+      usernameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'username',
+        value: '',
+      ));
+    });
+  }
+}
+
+extension DbCommentQueryObject
+    on QueryBuilder<DbComment, DbComment, QFilterCondition> {}
+
+extension DbCommentQueryLinks
+    on QueryBuilder<DbComment, DbComment, QFilterCondition> {}
+
+extension DbCommentQuerySortBy on QueryBuilder<DbComment, DbComment, QSortBy> {
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> sortByComment() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'comment', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> sortByCommentDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'comment', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> sortByUsername() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> sortByUsernameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.desc);
+    });
+  }
+}
+
+extension DbCommentQuerySortThenBy
+    on QueryBuilder<DbComment, DbComment, QSortThenBy> {
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> thenByComment() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'comment', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> thenByCommentDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'comment', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> thenByUsername() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QAfterSortBy> thenByUsernameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.desc);
+    });
+  }
+}
+
+extension DbCommentQueryWhereDistinct
+    on QueryBuilder<DbComment, DbComment, QDistinct> {
+  QueryBuilder<DbComment, DbComment, QDistinct> distinctByComment(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'comment', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbComment, DbComment, QDistinct> distinctByUsername(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'username', caseSensitive: caseSensitive);
+    });
+  }
+}
+
+extension DbCommentQueryProperty
+    on QueryBuilder<DbComment, DbComment, QQueryProperty> {
+  QueryBuilder<DbComment, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<DbComment, String?, QQueryOperations> commentProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'comment');
+    });
+  }
+
+  QueryBuilder<DbComment, String?, QQueryOperations> usernameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'username');
+    });
+  }
+}

@@ -1,5 +1,3 @@
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Session.dart';
@@ -8,6 +6,38 @@ import 'db.dart';
 import 'database/models.dart';
 
 import 'dart:math';
+
+///CREATE METHODS
+///
+///
+
+/**
+ * @author Caden Deutscher
+ * @description - adds a comment to the subcollection 'Comments' in both the user and post objects
+ */
+Future<void> addCommentToPost(FirebaseFirestore firestore,
+    String postId, String usernameCommenter, String comment) async {
+  try {
+    // Reference the comments subcollection within the post document
+    final pCommentsRef =
+        firestore.collection('Posts').doc(postId).collection('Comments');
+    // Reference the comments subcollection within the user document
+    final uCommentsRef = firestore
+        .collection('Users')
+        .doc(usernameCommenter)
+        .collection('Comments');
+    // Create a new document within the comments subcollection
+    await pCommentsRef.add({'username': usernameCommenter, 'comment': comment});
+
+    await uCommentsRef.add({'comment': comment});
+  } catch (e) {
+    print('Error adding comment: $e');
+  }
+}
+
+///READ METHODS
+///
+///
 
 /**
     @author - Caden Deutscher
@@ -18,7 +48,11 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
   List<DbPrompt> prompts = List.empty(growable: true);
   DateTime now = DateTime.now().toUtc();
   // Calculate UTC midnight
-  final utcMidnight = now.subtract(Duration(hours: now.hour, minutes: now.minute, seconds: now.second, milliseconds: now.microsecond));
+  final utcMidnight = now.subtract(Duration(
+      hours: now.hour,
+      minutes: now.minute,
+      seconds: now.second,
+      milliseconds: now.microsecond));
   // Calculate UTC 11:59 (the last second of the day before midnight)
   final utc1159 = utcMidnight.add(const Duration(days: 1, seconds: -1));
 
@@ -46,7 +80,8 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
       for (QueryDocumentSnapshot ds in gs.docs) {
         dynamic before = ds.get(FieldPath(['before']));
         dynamic after = ds.get(FieldPath(['after']));
-        prompts.add(DbPrompt(before, after, pid, ds.id, utcMidnight.toIso8601String().substring(0,10)));
+        prompts.add(DbPrompt(before, after, pid, ds.id,
+            utcMidnight.toIso8601String().substring(0, 10)));
       }
     }
   }
@@ -56,8 +91,7 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
 /**
  * Description: Get the 10 posts from the database...put them in the
  */
-Future<List<DbPost>> getPosts(
-    FirebaseFirestore firestore, String prmtId, String prmtDateId) async {
+Future<List<DbPost>> getPosts(FirebaseFirestore firestore,String prmtId, String prmtDateId) async {
   print("specs");
   print(prmtId);
   print(prmtDateId);
@@ -103,48 +137,54 @@ Future<List<DbPost>> getPosts(
 }
 
 /**
+ * Description: Get the first few comments from a post
+ */
+Future<List<DbComment>> getComments(FirebaseFirestore firestore, String postId) async {
+  List<DbComment> comments = List<DbComment>.empty(growable: true);
+  try {
+    QuerySnapshot querySnapshot = await firestore
+        .collection('Posts')
+        .doc(postId)
+        .collection("Comments")
+        .limit(5)
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      print("STILL EMPTY");
+      return comments;
+    } else {
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        dynamic comment = doc.get(FieldPath(['comment']));
+        dynamic username = doc.get(FieldPath(['username']));
+        comments.add(DbComment(username, comment));
+      }
+    }
+  } catch (error) {}
+  return comments;
+}
+
+///UPDATE METHODS
+///
+///
+
+/**
  * When likeing a post add the post to both the user and the posts subcollection of LikedPosts and Likes respectively
  */
-Future<void> likeAPost(FirebaseFirestore firestore, String usernameLiker, String postId) async {
-
+Future<void> likeAPost(
+    FirebaseFirestore firestore, String usernameLiker, String postId) async {
   try {
     // Reference the comments subcollection within the post document
-    final pLikeRef = firestore.collection('Posts').doc(postId).collection('Likes');
+    final pLikeRef =
+        firestore.collection('Posts').doc(postId).collection('Likes');
     // Reference the comments subcollection within the user document
-    final uLikeRef = firestore.collection('Users').doc(usernameLiker).collection('LikedPosts');
+    final uLikeRef = firestore
+        .collection('Users')
+        .doc(usernameLiker)
+        .collection('LikedPosts');
     // Create a new document within the comments subcollection
     await pLikeRef.doc(usernameLiker).set({});
     await uLikeRef.doc(postId).set({});
-
-
   } catch (e) {
     print('Error adding comment: $e');
   }
-
-}
-
-/**
- * @author Caden Deutscher
- * @description - adds a comment to the subcollection 'Comments' in both the user and post objects
- */
-Future<void> addCommentToPost(FirebaseFirestore firestore, String postId, String usernameCommenter, String comment) async{
-  try {
-    // Reference the comments subcollection within the post document
-    final pCommentsRef = firestore.collection('Posts').doc(postId).collection('Comments');
-    // Reference the comments subcollection within the user document
-    final uCommentsRef = firestore.collection('Users').doc(usernameCommenter).collection('Comments');
-    // Create a new document within the comments subcollection
-    await pCommentsRef.add({
-      'username': usernameCommenter,
-      'comment': comment
-    });
-
-    await uCommentsRef.add({
-      'comment': comment
-    });
-
-  } catch (e) {
-    print('Error adding comment: $e');
-  }
-
 }

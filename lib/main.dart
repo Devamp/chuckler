@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/route_generator.dart';
 import 'package:chuckler/pages/feed_page.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => UserService()),
         Provider<IsarService>(create: (context) => IsarService()),
+        Provider<FirebaseFirestore>(create: (context) => FirebaseFirestore.instance)
       ],
       child: MyApp(),
     ));
