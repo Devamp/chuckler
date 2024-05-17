@@ -46,14 +46,18 @@ class LoginPage extends StatelessWidget {
         Provider.of<UserService>(context, listen: false);
     final isarService = Provider.of<IsarService>(context, listen: false);
     //check if posts are in local database
-    List<DbPost> posts = await isarService.getUnseenPosts();
+    List<DbPost> posts = await isarService.getTwoUnseenPosts();
 
     //get new posts from firebase if none exist in DB
     if (posts.isEmpty) {
       print("running firebase retrieval");
       posts = await getPosts(firestore, prmtId, prmtDateId);
 
-      isarService.addPostsToDB(posts);
+      await isarService.addPostsToDB(posts);
+     userSession.setCurrentPosts(  await isarService.getTwoUnseenPosts());
+    }
+    else{
+      userSession.setCurrentPosts(posts);
     }
   }
 

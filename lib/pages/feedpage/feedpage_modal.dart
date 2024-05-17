@@ -1,79 +1,30 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../DatabaseQueries.dart';
-import '../../Session.dart';
-import '../../database/models.dart';
+import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
+import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
+import 'package:chuckler/pages/feedpage/comment_form.dart';
 
 /**
  * The following is the code for the LONG tap modal
  */
-class CommentForm extends StatefulWidget {
+
+class CommentModal extends StatelessWidget {
   final cfData;
-
-  const CommentForm({required this.cfData});
-
-  @override
-  _CommentFormState createState() => _CommentFormState();
-}
-
-class _CommentFormState extends State<CommentForm> {
-  final myController = TextEditingController();
-  FocusNode _focusNode = FocusNode();
-
-  bool _hasInput = false;
-  List<DbComment> comments = List<DbComment>.empty(growable: true);
-
-  void getPostComments() async {
-    FirebaseFirestore firestore =
-    Provider.of<FirebaseFirestore>(context, listen: false);
-    comments = await getComments(firestore, widget.cfData.postId);
-    if (comments.isEmpty) {
-      comments.add(DbComment("", "No comments right now..."));
-    }
-    setState(() {
-
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getPostComments();
-    myController.addListener(_checkInput);
-    _focusNode.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    myController.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  _checkInput() {
-    setState(() {
-      _hasInput = myController.text.isNotEmpty;
-    });
-  }
+  final screenHeight;
+  final screenWidth;
+  const CommentModal({super.key, required this.cfData, required this.screenWidth, required this.screenHeight});
 
   @override
   Widget build(BuildContext context) {
-    UserService userService = Provider.of<UserService>(context,listen: false);
-    double screenWidth = MediaQuery.sizeOf(context).width;
-    double screenHeight = MediaQuery.sizeOf(context).height;
     return SingleChildScrollView(
-        padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
             Container(
-                constraints: BoxConstraints.tight(Size(screenWidth,screenHeight/2)),
+                constraints:
+                    BoxConstraints.tight(Size(screenWidth, screenHeight / 2)),
                 child: Container(
                     color: Colors.black,
                     constraints: BoxConstraints.tight(
@@ -82,13 +33,11 @@ class _CommentFormState extends State<CommentForm> {
                       children: [
                         Expanded(
                             flex: 2,
-                            child: Text(
-                              widget.cfData.username,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'OpenSans',
-                                  fontSize: screenHeight / 20),
-                            )),
+                            child: OpenSansText(
+                                text: cfData.username,
+                                fractionScreenHeight: 20,
+                                fw: FontWeight.w700,
+                                color: Colors.white)),
                         Expanded(
                             flex: 2,
                             child: Container(
@@ -104,9 +53,9 @@ class _CommentFormState extends State<CommentForm> {
                                   ),
                                   children: <TextSpan>[
                                     TextSpan(
-                                        text: widget.cfData.answer,
-                                        style:
-                                        const TextStyle(color: Colors.white)),
+                                        text: cfData.answer,
+                                        style: const TextStyle(
+                                            color: Colors.white)),
                                   ],
                                 ),
                                 textAlign: TextAlign.center,
@@ -121,55 +70,21 @@ class _CommentFormState extends State<CommentForm> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                    margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                    child: ElevatedButton(
-                                      onPressed: () {},
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                        WidgetStateProperty.all<Color>(
-                                            Colors.amber),
-                                        foregroundColor:
-                                        WidgetStateProperty.all<Color>(
-                                            Colors.black),
-                                        shape: WidgetStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(12.0),
-                                          ),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: const [
-                                          Icon(Icons.thumb_up_off_alt_rounded),
-                                        ],
-                                      ),
-                                    )),
+                                    margin:
+                                        const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                    child: const ElevatedIconButton(
+                                        color: Colors.amber,
+                                        iconColor: Colors.black,
+                                        fractionHeight: 25,
+                                        icon: Icons.thumb_up_off_alt_rounded)),
                                 Container(
-                                    margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                    child: ElevatedButton(
-                                      onPressed: () {},
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                        WidgetStateProperty.all<Color>(
-                                            Colors.amber),
-                                        foregroundColor:
-                                        WidgetStateProperty.all<Color>(
-                                            Colors.black),
-                                        shape: WidgetStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(12.0),
-                                          ),
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.person_add_alt_rounded,
-                                        size: screenHeight / 25,
-                                      ),
-                                    )),
+                                    margin:
+                                        const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                    child: const ElevatedIconButton(
+                                        color: Colors.amber,
+                                        iconColor: Colors.black,
+                                        fractionHeight: 25,
+                                        icon: Icons.person_add_alt_rounded))
                               ]),
                         ),
                         Expanded(
@@ -181,83 +96,17 @@ class _CommentFormState extends State<CommentForm> {
                                 maxWidth: screenWidth / 1.5),
                             decoration: const BoxDecoration(
                                 border: Border(
-                                  // top: BorderSide(color: Colors.amber, width: 2),
-                                    bottom:
-                                    BorderSide(color: Colors.amber, width: 4))),
-                            child: Text(
+                                    // top: BorderSide(color: Colors.amber, width: 2),
+                                    bottom: BorderSide(
+                                        color: Colors.amber, width: 4))),
+                            child: const Text(
                               "Comments",
                               style: TextStyle(color: Colors.amber),
                               textAlign: TextAlign.center,
                             ),
                           ),
                         ),
-                        Expanded(
-                            flex: 3,
-                            child: ListView.builder(
-                                itemCount: comments.length,
-                                itemBuilder: (context, index) {
-                                  return Text(
-                                    comments[index].comment!,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 10),
-                                    textAlign: TextAlign.center,
-                                  );
-                                })),
-                        //Send Comment
-                        Expanded(
-                            flex: 3,
-                            child: Container(
-                                constraints: BoxConstraints(
-                                    minWidth: screenWidth / 1.5,
-                                    maxWidth: screenWidth / 1.5),
-                                //color: Colors.white,
-                                child: TextField(
-                                  style: TextStyle(color: Colors.white),
-                                  focusNode: _focusNode,
-                                  // autofocus: true,
-                                  controller: myController,
-                                  maxLines: null,
-                                  keyboardType: TextInputType.multiline,
-                                  decoration: InputDecoration(
-                                    labelStyle: TextStyle(
-                                        color: _focusNode.hasFocus
-                                            ? Colors.amber
-                                            : Colors.white),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.amber, width: 2)),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.white),
-                                    ),
-                                    labelText: 'Add a comment',
-                                    suffixIcon: _hasInput
-                                        ? IconButton(
-                                      splashRadius: 16,
-                                      splashColor: Colors.black,
-                                      icon: Icon(
-                                        Icons.send,
-                                        color: Colors.amber,
-                                      ),
-                                      onPressed: () {
-                                        FirebaseFirestore firestore =
-                                        Provider.of<FirebaseFirestore>(
-                                            context,
-                                            listen: false);
-                                        addCommentToPost(
-                                            firestore,
-                                            widget.cfData.postId,
-                                            userService.userId!,
-                                            myController.text);
-                                        comments.add(DbComment(
-                                            "YOUR USERNAME",
-                                            myController.text));
-                                        myController.text = "";
-                                        print(userService.userId!);
-                                      },
-                                    )
-                                        : null,
-                                  ),
-                                ))),
+                        Expanded(flex: 6, child: CommentForm(cfData: cfData, screenHeight: screenHeight, screenWidth: screenWidth,)),
                         Expanded(
                           flex: 1,
                           child: Container(
@@ -269,9 +118,11 @@ class _CommentFormState extends State<CommentForm> {
                                 },
                                 style: ButtonStyle(
                                   backgroundColor:
-                                  WidgetStateProperty.all<Color>(Colors.amber),
+                                      WidgetStateProperty.all<Color>(
+                                          Colors.amber),
                                   foregroundColor:
-                                  WidgetStateProperty.all<Color>(Colors.black),
+                                      WidgetStateProperty.all<Color>(
+                                          Colors.black),
                                   shape: WidgetStateProperty.all<
                                       RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
@@ -279,9 +130,9 @@ class _CommentFormState extends State<CommentForm> {
                                     ),
                                   ),
                                 ),
-                                child: Row(
+                                child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     Icon(Icons.close),
                                   ],
                                 ),
@@ -289,8 +140,10 @@ class _CommentFormState extends State<CommentForm> {
                         ),
                       ],
                     ))),
-            Container(constraints: BoxConstraints.tight(Size(screenWidth,screenHeight/4)),)
-
+           Container(
+              constraints:
+                  BoxConstraints.tight(Size(screenWidth, screenHeight / 4)),
+            )
           ],
         ));
   }

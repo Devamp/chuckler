@@ -1,15 +1,14 @@
 import 'package:chuckler/DatabaseQueries.dart';
 import 'package:chuckler/Session.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import '../../database/models.dart';
 import '../../database/isarDB.dart';
 import 'feedpage_modal.dart';
+import 'feedpage_promptarea.dart';
+import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 
 class FeedPage extends StatelessWidget {
   const FeedPage({super.key});
@@ -30,26 +29,18 @@ class CreateForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(flex: 5, child: Container()),
-        Expanded(flex: 60, child: FeedPageContent())
+        const Expanded(flex: 30, child: FeedPagePromptArea()),
+        const Expanded(flex: 30, child: FeedPageContent())
       ],
     );
   }
 }
 
-class FeedPageContent extends StatefulWidget {
+class FeedPageContent extends StatelessWidget {
   const FeedPageContent({super.key});
 
-  @override
-  _FeedPageContentState createState() => _FeedPageContentState();
-}
-
-class _FeedPageContentState extends State<FeedPageContent> {
-  String feedPrompt = "";
-  int cPost = 0;
-  bool incra = false;
-
   /*get the prompts from local db*/
-  Future<void> getNextTwoPosts() async {
+  Future<void> getNextTwoPosts(context) async {
     FirebaseFirestore firestore =
         Provider.of<FirebaseFirestore>(context, listen: false);
     //Access UserService
@@ -71,7 +62,6 @@ class _FeedPageContentState extends State<FeedPageContent> {
           postsFromDb = await getPosts(firestore, p.promptId!, p.promptDateId!);
           await isarService.addPostsToDB(postsFromDb);
           posts = await isarService.getTwoUnseenPosts();
-          print(posts.length);
           print("set posts");
           break;
         }
@@ -83,83 +73,14 @@ class _FeedPageContentState extends State<FeedPageContent> {
   }
 
   @override
-  void initState() {
-    UserService userSession = Provider.of<UserService>(context, listen: false);
-    if (userSession.currentPosts?.isEmpty ?? true) {
-      getNextTwoPosts();
-    }
-    super.initState();
-    for (DbPrompt p in userSession.prompts!) {
-      if (p.promptId == userSession.currentFeedPromptId) {
-        feedPrompt = "${p.before} _____________ ${p.after}";
-      }
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.sizeOf(context).width;
-    double screenHeight = MediaQuery.sizeOf(context).height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight =  MediaQuery.of(context).size.height;
     UserService userSession = Provider.of<UserService>(context, listen: true);
-    print(screenWidth);
-    print(screenHeight);
+    print(userSession.currentPosts!.length);
+    print("Rebuilding");
     return Column(
       children: [
-        Text(
-          "Prompt",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: screenHeight / 20,
-              fontFamily: 'OpenSans',
-              fontWeight: FontWeight.w700),
-        ),
-        Container(
-          width: screenWidth / 1.5,
-          height: 4,
-          decoration: BoxDecoration(color: Colors.amber),
-          margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-        ),
-        Expanded(
-            flex: 8,
-            child: Container(
-                margin: EdgeInsets.fromLTRB(
-                    screenWidth / 30, 0, screenWidth / 30, screenHeight / 40),
-                decoration: BoxDecoration(
-                  color: Color(0xFF383838),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          flex: 8,
-                          child: Center(
-                            child: AutoSizeText.rich(
-                              TextSpan(
-                                style: const TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontFamily: 'OpenSans',
-                                ),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: feedPrompt,
-                                      style:
-                                          const TextStyle(color: Colors.white)),
-                                ],
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 10,
-                              minFontSize: 2,
-                            ),
-                          )),
-                    ]))),
-        Divider(
-          color: Colors.amber,
-          thickness: 5,
-        ),
         Expanded(
             flex: 8,
             child: ListView.builder(
@@ -169,11 +90,7 @@ class _FeedPageContentState extends State<FeedPageContent> {
                   children: [
                     InkWell(
                         onTap: () async {
-                          if (!incra) {
-                            incra = true;
-                            await getNextTwoPosts();
-                            incra = false;
-                          }
+                          await getNextTwoPosts(context);
                         },
                         onLongPress: () {
                           //Display selection in modal before moving to next post
@@ -184,9 +101,9 @@ class _FeedPageContentState extends State<FeedPageContent> {
                             context: context,
                             barrierColor: Colors.black.withOpacity(0.9),
                             builder: (context) {
-                              return CommentForm(
-                                      cfData: userSession.currentPosts!
-                                          .elementAt(index));
+                              return CommentModal(
+                                  cfData: userSession.currentPosts!
+                                      .elementAt(index), screenWidth: screenWidth, screenHeight: screenHeight);
                             },
                           );
                         },
@@ -196,23 +113,22 @@ class _FeedPageContentState extends State<FeedPageContent> {
                               child: Container(
                                   width: 50, height: 50, color: Colors.amber)),
                           Expanded(
-                            flex: 40,
-                            child: Container(
-                                margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                                child: Text(
-                                  userSession.currentPosts!
-                                      .elementAt(index)
-                                      .answer!,
-                                  style: TextStyle(
-                                      fontSize: screenHeight / 35,
-                                      fontFamily: "OpenSans",
-                                      color: Colors.white),
-                                )),
-                          ),
+                              flex: 40,
+                              child: Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                  child: OpenSansText(
+                                    text: userSession.currentPosts!
+                                        .elementAt(index)
+                                        .answer!,
+                                    fractionScreenHeight: 35,
+                                    color: Colors.white,
+                                    fw: FontWeight.normal,
+                                  ))),
                           Expanded(
                               flex: 4,
                               child: IconButton(
-                                icon: Icon(Icons.report),
+                                icon: const Icon(Icons.report),
                                 splashRadius: 20,
                                 color: Colors.white,
                                 onPressed: () {},
@@ -233,17 +149,17 @@ class _FeedPageContentState extends State<FeedPageContent> {
                               width: screenWidth / 4,
                             ),
                             Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.amber, shape: BoxShape.circle),
-                              child: Container(
-                                  margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                  child: Text("VS",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: screenHeight / 30,
-                                          fontWeight: FontWeight.w700,
-                                          fontFamily: "OpenSans"))),
-                            ),
+                                decoration: const BoxDecoration(
+                                    color: Colors.amber,
+                                    shape: BoxShape.circle),
+                                child: Container(
+                                    margin: const EdgeInsets.fromLTRB(
+                                        10, 10, 10, 10),
+                                    child: const OpenSansText(
+                                        text: "VS",
+                                        fractionScreenHeight: 30,
+                                        color: Colors.black,
+                                        fw: FontWeight.w700))),
                             Container(
                               height: 4,
                               color: Colors.amber,
@@ -258,5 +174,3 @@ class _FeedPageContentState extends State<FeedPageContent> {
     );
   }
 }
-
-
