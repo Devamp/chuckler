@@ -58,7 +58,8 @@ class _FeedPageContentState extends State<FeedPageContent> {
 
   /*get the prompts from local db*/
   Future<void> getNextTwoPosts() async {
-    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context,listen: false);
+    FirebaseFirestore firestore =
+        Provider.of<FirebaseFirestore>(context, listen: false);
     //Access UserService
     UserService userSession = Provider.of<UserService>(context, listen: false);
     IsarService isarService = Provider.of<IsarService>(context, listen: false);
@@ -190,10 +191,10 @@ class _FeedPageContentState extends State<FeedPageContent> {
                             useSafeArea: true,
                             context: context,
                             barrierColor: Colors.black.withOpacity(0.9),
-                            builder: (BuildContext context) {
+                            builder: (context) {
                               return CommentForm(
-                                  cfData: userSession.currentPosts!
-                                      .elementAt(index));
+                                      cfData: userSession.currentPosts!
+                                          .elementAt(index));
                             },
                           );
                         },
@@ -286,22 +287,21 @@ class _CommentFormState extends State<CommentForm> {
   List<DbComment> comments = List<DbComment>.empty(growable: true);
 
   void getPostComments() async {
-    FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context,listen: false);
+    FirebaseFirestore firestore =
+        Provider.of<FirebaseFirestore>(context, listen: false);
     comments = await getComments(firestore, widget.cfData.postId);
-    setState(() {});
+    if (comments.isEmpty) {
+        comments.add(DbComment("", "No comments right now..."));
+    }
+    setState(() {
+      
+    });
   }
 
   @override
   void initState() {
     super.initState();
     getPostComments();
-    if (comments.isEmpty) {
-      setState(() {
-        comments.add(DbComment("", "No comments right now..."));
-      });
-      print(comments.length);
-
-    }
     myController.addListener(_checkInput);
     _focusNode.addListener(() {
       setState(() {});
@@ -323,14 +323,18 @@ class _CommentFormState extends State<CommentForm> {
 
   @override
   Widget build(BuildContext context) {
+    UserService userService = Provider.of<UserService>(context,listen: false);
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
-    return Column(
+    return SingleChildScrollView(
+        padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Expanded(flex: 5, child: Container()),
-        Expanded(
-            flex: 12,
+
+        Container(
+    constraints: BoxConstraints.tight(Size(screenWidth,screenHeight/2)),
             child: Container(
                 color: Colors.black,
                 constraints: BoxConstraints.tight(
@@ -453,10 +457,10 @@ class _CommentFormState extends State<CommentForm> {
                         child: ListView.builder(
                             itemCount: comments.length,
                             itemBuilder: (context, index) {
-                              return
-                                  Text(
-                                "THIS IS A COMMENT",
-                                style: TextStyle(color: Colors.white, fontSize: 10),
+                              return Text(
+                                comments[index].comment!,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 10),
                                 textAlign: TextAlign.center,
                               );
                             })),
@@ -496,11 +500,20 @@ class _CommentFormState extends State<CommentForm> {
                                           color: Colors.amber,
                                         ),
                                         onPressed: () {
-                                          FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context,listen: false);
-                                          addCommentToPost(firestore,
+                                          FirebaseFirestore firestore =
+                                              Provider.of<FirebaseFirestore>(
+                                                  context,
+                                                  listen: false);
+                                          addCommentToPost(
+                                              firestore,
                                               widget.cfData.postId,
-                                              widget.cfData.username,
+                                              userService.userId!,
                                               myController.text);
+                                          comments.add(DbComment(
+                                              "YOUR USERNAME",
+                                              myController.text));
+                                          myController.text = "";
+                                          print(userService.userId!);
                                         },
                                       )
                                     : null,
@@ -537,8 +550,9 @@ class _CommentFormState extends State<CommentForm> {
                     ),
                   ],
                 ))),
-        Expanded(flex: 5, child: Container()),
+        Container(constraints: BoxConstraints.tight(Size(screenWidth,screenHeight/4)),)
+
       ],
-    );
+    ));
   }
 }
