@@ -72,11 +72,13 @@ class CommentModal extends StatelessWidget {
                                 Container(
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                    child: const ElevatedIconButton(
+                                    child:  ElevatedIconButton(
                                         color: Colors.amber,
                                         iconColor: Colors.black,
                                         fractionHeight: 25,
-                                        icon: Icons.thumb_up_off_alt_rounded)),
+                                        icon: Icons.thumb_up_off_alt_rounded,
+                                      onPressed: (){}
+                                    )),
                                 Container(
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database/models.dart';
-
 
 ///CREATE METHODS
 ///
@@ -11,21 +11,22 @@ import 'database/models.dart';
  * @author Caden Deutscher
  * @description - adds a comment to the subcollection 'Comments' in both the user and post objects
  */
-Future<void> addCommentToPost(FirebaseFirestore firestore,
-    String postId, String usernameCommenter, String comment) async {
+Future<void> addCommentToPost(FirebaseFirestore firestore, String postId,
+    String usernameCommenter, String comment) async {
+  DateTime now = DateTime.now().toUtc();
+
+  final timestamp = Timestamp.fromDate(now);
   try {
     // Reference the comments subcollection within the post document
-    final pCommentsRef =
-        firestore.collection('Posts').doc(postId).collection('Comments');
-    // Reference the comments subcollection within the user document
-    final uCommentsRef = firestore
-        .collection('Users')
-        .doc(usernameCommenter)
-        .collection('Comments');
-    // Create a new document within the comments subcollection
-    await pCommentsRef.add({'username': usernameCommenter, 'comment': comment});
+    final pCommentsRef = firestore.collection('Comments');
 
-    await uCommentsRef.add({'comment': comment});
+    // Create a new document within the comments subcollection
+    await pCommentsRef.add({
+      'username': usernameCommenter,
+      'comment': comment,
+      'postId': postId,
+      'date': timestamp
+    });
   } catch (e) {
     print('Error adding comment: $e');
   }
@@ -87,7 +88,8 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
 /**
  * Description: Get the 10 posts from the database...put them in the
  */
-Future<List<DbPost>> getPosts(FirebaseFirestore firestore,String prmtId, String prmtDateId) async {
+Future<List<DbPost>> getPosts(
+    FirebaseFirestore firestore, String prmtId, String prmtDateId) async {
   print("specs");
   print(prmtId);
   print(prmtDateId);
@@ -135,13 +137,13 @@ Future<List<DbPost>> getPosts(FirebaseFirestore firestore,String prmtId, String 
 /**
  * Description: Get the first few comments from a post
  */
-Future<List<DbComment>> getComments(FirebaseFirestore firestore, String postId) async {
+Future<List<DbComment>> getComments(
+    FirebaseFirestore firestore, String postId) async {
   List<DbComment> comments = List<DbComment>.empty(growable: true);
   try {
     QuerySnapshot querySnapshot = await firestore
-        .collection('Posts')
-        .doc(postId)
-        .collection("Comments")
+        .collection('Comments')
+        .where('postId', isEqualTo: postId)
         .limit(5)
         .get();
 
@@ -168,19 +170,51 @@ Future<List<DbComment>> getComments(FirebaseFirestore firestore, String postId) 
  */
 Future<void> likeAPost(
     FirebaseFirestore firestore, String usernameLiker, String postId) async {
-  try {
-    // Reference the comments subcollection within the post document
-    final pLikeRef =
-        firestore.collection('Posts').doc(postId).collection('Likes');
-    // Reference the comments subcollection within the user document
-    final uLikeRef = firestore
-        .collection('Users')
-        .doc(usernameLiker)
-        .collection('LikedPosts');
-    // Create a new document within the comments subcollection
-    await pLikeRef.doc(usernameLiker).set({});
-    await uLikeRef.doc(postId).set({});
-  } catch (e) {
+  try {} catch (e) {
     print('Error adding comment: $e');
+  }
+}
+
+/// ADDS a following document when a user creates a follow...This can be used bidirectionally
+/// inorder to minimize both the reads and writes for document
+/// Returns 0 if pending, 1 if friended, and -1 if error
+Future<int> friend(FirebaseFirestore firestore, String userFriending,
+    String userToFriend) async {
+  DateTime now = DateTime.now().toUtc();
+
+  final timestamp = Timestamp.fromDate(now);
+  try {
+    final friendsColRef = firestore.collection("Friends");
+    final snapshot = await friendsColRef
+        .where(Filter.or(
+            Filter.and(Filter('user1', isEqualTo: userFriending),
+                Filter('user2', isEqualTo: userToFriend)),
+            Filter.and(Filter('user2', isEqualTo: userFriending),
+                Filter('user1', isEqualTo: userToFriend))))
+        .limit(1)
+        .get();
+    if (snapshot.docs.isEmpty) {
+      await friendsColRef.doc().set({
+        'user1': userFriending,
+        'user2': userToFriend,
+        'pending': true,
+        'date': timestamp
+      });
+      return 0;
+    } else {
+      bool pending = snapshot.docs.first.get(FieldPath(['pending']));
+      String user1 = snapshot.docs.first.get(FieldPath(['user1']));
+      if (pending && (user1 != userFriending)) {
+        snapshot.docs.first.reference.update(
+          {'pending': false, 'date': timestamp},
+        );
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  } catch (error) {
+    print("Error following");
+    return -1;
   }
 }
