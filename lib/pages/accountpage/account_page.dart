@@ -6,6 +6,7 @@ import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../Session.dart';
+import 'profile_photo_picker_modal.dart';
 
 //test
 
@@ -47,11 +48,7 @@ class _AccountPageState extends State<AccountPage> {
                   SizedBox(
                     height: 40,
                   ),
-                  ProfilePicture(
-                    name: username,
-                    radius: 50,
-                    fontsize: 40,
-                  ),
+                  ProfilePhotoPickerModal(),
                   SizedBox(
                     height: 10,
                   ),
