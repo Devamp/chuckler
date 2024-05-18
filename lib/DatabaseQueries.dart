@@ -166,11 +166,35 @@ Future<List<DbComment>> getComments(
 ///
 
 /**
- * When likeing a post add the post to both the user and the posts subcollection of LikedPosts and Likes respectively
+    When liking a post we will create a like-relationship document, and incrament the posts number of likes
  */
 Future<void> likeAPost(
     FirebaseFirestore firestore, String usernameLiker, String postId) async {
-  try {} catch (e) {
+  DateTime now = DateTime.now().toUtc();
+
+  final timestamp = Timestamp.fromDate(now);
+  try {
+    firestore
+        .collection("PostLikes")
+        .doc()
+        .set({'postId': postId, 'liker': usernameLiker, 'date': timestamp});
+    firestore
+        .collection("Posts")
+        .doc(postId)
+        .update({'likes': FieldValue.increment(1)});
+  } catch (e) {
+    print('Error adding comment: $e');
+  }
+}
+
+/// To keep track of wins we will simply increment that value in posts
+Future<void> postWin(FirebaseFirestore firestore, String postId) async {
+  try {
+    await firestore
+        .collection("Posts")
+        .doc(postId)
+        .update({'wins': FieldValue.increment(1)});
+  } catch (e) {
     print('Error adding comment: $e');
   }
 }

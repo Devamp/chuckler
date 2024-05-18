@@ -69,6 +69,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
               'answer': _controller.text,
               'dislikes': 0,
               'likes': 0,
+              'wins': 0,
               'uid': userId,
               'username': userName,
               'promptId': promptId,
