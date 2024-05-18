@@ -27,6 +27,7 @@ class _AccountPageState extends State<AccountPage> {
   Widget currentScreen = Container();
 
   Widget header(BuildContext context) {
+    UserService userService = Provider.of<UserService>(context, listen: true);
     void signout() async {
       _auth.signOut();
     }
@@ -48,7 +49,7 @@ class _AccountPageState extends State<AccountPage> {
                   SizedBox(
                     height: 40,
                   ),
-                  ProfilePhotoPickerModal(),
+                  ProfilePhotoPickerModal(username: username, img: userService.profilePhoto),
                   SizedBox(
                     height: 10,
                   ),

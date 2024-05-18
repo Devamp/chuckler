@@ -242,3 +242,9 @@ Future<int> friend(FirebaseFirestore firestore, String userFriending,
     return -1;
   }
 }
+
+///Updates the profile photo url for a user
+Future<void> updateProfilePhoto(
+    FirebaseFirestore firestore, String url, String user) async {
+  await firestore.collection("Users").doc(user).update({'profileImage': url});
+}

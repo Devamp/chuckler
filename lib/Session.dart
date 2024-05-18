@@ -8,6 +8,7 @@ class UserService with ChangeNotifier {
   bool firstLogin = false;
   String? _postAnswer;
   String? _loginTime;
+  String? _profilePhoto;
   int? _following;
   int? _followers;
   List<DbPrompt> _prompts = List.empty(growable: true);
@@ -19,6 +20,7 @@ class UserService with ChangeNotifier {
   int? get followers => _followers;
   String? get postAnswer => _postAnswer;
   String? get logTime => _loginTime;
+  String? get profilePhoto => _profilePhoto;
   List<DbPrompt>? get prompts => _prompts;
   List<DbPost>? get currentPosts => _currentPosts;
   //get the lastLogin as a datetime object
@@ -33,6 +35,11 @@ class UserService with ChangeNotifier {
   }
   void setCurrentFeedPromptId(String s){
     _currentFeedPromptId = s;
+    notifyListeners();
+  }
+
+  void setProfilePhoto(String s){
+    _profilePhoto =s;
     notifyListeners();
   }
 

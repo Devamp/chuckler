@@ -108,9 +108,11 @@ class LoginPage extends StatelessWidget {
       dynamic saved_user = doc.id;
       dynamic saved_followers = doc.get(FieldPath(['followers']));
       dynamic saved_following = doc.get(FieldPath(['following']));
+      dynamic profilePhoto = doc.get(FieldPath(['profileImage']));
 
       userSession.setUserId(saved_user);
       userSession.setFollowers(saved_followers);
+      userSession.setProfilePhoto(profilePhoto);
       userSession.setFollowing(saved_following);
       String? lTime = await getCachedLoginTime();
       userSession.setLoginTime(lTime);
