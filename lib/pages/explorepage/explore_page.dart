@@ -51,7 +51,7 @@ class _ExplorePageState extends State<ExplorePage> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Align(
-                  alignment: AlignmentDirectional(0, 1),
+                  alignment: const AlignmentDirectional(0, 1),
                   child: Text(
                   "Leaderboard",
                     style: TextStyle(
@@ -76,9 +76,9 @@ class _ExplorePageState extends State<ExplorePage> {
               ),
             ),
             Align(
-              alignment: AlignmentDirectional(0, 0),
+              alignment: const AlignmentDirectional(0, 0),
               child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 5),
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 5),
                 child: Text('Friends',
                     style: TextStyle(
                         letterSpacing: 0,
@@ -88,7 +88,7 @@ class _ExplorePageState extends State<ExplorePage> {
             ),
             Expanded(
               flex: 5,
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 height: 10,
                 child: CarouselSlider(
@@ -97,17 +97,17 @@ class _ExplorePageState extends State<ExplorePage> {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: Color(0xFF383838),
+                        color: const Color(0xFF383838),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: Padding(
                               padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                                  const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
                               child: Text(
                                 'Category',
                                 style: TextStyle(
@@ -124,17 +124,17 @@ class _ExplorePageState extends State<ExplorePage> {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: Color(0xFF383838),
+                        color: const Color(0xFF383838),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: Padding(
                               padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                                  const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
                               child: Text(
                                 'Category',
                                 style: TextStyle(
@@ -151,7 +151,7 @@ class _ExplorePageState extends State<ExplorePage> {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: Color(0xFF383838),
+                        color: const Color(0xFF383838),
                         borderRadius: BorderRadius.circular(20),
                         shape: BoxShape.rectangle,
                       ),
@@ -159,10 +159,10 @@ class _ExplorePageState extends State<ExplorePage> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: Padding(
                               padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
+                                  const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
                               child: Text(
                                 'Category',
                                 style: TextStyle(
@@ -193,9 +193,9 @@ class _ExplorePageState extends State<ExplorePage> {
               ),
             ),
             Align(
-              alignment: AlignmentDirectional(0, 0),
+              alignment: const AlignmentDirectional(0, 0),
               child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 5, 0, 5),
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 5),
                 child: Text('Today\'s Prompts',
                     style: TextStyle(
                         letterSpacing: 0,
@@ -214,11 +214,11 @@ class _ExplorePageState extends State<ExplorePage> {
                   child: InkWell(
                     onTap: () {},
                     child: Align(
-                      alignment: AlignmentDirectional(0, 0),
+                      alignment: const AlignmentDirectional(0, 0),
                       child: Stack(
                         children: [
                           Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: SvgPicture.asset(
                               'assets/svgfiles/trophy-solid.svg',
                               fit: BoxFit.contain,
@@ -227,7 +227,7 @@ class _ExplorePageState extends State<ExplorePage> {
                             ),
                           ),
                           Align(
-                            alignment: AlignmentDirectional(0, -0.1),
+                            alignment: const AlignmentDirectional(0, -0.1),
                             child: Text('?',
                                 style: TextStyle(
                                     letterSpacing: 0,

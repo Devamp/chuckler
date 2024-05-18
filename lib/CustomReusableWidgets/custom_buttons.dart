@@ -3,18 +3,21 @@ import 'package:flutter/material.dart';
 class ElevatedIconButton extends StatelessWidget {
   final Color iconColor;
   final Color color;
-  final fractionHeight;
-  final IconData icon;
+  final int fractionHeight;
+  final IconData? icon;
   final VoidCallback? onPressed;
+  final String? text;
+  final double? width;
 
   const ElevatedIconButton(
-      {super.key, required this.color, required this.iconColor, required this.fractionHeight, required this.icon, this.onPressed});
-
+      {super.key, required this.color, required this.iconColor, required this.fractionHeight, this.icon, this.onPressed, this.text, this.width});
   @override
   Widget build(BuildContext context){
+    final screenHeight = MediaQuery.of(context).size.height;
     return ElevatedButton(
       onPressed: onPressed,
       style: ButtonStyle(
+        maximumSize: WidgetStateProperty.all<Size>(Size((width != null ? width! : double.infinity), double.infinity)),
         backgroundColor:
         WidgetStateProperty.all<Color>(
             color),
@@ -29,13 +32,13 @@ class ElevatedIconButton extends StatelessWidget {
           ),
         ),
       ),
-      child: Icon(
+      child:Row( mainAxisAlignment: MainAxisAlignment.center, children: [ icon != null ? Icon(
         icon,
-        size: MediaQuery
-            .of(context)
-            .size
-            .height /fractionHeight,
-      ),
+        size: screenHeight / fractionHeight,
+      ) : Container(),
+        Container(child: text != null ? Text(text!, style: TextStyle(color: iconColor, fontSize: screenHeight/(fractionHeight)),) : const Text("")), // A
+        ]
+      )
     );
   }
 }

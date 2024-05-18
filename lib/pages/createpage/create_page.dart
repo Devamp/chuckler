@@ -7,6 +7,7 @@ class CreatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
         backgroundColor: Colors.black,
         appBar: AppBar(
           title: const Text('Chuckler'),
