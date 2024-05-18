@@ -187,9 +187,9 @@ class _AccountPageState extends State<AccountPage> {
                     style: TextStyle(color: Colors.black),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
+                    backgroundColor: WidgetStateProperty.all<Color>(
                         const Color(0xFFffd230)),
-                    iconColor: MaterialStateProperty.all<Color>(Colors.black),
+                    iconColor: WidgetStateProperty.all<Color>(Colors.black),
                   ),
                 ),
               ],
@@ -560,10 +560,6 @@ class _AccountPageState extends State<AccountPage> {
           icon: Icon(Icons.notifications),
           label: 'Notifications',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
       ],
       currentIndex: _currentIndex,
       selectedItemColor: Colors.yellow,
@@ -604,23 +600,7 @@ class _AccountPageState extends State<AccountPage> {
               currentScreen = getMyNotificationsScreen(context);
             });
             break;
-          case 3:
-            currentScreen = SingleChildScrollView(
-              child: Container(
-                height: 1000.0,
-                color: Colors.white,
-                child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      color: Colors.white,
-                      child: Text('My Profile'),
-                    )
-                  ],
-                ),
-              ),
-            );
-            break;
+
         }
       },
     );

@@ -10,7 +10,8 @@ class CreatePage extends StatelessWidget {
       resizeToAvoidBottomInset: true,
         backgroundColor: Colors.black,
         appBar: AppBar(
-          title: const Text('Chuckler'),
+          centerTitle: true,
+          title: const Text('Chuckler', textAlign: TextAlign.center,),
           titleTextStyle: const TextStyle(
               color: Color(0xFFffd230),
               fontSize: 40,

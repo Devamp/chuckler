@@ -2,7 +2,6 @@
 
 import 'dart:math';
 
-import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 import 'package:chuckler/pages/createpage/create_page_loadingbar.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -14,6 +13,7 @@ import '../../Session.dart';
 import 'package:provider/provider.dart';
 import '../../database/models.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
+import 'prompt_identifier.dart';
 
 class CreatePageContent extends StatefulWidget {
   const CreatePageContent({super.key});
@@ -153,36 +153,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
                   border: Border.all(color: Colors.amber, width: 5)),
               child: Column(children: [
                 Expanded(flex: 1, child: Container()),
-                Expanded(
-                    flex: 6,
-                    child: Container(
-                      constraints: BoxConstraints.tight(
-                          Size(screenWidth / 1.5, double.infinity)),
-                      decoration: BoxDecoration(
-                          color: Colors.amber,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                                color: Colors.black, shape: BoxShape.circle),
-                            margin:
-                                EdgeInsets.fromLTRB(0, 0, screenWidth / 30, 0),
-                            child: Icon(
-                              Icons.access_time_sharp,
-                              size: screenHeight / 25,
-                              color: Colors.amber,
-                            ),
-                          ),
-                          const OpenSansText(
-                              text: "THE DAILY",
-                              fractionScreenHeight: 25,
-                              color: Colors.black,
-                              fw: FontWeight.w700)
-                        ],
-                      ),
-                    )),
+                const Expanded(flex: 6, child: PromptIdentifier()),
                 Expanded(
                     flex: 20,
                     child: Center(
@@ -231,7 +202,8 @@ class _CreatePageContentState extends State<CreatePageContent> {
                                   color: Colors.amber,
                                 ),
                               )),
-                          const Expanded(flex: 10, child: CreatePageLoadingBar()),
+                          const Expanded(
+                              flex: 10, child: CreatePageLoadingBar()),
                           //PROMPT W/ USER ANSWER
                           Expanded(
                               flex: 2,
@@ -286,6 +258,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
                                 _controller.text = "Answer the Prompt Here";
                                 setState(() {});
                               }
+                              focusNode.unfocus();
                             },
                             onChanged: (text) {
                               setState(() {});

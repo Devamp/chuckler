@@ -15,8 +15,19 @@ class FeedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        backgroundColor: Color(0xff000000), body: CreateForm());
+    return  Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Chuckler', textAlign: TextAlign.center,),
+          titleTextStyle: const TextStyle(
+              color: Color(0xFFffd230),
+              fontSize: 40,
+              fontWeight: FontWeight.bold),
+          backgroundColor: Colors.black,
+        ),
+        body: const CreateForm());
   }
 }
 
@@ -25,12 +36,11 @@ class CreateForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Expanded(flex: 5, child: Container()),
-        const Expanded(flex: 30, child: FeedPagePromptArea()),
-        const Expanded(flex: 30, child: FeedPageContent())
+        Expanded(flex: 30, child: FeedPagePromptArea()),
+        Expanded(flex: 30, child: FeedPageContent())
       ],
     );
   }
@@ -131,7 +141,53 @@ class FeedPageContent extends StatelessWidget {
                                 icon: const Icon(Icons.report),
                                 splashRadius: 20,
                                 color: Colors.white,
-                                onPressed: () {},
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Center(
+                                        child: AlertDialog(
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.all(Radius.circular(20))),
+                                          backgroundColor: const Color.fromARGB(255, 20, 20, 20),
+                                          title: const Text('Confirmation'),
+                                          titleTextStyle: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFFffd230),
+                                              fontSize: 22),
+                                          content: const Text('Are you sure you want to report this post?'),
+                                          contentTextStyle: const TextStyle(
+                                              fontSize: 14, color: Colors.white),
+                                          actions: [
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  foregroundColor: Colors.black,
+                                                  backgroundColor: const Color(0xFFffd230)),
+                                              child: const Text('Cancel'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor: Colors.black,
+                                                backgroundColor: Colors.white,
+                                              ),
+                                              child: const Text('Yes'),
+                                              onPressed: () async {
+
+                                                //TODO ADD REPORTED FUNCTIONALLITY
+                                               print("Reported");
+                                               Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
                               ))
                         ])),
                     Container(

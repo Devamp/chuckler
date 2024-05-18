@@ -18,7 +18,7 @@ class FeedPagePromptArea extends StatelessWidget {
               color: Colors.white,
               fontSize: MediaQuery.of(context).size.height / 20,
               fontFamily: 'OpenSans',
-              fontWeight: FontWeight.w700),
+              fontWeight: FontWeight.normal),
         ),
         Container(
           width: MediaQuery.of(context).size.width / 1.5,
