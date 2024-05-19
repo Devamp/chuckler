@@ -2,29 +2,41 @@
 
 //import 'package:chuckler/AppNavBar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../Session.dart';
 import 'profile_photo_picker_modal.dart';
+import 'account_navbar_down.dart';
 
-//test
-
-class AccountPage extends StatefulWidget {
-  AccountPage({Key? key}) : super(key: key);
+class  AccountPage extends StatelessWidget{
+   AccountPage({super.key});
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
-  _AccountPageState createState() => _AccountPageState();
-}
+  Widget build(BuildContext context) {
+    UserService userSession = Provider.of<UserService>(context);
 
-class _AccountPageState extends State<AccountPage> {
-  String username = "";
-  int followers = 0;
-  int following = 0;
-  int _currentIndex = 0;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  bool _firstTime = true;
-  Widget currentScreen = Container();
+    if (userSession.userId != null) {
+      //username = userSession.userId!;
+    //  followers = userSession.followers!;
+      //following = userSession.following!;
+
+      return Scaffold(
+          backgroundColor: Colors.black,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [header(context), AccountPageContent()],
+            ),
+          ));
+    } else {
+      // If no user is logged in, redirect to the login page
+      //Post frame call back actually the current build to finish before calling Navigator
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/login');
+      });
+      return Container(); // Placeholder widget; This will be visible for a second
+    }
+  }
 
   Widget header(BuildContext context) {
     UserService userService = Provider.of<UserService>(context, listen: true);
@@ -49,12 +61,12 @@ class _AccountPageState extends State<AccountPage> {
                   SizedBox(
                     height: 40,
                   ),
-                  ProfilePhotoPickerModal(username: username, img: userService.profilePhoto),
+                  ProfilePhotoPickerModal(username: userService.userId!, img: userService.profilePhoto),
                   SizedBox(
                     height: 10,
                   ),
                   Text(
-                    username,
+                    userService.userId!,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -90,7 +102,7 @@ class _AccountPageState extends State<AccountPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          following.toString(),
+                          userService.following!.toString(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -111,7 +123,7 @@ class _AccountPageState extends State<AccountPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          followers.toString(),
+                          userService.followers!.toString(),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -139,7 +151,7 @@ class _AccountPageState extends State<AccountPage> {
                           child: AlertDialog(
                             shape: RoundedRectangleBorder(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(20))),
+                                BorderRadius.all(Radius.circular(20))),
                             backgroundColor: Color.fromARGB(255, 20, 20, 20),
                             title: const Text('Confirmation'),
                             titleTextStyle: const TextStyle(
@@ -198,444 +210,6 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Widget getMyPostsScreen(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.only(right: 10.0),
-      child: Column(
-        children: [
-          Container(
-            color: Colors.black,
-            height: 150,
-            child: Center(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: 12,
-                    color: Colors.amber,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Text(
-                      'This is a sample post and it can be really long depending on the day YOUR ANSWER HERE!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            color: Colors.black,
-            height: 150,
-            child: Center(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: 12,
-                    color: Colors.brown[600],
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Text(
-                      'ANOTHER REALLY LONGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG POST IDK HOW THIS WILL FIT LETS SEE WOOOHOOO!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            color: Colors.black,
-            height: 150,
-            child: Center(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: 12,
-                    color: Colors.grey[600],
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Text(
-                      'LETS TEST IF THE SCROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOLING WORKS!!!! WOOO GOOO 2ND PLACE SILVER BAR....',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            color: Colors.black,
-            height: 150,
-            child: Center(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: 12,
-                    color: Colors.amber,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Another small test of a post getting 1st place!!!!!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget getTodaysEvents(BuildContext context) {
-    return Column(children: [
-      Container(
-        color: Colors.black,
-        height: 50,
-        child: Row(
-          children: [
-            ProfilePicture(
-              name: "Chuckler",
-              radius: 20,
-              fontsize: 20,
-              random: true,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Text(
-                'Don\'t miss today\'s prompt! 1 hour remaining!',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          ],
-        ),
-      ),
-      Container(
-        color: Colors.black,
-        height: 50,
-        child: Row(
-          children: [
-            ProfilePicture(
-              name: username,
-              radius: 20,
-              fontsize: 20,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Text(
-                'Devam Patel liked your Post!',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          ],
-        ),
-      ),
-      Container(
-        color: Colors.black,
-        height: 50,
-        child: Row(
-          children: [
-            ProfilePicture(
-              name: 'Alice',
-              radius: 20,
-              fontsize: 20,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Text(
-                'Check out Alice\'s new post!',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          ],
-        ),
-      ),
-    ]);
-  }
-
-  Widget getYesterdaysEvents(BuildContext context) {
-    return Column(children: [
-      Container(
-        color: Colors.black,
-        height: 50,
-        child: Row(
-          children: [
-            ProfilePicture(
-              name: 'C',
-              radius: 20,
-              fontsize: 20,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Text(
-                'Chuckler has been updated to v1.0',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          ],
-        ),
-      ),
-    ]);
-  }
-
-  Widget getLastWeeksEvents(BuildContext context) {
-    return Column(children: [
-      Container(
-        color: Colors.black,
-        height: 50,
-        child: Row(
-          children: [
-            ProfilePicture(
-              name: 'Caden',
-              radius: 20,
-              fontsize: 20,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Text(
-                'Caden started following you.',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          ],
-        ),
-      ),
-      Container(
-        color: Colors.black,
-        height: 50,
-        child: Row(
-          children: [
-            ProfilePicture(
-              name: 'Chuckler',
-              radius: 20,
-              fontsize: 20,
-              random: true,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Text(
-                'Devam, your latest post is getting hits!',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          ],
-        ),
-      ),
-      Container(
-        color: Colors.black,
-        height: 50,
-        child: Row(
-          children: [
-            ProfilePicture(
-              name: 'Megan',
-              radius: 20,
-              fontsize: 20,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Text(
-                'Megan left a comment on your post.',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          ],
-        ),
-      ),
-    ]);
-  }
-
-  Widget getMyNotificationsScreen(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Today',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              overflow: TextOverflow.visible,
-            ),
-          ),
-          getTodaysEvents(context),
-          Container(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Yesterday',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              overflow: TextOverflow.visible,
-            ),
-          ),
-          getYesterdaysEvents(context),
-          Container(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Last 7 days',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              overflow: TextOverflow.visible,
-            ),
-          ),
-          getLastWeeksEvents(context)
-        ],
-      ),
-    );
-  }
-
-  Widget navBar(BuildContext context) {
-    Widget bar = BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.black,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.sticky_note_2),
-          label: 'My Posts',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.bookmark),
-          label: 'Bookmarks',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'Notifications',
-        ),
-      ],
-      currentIndex: _currentIndex,
-      selectedItemColor: Colors.yellow,
-      unselectedItemColor: Colors.white,
-      onTap: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
-
-        // Handle navigation based on index
-        switch (index) {
-          case 0:
-            setState(() {
-              currentScreen = getMyPostsScreen(context);
-            });
-            break;
-          case 1:
-            setState(() {
-              currentScreen = SingleChildScrollView(
-                child: Container(
-                  height: 1000.0,
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        color: Colors.white,
-                        child: Text('My Bookmarks'),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            });
-            break;
-          case 2:
-            setState(() {
-              currentScreen = getMyNotificationsScreen(context);
-            });
-            break;
-
-        }
-      },
-    );
-
-    if (_firstTime) {
-      setState(() {
-        currentScreen = getMyPostsScreen(context);
-      });
-
-      _firstTime = false;
-    }
-    return bar;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    UserService userSession = Provider.of<UserService>(context);
-
-    if (userSession.userId != null) {
-      username = userSession.userId!;
-      followers = userSession.followers!;
-      following = userSession.following!;
-
-      return Scaffold(
-          backgroundColor: Colors.black,
-          body: SingleChildScrollView(
-            child: Column(
-              children: [header(context), navBar(context), currentScreen],
-            ),
-          ));
-    } else {
-      // If no user is logged in, redirect to the login page
-      //Post frame call back actually the current build to finish before calling Navigator
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
-      return Container(); // Placeholder widget; This will be visible for a second
-    }
-  }
 }
+
+

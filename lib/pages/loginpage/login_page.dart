@@ -104,11 +104,11 @@ class LoginPage extends StatelessWidget {
       }
 
       QueryDocumentSnapshot doc = querySnapshot.docs.first;
-
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       dynamic saved_user = doc.id;
-      dynamic saved_followers = doc.get(FieldPath(['followers']));
-      dynamic saved_following = doc.get(FieldPath(['following']));
-      dynamic profilePhoto = doc.get(FieldPath(['profileImage']));
+      dynamic saved_followers = data['followers'];
+      dynamic saved_following = data['following'];
+      dynamic profilePhoto = data['profileImage'];
 
       userSession.setUserId(saved_user);
       userSession.setFollowers(saved_followers);

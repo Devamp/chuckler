@@ -75,8 +75,9 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
     final gs = await cr.get();
     if (gs.docs.isNotEmpty) {
       for (QueryDocumentSnapshot ds in gs.docs) {
-        dynamic before = ds.get(FieldPath(['before']));
-        dynamic after = ds.get(FieldPath(['after']));
+        Map<String,dynamic> data = ds.data() as Map<String,dynamic>;
+        dynamic before =  data['before'];
+        dynamic after = data['after'];
         prompts.add(DbPrompt(before, after, pid, ds.id,
             utcMidnight.toIso8601String().substring(0, 10)));
       }
@@ -108,8 +109,7 @@ Future<List<DbPost>> getPosts(
       .where('promptId', isEqualTo: prmtId)
       .where('promptDateId', isEqualTo: prmtDateId)
       .where('date', isGreaterThanOrEqualTo: lastDate)
-      .limit(10)
-      .get();
+      .limit(10).get();
   if (querySnapshot.docs.isEmpty) {
     querySnapshot = await firestore
         .collection('Posts')
@@ -125,9 +125,10 @@ Future<List<DbPost>> getPosts(
     print("STILL EMPTY");
     return toReturn;
   } else {
-    for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-      dynamic answer = doc.get(FieldPath(['answer']));
-      dynamic username = doc.get(FieldPath(['username']));
+    for (QueryDocumentSnapshot doc in querySnapshot.docs){
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      dynamic answer = data['answer'];
+     dynamic username = data['username'];
       toReturn.add(DbPost(doc.id, answer, username));
     }
     return toReturn;
@@ -152,8 +153,9 @@ Future<List<DbComment>> getComments(
       return comments;
     } else {
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-        dynamic comment = doc.get(FieldPath(['comment']));
-        dynamic username = doc.get(FieldPath(['username']));
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        dynamic comment = data['comment'];
+        dynamic username = data['username'];
         comments.add(DbComment(username, comment));
       }
     }
