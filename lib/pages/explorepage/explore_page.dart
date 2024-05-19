@@ -83,7 +83,9 @@ class _ExplorePageState extends State<ExplorePage> {
                     style: TextStyle(
                         letterSpacing: 0,
                         color: Colors.white,
-                        fontSize: screenHeight / 40)),
+                        fontFamily: 'OpenSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: screenHeight / 30)),
               ),
             ),
             Expanded(
@@ -138,9 +140,10 @@ class _ExplorePageState extends State<ExplorePage> {
                               child: Text(
                                 'Category',
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.white,
+                                    fontFamily: 'OpenSans',
                                     letterSpacing: 0,
-                                    fontSize: screenHeight / 50),
+                                    fontSize: screenHeight / 40),
                               ),
                             ),
                           ),
@@ -168,7 +171,7 @@ class _ExplorePageState extends State<ExplorePage> {
                                 style: TextStyle(
                                     color: Colors.black,
                                     letterSpacing: 0,
-                                    fontSize: screenHeight / 50),
+                                    fontSize: screenHeight / 40),
                               ),
                             ),
                           ),
@@ -199,8 +202,10 @@ class _ExplorePageState extends State<ExplorePage> {
                 child: Text('Today\'s Prompts',
                     style: TextStyle(
                         letterSpacing: 0,
-                        fontSize: screenHeight / 40,
-                        color: Colors.white)),
+                        color: Colors.white,
+                        fontFamily: 'OpenSans',
+                        fontWeight: FontWeight.w700,
+                        fontSize: screenHeight / 30)),
               ),
             ),
             Expanded(

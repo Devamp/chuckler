@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'account_posts.dart';
+import 'package:chuckler/database/models.dart';
 
 class AccountPageContent extends StatefulWidget {
   AccountPageContent({Key? key}) : super(key: key);
@@ -15,6 +17,8 @@ class _AccountPageState extends State<AccountPageContent> {
   int followers = 0;
   int following = 0;
   int _currentIndex = 0;
+  //TODO INSTANTIATE POSTS WITH REAL DATA
+  List<DbPost> posts = [DbPost("a","b","c"),DbPost("a","b","c"),DbPost("a","b","c"),DbPost("a","b","c")];
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _firstTime = true;
   Widget currentScreen = Container();
@@ -93,130 +97,8 @@ class _AccountPageState extends State<AccountPageContent> {
   }
 
   Widget getMyPostsScreen(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(right: 10.0),
-      child: Column(
-        children: [
-          Container(
-            color: Colors.black,
-            height: 150,
-            child: Center(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: 12,
-                    color: Colors.amber,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Expanded(
-                    child: Text(
-                      'This is a sample post and it can be really long depending on the day YOUR ANSWER HERE!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            color: Colors.black,
-            height: 150,
-            child: Center(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: 12,
-                    color: Colors.brown[600],
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Expanded(
-                    child: Text(
-                      'ANOTHER REALLY LONGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG POST IDK HOW THIS WILL FIT LETS SEE WOOOHOOO!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            color: Colors.black,
-            height: 150,
-            child: Center(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: 12,
-                    color: Colors.grey[600],
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Expanded(
-                    child: Text(
-                      'LETS TEST IF THE SCROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOLING WORKS!!!! WOOO GOOO 2ND PLACE SILVER BAR....',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            color: Colors.black,
-            height: 150,
-            child: Center(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: 12,
-                    color: Colors.amber,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Expanded(
-                    child: Text(
-                      'Another small test of a post getting 1st place!!!!!',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return AccountPosts(posts: posts);
+
   }
 
   Widget getTodaysEvents(BuildContext context) {

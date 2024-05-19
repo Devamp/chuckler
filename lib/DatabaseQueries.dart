@@ -3,6 +3,8 @@ import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database/models.dart';
 
+//TODO LOOK AT IMPLEMENTING A DEBOUNCER TO PREVENT READ ABUSE
+
 ///CREATE METHODS
 ///
 ///
