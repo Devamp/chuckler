@@ -10,46 +10,52 @@ class AccountPosts extends StatelessWidget {
   Widget build(context) {
     double screenHeight = MediaQuery.of(context).size.height;
     print('rebuilding');
-    return SizedBox(height: screenHeight/1.8, child: posts.isNotEmpty
-        ? ListView.builder(
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  Container(
-                    color: Colors.black,
-                    height: 150,
-                    child: Center(
-                      child: Row(
-                        children: <Widget>[
+    return SizedBox(
+        height: screenHeight / 1.8,
+        child: posts.isNotEmpty
+            ? ListView.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  return Column(children: [
+                    Container(
+                      color: Colors.black,
+                      height: 150,
+                      child: Center(
+                          child: Stack(
+                        alignment: Alignment.centerLeft,
+                        children: [
                           Container(
-                            width: 12,
-                            color: Colors.amber,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Expanded(
-                            child: Text(
-                              'This is a sample post and it can be really long depending on the day YOUR ANSWER HERE!',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                              overflow: TextOverflow.visible,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  index <  posts.length-1 ? const SizedBox(
-                    height: 10,
-                  ) : const SizedBox(height: 50),
-                ],
-              );
-            })
-        : const Text("You haven't posted anything yet"));
-  }
+                              margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                              constraints: BoxConstraints(maxWidth: 80),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.amberAccent)),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(40, 0, 0, 0),
+                              decoration: BoxDecoration(
 
+                                  color: Colors.black)
+                              //  child: Text("This is some sample text to see how it looks", style: TextStyle(fontSize: 16, color: Colors.white),),
+                              ),
+                          Container(
+                              margin: EdgeInsets.fromLTRB(40, 0, 0, 0),
+                              child: Text(
+                                "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ))
+                        ],
+                      )),
+                    ),
+                    index < posts.length - 1
+                        ? Divider(
+                            color: Colors.white,
+                            thickness: 0.2,
+                          )
+                        : const SizedBox(height: 50),
+                  ]);
+                })
+            : const Text("You haven't posted anything yet"));
+  }
 }
