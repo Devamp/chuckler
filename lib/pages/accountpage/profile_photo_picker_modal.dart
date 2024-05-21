@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:chuckler/Session.dart';
 import 'package:chuckler/DatabaseQueries.dart';
+
+import '../../CustomReusableWidgets/profile_photo.dart';
 class ProfilePhotoPickerModal extends StatelessWidget {
   final String username;
   final String? img;
@@ -46,21 +48,6 @@ class ProfilePhotoPickerModal extends StatelessWidget {
             }
           } catch (error) {}
         },
-        child: img == ""
-            ? ProfilePicture(
-                name: username,
-                radius: 50,
-                fontsize: 40,
-              )
-            : Container(width: 50 * 2,
-      height: 50 * 2,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        image: DecorationImage(
-          fit: BoxFit.cover, // Adjust as needed
-          image: NetworkImage(img!), // Use NetworkImage for network image
-        ),
-      )));
+        child:ProfilePhoto(username: username, img: img, radius: 50,));
   }
 }

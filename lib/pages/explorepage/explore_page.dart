@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'explore_carousel_container.dart';
+
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
 
@@ -95,89 +97,9 @@ class _ExplorePageState extends State<ExplorePage> {
                 height: 10,
                 child: CarouselSlider(
                   items: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF383838),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Align(
-                            alignment: const AlignmentDirectional(0, 0),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
-                              child: Text(
-                                'Category',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    letterSpacing: 0,
-                                    fontSize: screenHeight / 50),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF383838),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Align(
-                            alignment: const AlignmentDirectional(0, 0),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
-                              child: Text(
-                                'Category',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'OpenSans',
-                                    letterSpacing: 0,
-                                    fontSize: screenHeight / 40),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF383838),
-                        borderRadius: BorderRadius.circular(20),
-                        shape: BoxShape.rectangle,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Align(
-                            alignment: const AlignmentDirectional(0, 0),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
-                              child: Text(
-                                'Category',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    letterSpacing: 0,
-                                    fontSize: screenHeight / 40),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                   CarouselContainer(),
+                    CarouselContainer(),
+                    CarouselContainer(),
                   ],
                   carouselController: carouselController ??=
                       CarouselController(),

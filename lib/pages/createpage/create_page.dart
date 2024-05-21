@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:chuckler/pages/createpage/CreatePageContent.dart';
-//THis is a test
+//TODO MAKE SURE THAT CREATE PAGE DETERMINES PROMPT TYPE
+//TODO CHANGE PROMPT DATA BASE LAYOUT
 class CreatePage extends StatelessWidget {
   const CreatePage({super.key});
 

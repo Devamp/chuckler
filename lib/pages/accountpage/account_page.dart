@@ -62,9 +62,6 @@ class  AccountPage extends StatelessWidget{
                     height: 40,
                   ),
                   ProfilePhotoPickerModal(username: userService.userId!, img: userService.profilePhoto),
-                  SizedBox(
-                    height: 10,
-                  ),
                   Text(
                     userService.userId!,
                     style: TextStyle(

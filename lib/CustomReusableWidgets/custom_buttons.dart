@@ -42,3 +42,35 @@ class ElevatedIconButton extends StatelessWidget {
     );
   }
 }
+
+
+class ChangingButton extends StatefulWidget {
+int friendStatus;
+ChangingButton({super.key, required this.friendStatus});
+
+  @override
+  _ChangingButtonState createState() => _ChangingButtonState();
+}
+
+class _ChangingButtonState extends  State<ChangingButton> {
+
+
+
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: (){},
+        style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(Colors.amber)),
+      child: widget.friendStatus == 0 ? Icon(Icons.person_add_alt_rounded) : widget.friendStatus == 1 ? Icon(Icons.person): Icon(Icons.check_circle, color: Colors.green,)
+    );
+  }
+  }

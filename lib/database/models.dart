@@ -57,7 +57,7 @@ class DbNotification{
   Id id = Isar.autoIncrement;
   String? notification;
   String? by;
-  String? date;
+  String? day;
   bool seen = false;
-  DbNotification(this. notification, this.by, this. date);
+  DbNotification(this. notification, this.by, this. day);
 }
