@@ -69,10 +69,6 @@ class LoginPage extends StatelessWidget {
     final isarService = Provider.of<IsarService>(context, listen: false);
 
     try {
-      QuerySnapshot querySnapshot = await firestore
-          .collection('Users')
-          .where('userID', isEqualTo: userId)
-          .get();
       List<DbPrompt> promptsToAdd = List<DbPrompt>.empty(growable: true);
       promptsToAdd = await isarService.getDailyPromptsFromDB();
       //check if user has already logged in
@@ -103,17 +99,14 @@ class LoginPage extends StatelessWidget {
         i++;
       }
 
-      QueryDocumentSnapshot doc = querySnapshot.docs.first;
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      dynamic saved_user = doc.id;
-      dynamic saved_followers = data['followers'];
-      dynamic saved_following = data['following'];
-      dynamic profilePhoto = data['profileImage'];
 
-      userSession.setUserId(saved_user);
-      userSession.setFollowers(saved_followers);
-      userSession.setProfilePhoto(profilePhoto);
-      userSession.setFollowing(saved_following);
+      DbUser? theUser = await getLoggedInUserInfo(firestore, userId);
+      if(theUser!= null) {
+        userSession.setUserId(theUser.username!);
+        userSession.setFollowers(theUser.numFollowers!);
+        userSession.setProfilePhoto(theUser.profilePicture);
+        userSession.setFollowing(theUser.numFollowing!);
+      }
       String? lTime = await getCachedLoginTime();
       userSession.setLoginTime(lTime);
       if (!userSession.firstLogin) {

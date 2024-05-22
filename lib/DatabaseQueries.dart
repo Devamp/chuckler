@@ -87,6 +87,23 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
   }
   return prompts;
 }
+/**
+ * Description Retrieve logged in user information*/
+Future<DbUser?> getLoggedInUserInfo(FirebaseFirestore firestore, String uid) async {
+  try {
+    DocumentSnapshot doc = await firestore.collection("Users").doc(uid).get();
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    dynamic followers = data['followers'];
+    dynamic following = data['following'];
+    dynamic username = data['username'];
+    dynamic profilePicture = data['profileImage'];
+    return DbUser(username, following, followers, profilePicture);
+  }catch(error){
+    print("Error $error");
+    return null;
+  }
+
+}
 
 /**
  * Description: Get the 10 posts from the database...put them in the
@@ -249,6 +266,6 @@ Future<int> friend(FirebaseFirestore firestore, String userFriending,
 
 ///Updates the profile photo url for a user
 Future<void> updateProfilePhoto(
-    FirebaseFirestore firestore, String url, String user) async {
-  await firestore.collection("Users").doc(user).update({'profileImage': url});
+    FirebaseFirestore firestore, String url, String uid) async {
+  await firestore.collection("Users").doc(uid).update({'profileImage': url});
 }
