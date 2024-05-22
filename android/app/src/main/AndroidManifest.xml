@@ -1,8 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:label="chuckler"
+        android:usesCleartextTraffic="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!--TODO REMOVE CLEARTEXT LINE WHEN DEPLOYING --> -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -29,5 +31,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
     </application>
 </manifest>
