@@ -1060,6 +1060,11 @@ const DbPromptSchema = CollectionSchema(
       id: 4,
       name: r'promptId',
       type: IsarType.string,
+    ),
+    r'type': PropertySchema(
+      id: 5,
+      name: r'type',
+      type: IsarType.string,
     )
   },
   estimateSize: _dbPromptEstimateSize,
@@ -1112,6 +1117,12 @@ int _dbPromptEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.type;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -1126,6 +1137,7 @@ void _dbPromptSerialize(
   writer.writeString(offsets[2], object.date);
   writer.writeString(offsets[3], object.promptDateId);
   writer.writeString(offsets[4], object.promptId);
+  writer.writeString(offsets[5], object.type);
 }
 
 DbPrompt _dbPromptDeserialize(
@@ -1140,6 +1152,7 @@ DbPrompt _dbPromptDeserialize(
     reader.readStringOrNull(offsets[3]),
     reader.readStringOrNull(offsets[4]),
     reader.readStringOrNull(offsets[2]),
+    reader.readStringOrNull(offsets[5]),
   );
   object.id = id;
   return object;
@@ -1161,6 +1174,8 @@ P _dbPromptDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2042,6 +2057,152 @@ extension DbPromptQueryFilter
       ));
     });
   }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'type',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'type',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'type',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'type',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'type',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'type',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension DbPromptQueryObject
@@ -2108,6 +2269,18 @@ extension DbPromptQuerySortBy on QueryBuilder<DbPrompt, DbPrompt, QSortBy> {
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByPromptIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'promptId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
     });
   }
 }
@@ -2185,6 +2358,18 @@ extension DbPromptQuerySortThenBy
       return query.addSortBy(r'promptId', Sort.desc);
     });
   }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
+    });
+  }
 }
 
 extension DbPromptQueryWhereDistinct
@@ -2221,6 +2406,13 @@ extension DbPromptQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'promptId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QDistinct> distinctByType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'type', caseSensitive: caseSensitive);
     });
   }
 }
@@ -2260,6 +2452,12 @@ extension DbPromptQueryProperty
   QueryBuilder<DbPrompt, String?, QQueryOperations> promptIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'promptId');
+    });
+  }
+
+  QueryBuilder<DbPrompt, String?, QQueryOperations> typeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'type');
     });
   }
 }

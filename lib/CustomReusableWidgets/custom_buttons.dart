@@ -45,8 +45,10 @@ class ElevatedIconButton extends StatelessWidget {
 
 
 class ChangingButton extends StatefulWidget {
-int friendStatus;
-ChangingButton({super.key, required this.friendStatus});
+int index;
+List<IconData> icons;
+final int Function() pressed;
+ChangingButton({super.key, required this.index, required this.icons, required this.pressed});
 
   @override
   _ChangingButtonState createState() => _ChangingButtonState();
@@ -67,10 +69,27 @@ class _ChangingButtonState extends  State<ChangingButton> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return ElevatedButton(
-        onPressed: (){},
-        style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(Colors.amber)),
-      child: widget.friendStatus == 0 ? Icon(Icons.person_add_alt_rounded) : widget.friendStatus == 1 ? Icon(Icons.person): Icon(Icons.check_circle, color: Colors.green,)
+        onPressed: (){
+          setState(() {
+            widget.index = widget.pressed();
+          });
+        },
+        style: ButtonStyle(
+        backgroundColor:
+        WidgetStateProperty.all<Color>(
+            Colors.amber),
+        foregroundColor:
+        widget.index == (widget.icons.length-1) ?WidgetStateProperty.all<Color>(
+            Colors.green) : WidgetStateProperty.all<Color>(
+            Colors.black),
+        shape: WidgetStateProperty.all<
+            RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+        borderRadius:
+        BorderRadius.circular(12.0)))),
+      child: Icon(widget.icons[widget.index], size: screenHeight/25, )
     );
   }
   }

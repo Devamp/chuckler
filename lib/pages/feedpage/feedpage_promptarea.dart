@@ -9,23 +9,10 @@ class FeedPagePromptArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserService userSession = Provider.of<UserService>(context, listen: false);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Column(
       children: [
-        Text(
-          "Prompt",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: MediaQuery.of(context).size.height / 20,
-              fontFamily: 'OpenSans',
-              fontWeight: FontWeight.normal),
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width / 1.5,
-          height: 4,
-          decoration: const BoxDecoration(color: Colors.amber),
-          margin:const  EdgeInsets.fromLTRB(0, 0, 0, 10),
-        ),
         Expanded(
             flex: 8,
             child: Container(
@@ -62,10 +49,8 @@ class FeedPagePromptArea extends StatelessWidget {
                             ),
                           )),
                     ]))),
-        const Divider(
-          color: Colors.amber,
-          thickness: 5,
-        ),
+       Text("Choose the best answer", style: TextStyle(color: Colors.white, fontFamily: 'Livvic', fontWeight: FontWeight.w600, fontSize: 20),),
+        Container(height: 5, width: screenWidth/1.2, margin: EdgeInsets.all(4), decoration: BoxDecoration(color: const Color(0xFF383838) ),)
       ],
     );
   }

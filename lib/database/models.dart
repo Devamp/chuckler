@@ -24,7 +24,8 @@ class DbPrompt {
   String? promptDateId;
   String? promptId;
   String? date;
-  DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date);
+  String? type;
+  DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date, this.type);
 }
 
 @Collection()

@@ -80,8 +80,9 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
         Map<String,dynamic> data = ds.data() as Map<String,dynamic>;
         dynamic before =  data['before'];
         dynamic after = data['after'];
+        dynamic type = data['type'];
         prompts.add(DbPrompt(before, after, pid, ds.id,
-            utcMidnight.toIso8601String().substring(0, 10)));
+            utcMidnight.toIso8601String().substring(0, 10), type));
       }
     }
   }
