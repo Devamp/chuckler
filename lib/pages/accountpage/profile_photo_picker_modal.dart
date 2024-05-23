@@ -8,14 +8,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:chuckler/Session.dart';
 import 'package:chuckler/DatabaseQueries.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../CustomReusableWidgets/profile_photo.dart';
 class ProfilePhotoPickerModal extends StatelessWidget {
   final String username;
   final String? img;
 
   ProfilePhotoPickerModal({super.key, required this.username, this.img});
-
+  FirebaseAuth auth = FirebaseAuth.instance;
   @override
   build(context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -37,14 +37,14 @@ class ProfilePhotoPickerModal extends StatelessWidget {
           Reference referenceDir = referenceRoot.child('ProfilePhotos');
           //Create a universal unique id for the file
 
-          Reference imageToUpload = referenceDir.child(username);
+          Reference imageToUpload = referenceDir.child(auth.currentUser!.uid);
           try {
             //TODO MAKE SURE THAT AUTHOR IS ADDED TO META DATA AND ONLY THE AUTHOR CAN EDIT
             await imageToUpload.putFile(File(file.path));
             String pfp =await imageToUpload.getDownloadURL();
             if(pfp != userService.profilePhoto) {
               userService.setProfilePhoto(pfp);
-              updateProfilePhoto(firestore, pfp, username);
+              updateProfilePhoto(firestore, pfp, auth.currentUser!.uid);
             }
           } catch (error) {}
         },

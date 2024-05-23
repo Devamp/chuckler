@@ -24,7 +24,8 @@ class DbPrompt {
   String? promptDateId;
   String? promptId;
   String? date;
-  DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date);
+  String? type;
+  DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date, this.type);
 }
 
 @Collection()
@@ -32,11 +33,13 @@ class DbUser {
   Id id = Isar.autoIncrement;
   @Index(unique: true, replace: true)
   String? username;
+  int? numFollowers;
+  int? numFollowing;
   bool follower = false;
   bool following = false;
   bool isCurrentUser = false;
   String profilePicture = "";
-  DbUser(this.username);
+  DbUser(this.username,this.numFollowing,this.numFollowers, this.profilePicture);
 }
 
 

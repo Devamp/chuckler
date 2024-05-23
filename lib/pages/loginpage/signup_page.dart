@@ -38,8 +38,8 @@ class SignupPage extends StatelessWidget {
   ///Register the user with username as doc id
   Future<void> registerUser(String uid) async {
     try {
-      await firestore.collection('Users').doc(username).set({
-        'userID': uid,
+      await firestore.collection('Users').doc(uid).set({
+        'username': username,
         'age': age,
         'followers': 0,
         'following': 0,

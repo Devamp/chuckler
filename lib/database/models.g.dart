@@ -1060,6 +1060,11 @@ const DbPromptSchema = CollectionSchema(
       id: 4,
       name: r'promptId',
       type: IsarType.string,
+    ),
+    r'type': PropertySchema(
+      id: 5,
+      name: r'type',
+      type: IsarType.string,
     )
   },
   estimateSize: _dbPromptEstimateSize,
@@ -1112,6 +1117,12 @@ int _dbPromptEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.type;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -1126,6 +1137,7 @@ void _dbPromptSerialize(
   writer.writeString(offsets[2], object.date);
   writer.writeString(offsets[3], object.promptDateId);
   writer.writeString(offsets[4], object.promptId);
+  writer.writeString(offsets[5], object.type);
 }
 
 DbPrompt _dbPromptDeserialize(
@@ -1140,6 +1152,7 @@ DbPrompt _dbPromptDeserialize(
     reader.readStringOrNull(offsets[3]),
     reader.readStringOrNull(offsets[4]),
     reader.readStringOrNull(offsets[2]),
+    reader.readStringOrNull(offsets[5]),
   );
   object.id = id;
   return object;
@@ -1161,6 +1174,8 @@ P _dbPromptDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2042,6 +2057,152 @@ extension DbPromptQueryFilter
       ));
     });
   }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'type',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'type',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'type',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'type',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'type',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'type',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'type',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension DbPromptQueryObject
@@ -2108,6 +2269,18 @@ extension DbPromptQuerySortBy on QueryBuilder<DbPrompt, DbPrompt, QSortBy> {
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByPromptIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'promptId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
     });
   }
 }
@@ -2185,6 +2358,18 @@ extension DbPromptQuerySortThenBy
       return query.addSortBy(r'promptId', Sort.desc);
     });
   }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'type', Sort.desc);
+    });
+  }
 }
 
 extension DbPromptQueryWhereDistinct
@@ -2221,6 +2406,13 @@ extension DbPromptQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'promptId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QDistinct> distinctByType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'type', caseSensitive: caseSensitive);
     });
   }
 }
@@ -2262,6 +2454,12 @@ extension DbPromptQueryProperty
       return query.addPropertyName(r'promptId');
     });
   }
+
+  QueryBuilder<DbPrompt, String?, QQueryOperations> typeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'type');
+    });
+  }
 }
 
 // coverage:ignore-file
@@ -2290,13 +2488,23 @@ const DbUserSchema = CollectionSchema(
       name: r'isCurrentUser',
       type: IsarType.bool,
     ),
-    r'profilePicture': PropertySchema(
+    r'numFollowers': PropertySchema(
       id: 3,
+      name: r'numFollowers',
+      type: IsarType.long,
+    ),
+    r'numFollowing': PropertySchema(
+      id: 4,
+      name: r'numFollowing',
+      type: IsarType.long,
+    ),
+    r'profilePicture': PropertySchema(
+      id: 5,
       name: r'profilePicture',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'username',
       type: IsarType.string,
     )
@@ -2354,8 +2562,10 @@ void _dbUserSerialize(
   writer.writeBool(offsets[0], object.follower);
   writer.writeBool(offsets[1], object.following);
   writer.writeBool(offsets[2], object.isCurrentUser);
-  writer.writeString(offsets[3], object.profilePicture);
-  writer.writeString(offsets[4], object.username);
+  writer.writeLong(offsets[3], object.numFollowers);
+  writer.writeLong(offsets[4], object.numFollowing);
+  writer.writeString(offsets[5], object.profilePicture);
+  writer.writeString(offsets[6], object.username);
 }
 
 DbUser _dbUserDeserialize(
@@ -2365,13 +2575,15 @@ DbUser _dbUserDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DbUser(
-    reader.readStringOrNull(offsets[4]),
+    reader.readStringOrNull(offsets[6]),
+    reader.readLongOrNull(offsets[4]),
+    reader.readLongOrNull(offsets[3]),
+    reader.readString(offsets[5]),
   );
   object.follower = reader.readBool(offsets[0]);
   object.following = reader.readBool(offsets[1]);
   object.id = id;
   object.isCurrentUser = reader.readBool(offsets[2]);
-  object.profilePicture = reader.readString(offsets[3]);
   return object;
 }
 
@@ -2389,8 +2601,12 @@ P _dbUserDeserializeProp<P>(
     case 2:
       return (reader.readBool(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
+      return (reader.readLongOrNull(offset)) as P;
+    case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2682,6 +2898,144 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isCurrentUser',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'numFollowers',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'numFollowers',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'numFollowers',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'numFollowers',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'numFollowers',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'numFollowers',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'numFollowing',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'numFollowing',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'numFollowing',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'numFollowing',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'numFollowing',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'numFollowing',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -3005,6 +3359,30 @@ extension DbUserQuerySortBy on QueryBuilder<DbUser, DbUser, QSortBy> {
     });
   }
 
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowers() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFollowers', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowersDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFollowers', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowing() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFollowing', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFollowing', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByProfilePicture() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'profilePicture', Sort.asc);
@@ -3079,6 +3457,30 @@ extension DbUserQuerySortThenBy on QueryBuilder<DbUser, DbUser, QSortThenBy> {
     });
   }
 
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowers() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFollowers', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowersDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFollowers', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowing() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFollowing', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowingDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numFollowing', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByProfilePicture() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'profilePicture', Sort.asc);
@@ -3123,6 +3525,18 @@ extension DbUserQueryWhereDistinct on QueryBuilder<DbUser, DbUser, QDistinct> {
     });
   }
 
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumFollowers() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'numFollowers');
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumFollowing() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'numFollowing');
+    });
+  }
+
   QueryBuilder<DbUser, DbUser, QDistinct> distinctByProfilePicture(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -3161,6 +3575,18 @@ extension DbUserQueryProperty on QueryBuilder<DbUser, DbUser, QQueryProperty> {
   QueryBuilder<DbUser, bool, QQueryOperations> isCurrentUserProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isCurrentUser');
+    });
+  }
+
+  QueryBuilder<DbUser, int?, QQueryOperations> numFollowersProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'numFollowers');
+    });
+  }
+
+  QueryBuilder<DbUser, int?, QQueryOperations> numFollowingProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'numFollowing');
     });
   }
 
@@ -3819,6 +4245,938 @@ extension DbCommentQueryProperty
   QueryBuilder<DbComment, String?, QQueryOperations> usernameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'username');
+    });
+  }
+}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+extension GetDbNotificationCollection on Isar {
+  IsarCollection<DbNotification> get dbNotifications => this.collection();
+}
+
+const DbNotificationSchema = CollectionSchema(
+  name: r'DbNotification',
+  id: 4060669196296592869,
+  properties: {
+    r'by': PropertySchema(
+      id: 0,
+      name: r'by',
+      type: IsarType.string,
+    ),
+    r'day': PropertySchema(
+      id: 1,
+      name: r'day',
+      type: IsarType.string,
+    ),
+    r'notification': PropertySchema(
+      id: 2,
+      name: r'notification',
+      type: IsarType.string,
+    ),
+    r'seen': PropertySchema(
+      id: 3,
+      name: r'seen',
+      type: IsarType.bool,
+    )
+  },
+  estimateSize: _dbNotificationEstimateSize,
+  serialize: _dbNotificationSerialize,
+  deserialize: _dbNotificationDeserialize,
+  deserializeProp: _dbNotificationDeserializeProp,
+  idName: r'id',
+  indexes: {},
+  links: {},
+  embeddedSchemas: {},
+  getId: _dbNotificationGetId,
+  getLinks: _dbNotificationGetLinks,
+  attach: _dbNotificationAttach,
+  version: '3.1.0+1',
+);
+
+int _dbNotificationEstimateSize(
+  DbNotification object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  {
+    final value = object.by;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.day;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.notification;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  return bytesCount;
+}
+
+void _dbNotificationSerialize(
+  DbNotification object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeString(offsets[0], object.by);
+  writer.writeString(offsets[1], object.day);
+  writer.writeString(offsets[2], object.notification);
+  writer.writeBool(offsets[3], object.seen);
+}
+
+DbNotification _dbNotificationDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = DbNotification(
+    reader.readStringOrNull(offsets[2]),
+    reader.readStringOrNull(offsets[0]),
+    reader.readStringOrNull(offsets[1]),
+  );
+  object.id = id;
+  object.seen = reader.readBool(offsets[3]);
+  return object;
+}
+
+P _dbNotificationDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readStringOrNull(offset)) as P;
+    case 1:
+      return (reader.readStringOrNull(offset)) as P;
+    case 2:
+      return (reader.readStringOrNull(offset)) as P;
+    case 3:
+      return (reader.readBool(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+Id _dbNotificationGetId(DbNotification object) {
+  return object.id;
+}
+
+List<IsarLinkBase<dynamic>> _dbNotificationGetLinks(DbNotification object) {
+  return [];
+}
+
+void _dbNotificationAttach(
+    IsarCollection<dynamic> col, Id id, DbNotification object) {
+  object.id = id;
+}
+
+extension DbNotificationQueryWhereSort
+    on QueryBuilder<DbNotification, DbNotification, QWhere> {
+  QueryBuilder<DbNotification, DbNotification, QAfterWhere> anyId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+}
+
+extension DbNotificationQueryWhere
+    on QueryBuilder<DbNotification, DbNotification, QWhereClause> {
+  QueryBuilder<DbNotification, DbNotification, QAfterWhereClause> idEqualTo(
+      Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterWhereClause> idNotEqualTo(
+      Id id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterWhereClause> idGreaterThan(
+      Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterWhereClause> idLessThan(
+      Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterWhereClause> idBetween(
+    Id lowerId,
+    Id upperId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension DbNotificationQueryFilter
+    on QueryBuilder<DbNotification, DbNotification, QFilterCondition> {
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      byIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'by',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      byIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'by',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition> byEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'by',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      byGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'by',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      byLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'by',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition> byBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'by',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      byStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'by',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      byEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'by',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      byContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'by',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition> byMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'by',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      byIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'by',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      byIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'by',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'day',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'day',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'day',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'day',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'day',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'day',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      dayIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'day',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition> idEqualTo(
+      Id value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      idGreaterThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      idLessThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition> idBetween(
+    Id lower,
+    Id upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'notification',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'notification',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'notification',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'notification',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'notification',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'notification',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'notification',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'notification',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'notification',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'notification',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'notification',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      notificationIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'notification',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterFilterCondition>
+      seenEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'seen',
+        value: value,
+      ));
+    });
+  }
+}
+
+extension DbNotificationQueryObject
+    on QueryBuilder<DbNotification, DbNotification, QFilterCondition> {}
+
+extension DbNotificationQueryLinks
+    on QueryBuilder<DbNotification, DbNotification, QFilterCondition> {}
+
+extension DbNotificationQuerySortBy
+    on QueryBuilder<DbNotification, DbNotification, QSortBy> {
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> sortByBy() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'by', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> sortByByDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'by', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> sortByDay() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> sortByDayDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy>
+      sortByNotification() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notification', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy>
+      sortByNotificationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notification', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> sortBySeen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'seen', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> sortBySeenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'seen', Sort.desc);
+    });
+  }
+}
+
+extension DbNotificationQuerySortThenBy
+    on QueryBuilder<DbNotification, DbNotification, QSortThenBy> {
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> thenByBy() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'by', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> thenByByDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'by', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> thenByDay() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> thenByDayDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'day', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy>
+      thenByNotification() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notification', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy>
+      thenByNotificationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notification', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> thenBySeen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'seen', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QAfterSortBy> thenBySeenDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'seen', Sort.desc);
+    });
+  }
+}
+
+extension DbNotificationQueryWhereDistinct
+    on QueryBuilder<DbNotification, DbNotification, QDistinct> {
+  QueryBuilder<DbNotification, DbNotification, QDistinct> distinctByBy(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'by', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QDistinct> distinctByDay(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'day', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QDistinct>
+      distinctByNotification({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'notification', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbNotification, DbNotification, QDistinct> distinctBySeen() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'seen');
+    });
+  }
+}
+
+extension DbNotificationQueryProperty
+    on QueryBuilder<DbNotification, DbNotification, QQueryProperty> {
+  QueryBuilder<DbNotification, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<DbNotification, String?, QQueryOperations> byProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'by');
+    });
+  }
+
+  QueryBuilder<DbNotification, String?, QQueryOperations> dayProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'day');
+    });
+  }
+
+  QueryBuilder<DbNotification, String?, QQueryOperations>
+      notificationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'notification');
+    });
+  }
+
+  QueryBuilder<DbNotification, bool, QQueryOperations> seenProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'seen');
     });
   }
 }

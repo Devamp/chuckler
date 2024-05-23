@@ -12,7 +12,12 @@ class CommentModal extends StatelessWidget {
   final cfData;
   final screenHeight;
   final screenWidth;
-  const CommentModal({super.key, required this.cfData, required this.screenWidth, required this.screenHeight});
+
+  const CommentModal(
+      {super.key,
+      required this.cfData,
+      required this.screenWidth,
+      required this.screenHeight});
 
   @override
   Widget build(BuildContext context) {
@@ -72,21 +77,19 @@ class CommentModal extends StatelessWidget {
                                 Container(
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                    child:  ElevatedIconButton(
-                                        color: Colors.amber,
-                                        iconColor: Colors.black,
-                                        fractionHeight: 25,
-                                        icon: Icons.thumb_up_off_alt_rounded,
-                                      onPressed: (){}
-                                    )),
+                                    //TODO add like function
+                                    child: ChangingButton(index: 0, icons: [Icons.thumb_up_off_alt_rounded, Icons.thumb_up_off_alt_rounded],pressed: (){return 1;})),
                                 Container(
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                    child: const ElevatedIconButton(
-                                        color: Colors.amber,
-                                        iconColor: Colors.black,
-                                        fractionHeight: 25,
-                                        icon: Icons.person_add_alt_rounded))
+                                    child: ChangingButton(index: 0, icons: [
+                                      Icons.person_add_alt_rounded,
+                                      Icons.person,
+                                      Icons.check_circle
+                                    ],
+                                      //TODO add following function
+                                      pressed: (){ return 2;},
+                                    ))
                               ]),
                         ),
                         Expanded(
@@ -108,7 +111,13 @@ class CommentModal extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Expanded(flex: 6, child: CommentForm(cfData: cfData, screenHeight: screenHeight, screenWidth: screenWidth,)),
+                        Expanded(
+                            flex: 6,
+                            child: CommentForm(
+                              cfData: cfData,
+                              screenHeight: screenHeight,
+                              screenWidth: screenWidth,
+                            )),
                         Expanded(
                           flex: 1,
                           child: Container(
@@ -142,7 +151,7 @@ class CommentModal extends StatelessWidget {
                         ),
                       ],
                     ))),
-           Container(
+            Container(
               constraints:
                   BoxConstraints.tight(Size(screenWidth, screenHeight / 4)),
             )
