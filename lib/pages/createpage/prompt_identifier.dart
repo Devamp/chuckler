@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 
 class PromptIdentifier extends StatelessWidget {
-  const PromptIdentifier({super.key});
+   const PromptIdentifier({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +22,10 @@ class PromptIdentifier extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.center,
                       constraints: BoxConstraints.tight(Size(screenWidth/1.5,double.infinity)),
-                        child: const Text(
+                        child:  Text(
                           textAlign: TextAlign.center,
                   "HERE IS WHAT A DAILY IS!",
-                  style: TextStyle(color: Colors.white, decoration: TextDecoration.none),
+                  style: Theme.of(context).textTheme.displayMedium,
                 )));
               });
         },

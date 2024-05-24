@@ -47,7 +47,7 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
     double screenHeight = MediaQuery.of(context).size.height;
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       AutoSizeText(
-        timeRemaining + " hours remaining", style: TextStyle(color: Colors.white),
+        timeRemaining + " hours remaining", style: Theme.of(context).textTheme.bodySmall,
         minFontSize: 1,maxFontSize: 8,
 
     ),

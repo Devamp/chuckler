@@ -26,11 +26,7 @@ final havePosted = true;
             'Chuckler',
             textAlign: TextAlign.center,
           ),
-          titleTextStyle: const TextStyle(
-              color: Color(0xFFffd230),
-              fontFamily: 'Livvic',
-              fontSize: 40,
-              fontWeight: FontWeight.bold),
+          titleTextStyle: Theme.of(context).textTheme.displayMedium,
           backgroundColor: Colors.black,
         ),
         body: havePosted ? const CreateForm() : const NoUserPost());

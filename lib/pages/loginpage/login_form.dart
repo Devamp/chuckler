@@ -171,6 +171,7 @@ class _LoginFormState extends State<LoginForm> {
                   height: 10,
                 ),
                 TextField(
+                  cursorColor: Colors.white,
                   onChanged: (text) {
                     resetEmail = text;
                   },
@@ -235,6 +236,7 @@ class _LoginFormState extends State<LoginForm> {
       children: [
         const SizedBox(height: 30),
         TextField(
+           cursorColor: Colors.white,
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
           style: const TextStyle(color: Colors.white),
@@ -257,6 +259,7 @@ class _LoginFormState extends State<LoginForm> {
         ),
         const SizedBox(height: 10),
         TextField(
+           cursorColor: Colors.white,
           controller: _passwordController,
           keyboardType: TextInputType.visiblePassword,
           obscureText: true,
