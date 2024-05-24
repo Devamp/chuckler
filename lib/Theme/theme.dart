@@ -40,6 +40,11 @@ ThemeData lightThemeData(BuildContext context) {
   return ThemeData(
     scaffoldBackgroundColor: lightThemeColors(context).onPrimary,
     textTheme: TextTheme(
+      displayMedium: const TextStyle(
+          color: Color(0xFFffd230),
+          fontFamily: 'Livvic',
+          fontSize: 40,
+          fontWeight: FontWeight.bold),
       headlineLarge: TextStyle(
           color:  lightThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
@@ -87,6 +92,11 @@ ThemeData darkThemeData(BuildContext context) {
   return ThemeData(
     scaffoldBackgroundColor: darkThemeColors(context).surface,
     textTheme: TextTheme(
+      displayMedium: const TextStyle(
+          color: Color(0xFFffd230),
+          fontFamily: 'Livvic',
+          fontSize: 40,
+          fontWeight: FontWeight.bold),
       headlineLarge: TextStyle(
           color: darkThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',

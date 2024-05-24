@@ -1,8 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chuckler/DatabaseQueries.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 import 'package:chuckler/pages/feedpage/comment_form.dart';
+import 'package:provider/provider.dart';
 
 /**
  * The following is the code for the LONG tap modal
@@ -78,7 +81,10 @@ class CommentModal extends StatelessWidget {
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),
                                     //TODO add like function
-                                    child: ChangingButton(index: 0, icons: [Icons.thumb_up_off_alt_rounded, Icons.thumb_up_off_alt_rounded],pressed: (){return 1;})),
+                                    child: ChangingButton(index: 0, icons: [Icons.thumb_up_off_alt, Icons.thumb_up_off_alt_rounded],pressed: (){
+                                      FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false);
+                                      //likeAPost(firestore, usernameLiker, postId, postOwnerUid)
+                                      return 1;})),
                                 Container(
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),

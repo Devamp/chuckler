@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import './firebase/firebase_options.dart';
 import 'Session.dart';
 import 'database/isarDB.dart';
+import 'Theme/theme.dart';
 
 Future<void> main() async {
   DefaultFirebaseOptions fb = DefaultFirebaseOptions();
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Chuckler',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.amber),
+      theme: darkThemeData(context),
       initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );

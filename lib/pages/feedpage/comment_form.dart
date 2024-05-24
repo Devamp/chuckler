@@ -69,7 +69,7 @@ class _CommentFormState extends State<CommentForm> {
               itemBuilder: (context, index) {
                 return Text(
                   comments[index].comment!,
-                  style: const TextStyle(color: Colors.white, fontSize: 10),
+                  style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 );
               })),

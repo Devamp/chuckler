@@ -191,15 +191,15 @@ Future<List<DbComment>> getComments(
     When liking a post we will create a like-relationship document, and incrament the posts number of likes
  */
 Future<void> likeAPost(
-    FirebaseFirestore firestore, String usernameLiker, String postId) async {
+    FirebaseFirestore firestore, String likerUid, String postId, String postOwnerUid) async {
   DateTime now = DateTime.now().toUtc();
 
   final timestamp = Timestamp.fromDate(now);
   try {
     firestore
-        .collection("PostLikes")
+        .collection("Notifications")
         .doc()
-        .set({'postId': postId, 'liker': usernameLiker, 'date': timestamp});
+        .set({'type': "like", 'postId': postId, 'liker': likerUid, 'date': timestamp, 'notify': [postOwnerUid]});
     firestore
         .collection("Posts")
         .doc(postId)
@@ -224,45 +224,13 @@ Future<void> postWin(FirebaseFirestore firestore, String postId) async {
 /// ADDS a following document when a user creates a follow...This can be used bidirectionally
 /// inorder to minimize both the reads and writes for document
 /// Returns 0 if pending, 1 if friended, and -1 if error
-Future<int> friend(FirebaseFirestore firestore, String userFriending,
-    String userToFriend) async {
+Future<int> friend(FirebaseFirestore firestore, String userFriendingUid,
+    String userToFriendUid) async {
+  //TODO finish implementing friending
   DateTime now = DateTime.now().toUtc();
 
   final timestamp = Timestamp.fromDate(now);
-  try {
-    final friendsColRef = firestore.collection("Friends");
-    final snapshot = await friendsColRef
-        .where(Filter.or(
-            Filter.and(Filter('user1', isEqualTo: userFriending),
-                Filter('user2', isEqualTo: userToFriend)),
-            Filter.and(Filter('user2', isEqualTo: userFriending),
-                Filter('user1', isEqualTo: userToFriend))))
-        .limit(1)
-        .get();
-    if (snapshot.docs.isEmpty) {
-      await friendsColRef.doc().set({
-        'user1': userFriending,
-        'user2': userToFriend,
-        'pending': true,
-        'date': timestamp
-      });
-      return 0;
-    } else {
-      bool pending = snapshot.docs.first.get(FieldPath(['pending']));
-      String user1 = snapshot.docs.first.get(FieldPath(['user1']));
-      if (pending && (user1 != userFriending)) {
-        snapshot.docs.first.reference.update(
-          {'pending': false, 'date': timestamp},
-        );
-        return 1;
-      } else {
-        return 0;
-      }
-    }
-  } catch (error) {
-    print("Error following");
-    return -1;
-  }
+ return 0;
 }
 
 ///Updates the profile photo url for a user

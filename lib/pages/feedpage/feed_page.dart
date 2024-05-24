@@ -9,10 +9,12 @@ import '../../database/isarDB.dart';
 import 'feedpage_modal.dart';
 import 'feedpage_promptarea.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
+import 'no_user_post.dart';
 
 class FeedPage extends StatelessWidget {
   const FeedPage({super.key});
-
+  //TODO REPLACE WITH DYNAMIC DATA
+final havePosted = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +33,7 @@ class FeedPage extends StatelessWidget {
               fontWeight: FontWeight.bold),
           backgroundColor: Colors.black,
         ),
-        body: const CreateForm());
+        body: havePosted ? const CreateForm() : const NoUserPost());
   }
 }
 
