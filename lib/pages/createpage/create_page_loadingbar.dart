@@ -53,7 +53,7 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
     double screenHeight = MediaQuery.of(context).size.height;
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Expanded(
-          flex: 4,
+          flex: 5,
           child: Text(
             timeRemaining + (timeLeft > 1 ? " hours left" : " hour left"),
             style: TextStyle(
@@ -63,7 +63,7 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
               fontWeight: FontWeight.w700
             ),
           )),
-      Expanded(flex: 4, child: Container()),
+      Expanded(flex: 3, child: Container()),
       Expanded(
           flex: 8,
           child: Container(
@@ -72,7 +72,7 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
               height: 30,
               child: Row(children: [
                 ProfilePhoto(username: "Text", img: "", radius: 15),
-                Text("+ 100 answered",
+                Text(" +100 answered",
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'OpenSans',

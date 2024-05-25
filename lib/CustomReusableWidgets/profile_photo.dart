@@ -21,7 +21,7 @@ class ProfilePhoto extends StatelessWidget {
               ? ProfilePicture(
                   name: username,
                   radius: radius,
-                  fontsize: (radius - 10),
+                  fontsize: (radius*0.9),
                 )
               : Container(
                   width: radius * 2,
