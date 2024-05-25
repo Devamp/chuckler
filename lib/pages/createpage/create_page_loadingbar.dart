@@ -1,3 +1,4 @@
+import 'package:chuckler/CustomReusableWidgets/profile_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
@@ -12,6 +13,9 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
     with TickerProviderStateMixin {
   var _progressValue = 0.0;
   String timeRemaining = "";
+  int timeLeft = 0;
+
+
 
   //Set the progress indicator
   void _updateProgress() {
@@ -29,8 +33,10 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
     final progressValue =
         1 - ((totalSecondsInDay - secondsRemaining) / totalSecondsInDay);
 
+
     // Update state and potentially rebuild the widget
     setState(() {
+      timeLeft = hoursRemaining;
       _progressValue = progressValue;
       timeRemaining = hoursRemaining.toString();
     });
@@ -45,20 +51,44 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      AutoSizeText(
-        timeRemaining + " hours remaining", style: Theme.of(context).textTheme.bodySmall,
-        minFontSize: 1,maxFontSize: 8,
-
-    ),
-
-      Container(
-        margin: EdgeInsets.fromLTRB(0,0,0, 8),
-          child: LinearProgressIndicator(
-              borderRadius: BorderRadius.circular(10),
-              value: _progressValue,
-              backgroundColor: Colors.white,
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.red)))
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Expanded(
+          flex: 4,
+          child: Text(
+            timeRemaining + (timeLeft > 1 ? " hours left" : " hour left"),
+            style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'OpenSans',
+                fontSize: screenHeight / 70,
+              fontWeight: FontWeight.w700
+            ),
+          )),
+      Expanded(flex: 4, child: Container()),
+      Expanded(
+          flex: 8,
+          child: Container(
+            alignment: Alignment.centerRight,
+            decoration: BoxDecoration(),
+              height: 30,
+              child: Row(children: [
+                ProfilePhoto(username: "Text", img: "", radius: 15),
+                Text("+ 100 answered",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'OpenSans',
+                        fontSize: screenHeight / 70))
+              ]))),
+      /*RichText(
+            textAlign: TextAlign.center,
+              maxLines: 1,
+              text: TextSpan(
+                  children: [
+            WidgetSpan(
+                child: ),
+            TextSpan(
+                text: "+ 100 answered this",
+                style: Theme.of(context).textTheme.bodySmall)
+          ]))*/
     ]);
   }
 }

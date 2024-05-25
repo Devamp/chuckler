@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 import '../../database/models.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 import 'prompt_identifier.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class CreatePageContent extends StatefulWidget {
   const CreatePageContent({super.key});
@@ -22,7 +24,8 @@ class CreatePageContent extends StatefulWidget {
   _CreatePageContentState createState() => _CreatePageContentState();
 }
 
-class _CreatePageContentState extends State<CreatePageContent> {
+class _CreatePageContentState extends State<CreatePageContent>
+    with WidgetsBindingObserver {
   final TextEditingController _controller =
       TextEditingController(text: "Answer the Prompt Here");
 
@@ -37,6 +40,7 @@ class _CreatePageContentState extends State<CreatePageContent> {
   List<String> textControllerStates = List.empty(growable: true);
   var promptVal = 0;
   FocusNode focusNode = FocusNode();
+  bool keyBoardOut = false;
 
   /*
   This Function sends the post to the data base with the current text
@@ -105,7 +109,13 @@ class _CreatePageContentState extends State<CreatePageContent> {
   void initState() {
     super.initState();
     focusNode.addListener(() {
-      setState(() {});
+      if(!focusNode.hasFocus){
+        if (_controller.text.trim().isEmpty) {
+          _controller.text = "Answer the Prompt Here";
+        }
+      }
+      setState(() {
+      });
     });
     checkTheUser();
   }
@@ -145,10 +155,10 @@ class _CreatePageContentState extends State<CreatePageContent> {
       children: [
         //Prompt Area
         Expanded(
-            flex: 55,
+            flex: 50,
             child: Container(
               constraints: BoxConstraints.tight(
-                  Size(screenWidth / 1.2, double.infinity)),
+                  Size(screenWidth / 1.1, double.infinity)),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.amber, width: 5)),
@@ -177,6 +187,10 @@ class _CreatePageContentState extends State<CreatePageContent> {
                       maxLines: 10,
                       minFontSize: 2,
                     ))),
+                Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
                 Expanded(
                     flex: 6,
                     child: Row(
@@ -231,58 +245,104 @@ class _CreatePageContentState extends State<CreatePageContent> {
                 Expanded(flex: 1, child: Container())
               ]),
             )),
+        !focusNode.hasFocus
+            ? Expanded(
+                flex: 12,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ChangingButton(
+                          index: 0,
+                          icons: [
+                            Icons.thumb_up_off_alt,
+                            Icons.thumb_up
+                          ],
+                          pressed: () {
+                            return 1;
+                          }),
+                      IconButton(onPressed: (){}, icon: Icon(Icons.info, color: Colors.grey,)),
+                      ChangingButton(
+                          index: 0,
+                          icons: [
+                            Icons.thumb_down_off_alt,
+                            Icons.thumb_down
+                          ],
+                          pressed: () {
+                            return 1;
+                          })
+                    ],
+                  ),
+                ),
+              )
+            : Expanded(flex: 1, child: Container()),
         Expanded(
-            flex: 35,
+            flex: 25,
             child: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
                 child: Container(
                     constraints: BoxConstraints.tight(
                         Size(double.infinity, screenHeight / 3)),
-                    child: Column(children: [
-                      Expanded(flex: 10, child: Container()),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                      Expanded(flex: 2, child: Container()),
 //Text Box Container - INPUT
                       Expanded(
                         flex: 30,
                         child: Column(children: [
-                          TextField(
-                            controller: _controller,
-                            onTap: () {
-                              if (_controller.text.trim() ==
-                                  "Answer the Prompt Here") {
-                                _controller.text = "";
-                                setState(() {});
-                              }
-                            },
-                            onTapOutside: (pointer) {
-                              print(_controller.text.trim());
-                              if (_controller.text.trim().isEmpty) {
-                                _controller.text = "Answer the Prompt Here";
-                                setState(() {});
-                              }
+                          KeyboardVisibilityBuilder(
+                              builder: (context, isKeyboardVisible) {
+                            if (isKeyboardVisible == true) {
+                              keyBoardOut = true;
+                            }
+                            if (!isKeyboardVisible && keyBoardOut) {
+                              keyBoardOut = false;
                               focusNode.unfocus();
-                            },
-                            onChanged: (text) {
-                              setState(() {});
-                            },
-                            maxLines: 4,
-                            minLines: 1,
-                            maxLength: 500,
-                            keyboardType: TextInputType.multiline,
-                            cursorColor: Colors.white,
-                            focusNode: focusNode,
-                            style: const TextStyle(color: Colors.amber),
-                            decoration: InputDecoration(
-                              constraints: BoxConstraints(
-                                maxWidth: screenWidth / 1.5,
+                            }
+                            return TextField(
+                              textInputAction: TextInputAction.go,
+                              controller: _controller,
+                              onEditingComplete: () {
+                                print("This happened");
+                                focusNode.unfocus();
+                              },
+                              onTap: () {
+                                if (_controller.text.trim() ==
+                                    "Answer the Prompt Here") {
+                                  _controller.text = "";
+                                  setState(() {});
+                                }
+                              },
+                              onTapOutside: (pointer) {
+                                focusNode.unfocus();
+                              },
+                              onChanged: (text) {
+                                setState(() {});
+                              },
+                              maxLines: 4,
+                              minLines: 1,
+                              maxLength: 500,
+                              keyboardType: TextInputType.multiline,
+                              cursorColor: Colors.white,
+                              focusNode: focusNode,
+                              style: const TextStyle(color: Colors.amber),
+                              decoration: InputDecoration(
+                                constraints: BoxConstraints(
+                                  maxWidth: screenWidth / 1.5,
+                                ),
+                                hintText: "Answer Prompt Here",
+                                border: const OutlineInputBorder(),
+                                focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.amber, width: 3)),
+                                contentPadding: const EdgeInsets.all(10),
                               ),
-                              hintText: "Answer Prompt Here",
-                              border: const OutlineInputBorder(),
-                              focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.amber, width: 3)),
-                              contentPadding: const EdgeInsets.all(10),
-                            ),
-                          ),
+                            );
+                          }),
                           Container(
                               color: Colors.black,
 //Row For the Post Button
