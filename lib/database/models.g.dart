@@ -2473,38 +2473,33 @@ const DbUserSchema = CollectionSchema(
   name: r'DbUser',
   id: -9131662857584035194,
   properties: {
-    r'follower': PropertySchema(
+    r'friend': PropertySchema(
       id: 0,
-      name: r'follower',
-      type: IsarType.bool,
-    ),
-    r'following': PropertySchema(
-      id: 1,
-      name: r'following',
+      name: r'friend',
       type: IsarType.bool,
     ),
     r'isCurrentUser': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'isCurrentUser',
       type: IsarType.bool,
     ),
-    r'numFollowers': PropertySchema(
-      id: 3,
-      name: r'numFollowers',
+    r'numFriends': PropertySchema(
+      id: 2,
+      name: r'numFriends',
       type: IsarType.long,
     ),
-    r'numFollowing': PropertySchema(
-      id: 4,
-      name: r'numFollowing',
+    r'numPosts': PropertySchema(
+      id: 3,
+      name: r'numPosts',
       type: IsarType.long,
     ),
     r'profilePicture': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'profilePicture',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'username',
       type: IsarType.string,
     )
@@ -2559,13 +2554,12 @@ void _dbUserSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.follower);
-  writer.writeBool(offsets[1], object.following);
-  writer.writeBool(offsets[2], object.isCurrentUser);
-  writer.writeLong(offsets[3], object.numFollowers);
-  writer.writeLong(offsets[4], object.numFollowing);
-  writer.writeString(offsets[5], object.profilePicture);
-  writer.writeString(offsets[6], object.username);
+  writer.writeBool(offsets[0], object.friend);
+  writer.writeBool(offsets[1], object.isCurrentUser);
+  writer.writeLong(offsets[2], object.numFriends);
+  writer.writeLong(offsets[3], object.numPosts);
+  writer.writeString(offsets[4], object.profilePicture);
+  writer.writeString(offsets[5], object.username);
 }
 
 DbUser _dbUserDeserialize(
@@ -2575,15 +2569,14 @@ DbUser _dbUserDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DbUser(
-    reader.readStringOrNull(offsets[6]),
-    reader.readLongOrNull(offsets[4]),
+    reader.readStringOrNull(offsets[5]),
+    reader.readLongOrNull(offsets[2]),
     reader.readLongOrNull(offsets[3]),
-    reader.readString(offsets[5]),
+    reader.readString(offsets[4]),
   );
-  object.follower = reader.readBool(offsets[0]);
-  object.following = reader.readBool(offsets[1]);
+  object.friend = reader.readBool(offsets[0]);
   object.id = id;
-  object.isCurrentUser = reader.readBool(offsets[2]);
+  object.isCurrentUser = reader.readBool(offsets[1]);
   return object;
 }
 
@@ -2599,14 +2592,12 @@ P _dbUserDeserializeProp<P>(
     case 1:
       return (reader.readBool(offset)) as P;
     case 2:
-      return (reader.readBool(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
       return (reader.readLongOrNull(offset)) as P;
     case 4:
-      return (reader.readLongOrNull(offset)) as P;
-    case 5:
       return (reader.readString(offset)) as P;
-    case 6:
+    case 5:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2820,21 +2811,11 @@ extension DbUserQueryWhere on QueryBuilder<DbUser, DbUser, QWhereClause> {
 }
 
 extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> followerEqualTo(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendEqualTo(
       bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'follower',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> followingEqualTo(
-      bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'following',
+        property: r'friend',
         value: value,
       ));
     });
@@ -2902,59 +2883,59 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersIsNull() {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'numFollowers',
+        property: r'numFriends',
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersIsNotNull() {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'numFollowers',
+        property: r'numFriends',
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersEqualTo(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsEqualTo(
       int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'numFollowers',
+        property: r'numFriends',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersGreaterThan(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsGreaterThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'numFollowers',
+        property: r'numFriends',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersLessThan(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsLessThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'numFollowers',
+        property: r'numFriends',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersBetween(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -2962,7 +2943,7 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'numFollowers',
+        property: r'numFriends',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -2971,59 +2952,59 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingIsNull() {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'numFollowing',
+        property: r'numPosts',
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingIsNotNull() {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'numFollowing',
+        property: r'numPosts',
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingEqualTo(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsEqualTo(
       int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'numFollowing',
+        property: r'numPosts',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingGreaterThan(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsGreaterThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'numFollowing',
+        property: r'numPosts',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingLessThan(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsLessThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'numFollowing',
+        property: r'numPosts',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingBetween(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -3031,7 +3012,7 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'numFollowing',
+        property: r'numPosts',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -3323,27 +3304,15 @@ extension DbUserQueryObject on QueryBuilder<DbUser, DbUser, QFilterCondition> {}
 extension DbUserQueryLinks on QueryBuilder<DbUser, DbUser, QFilterCondition> {}
 
 extension DbUserQuerySortBy on QueryBuilder<DbUser, DbUser, QSortBy> {
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollower() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFriend() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'follower', Sort.asc);
+      return query.addSortBy(r'friend', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollowerDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFriendDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'follower', Sort.desc);
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollowing() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'following', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollowingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'following', Sort.desc);
+      return query.addSortBy(r'friend', Sort.desc);
     });
   }
 
@@ -3359,27 +3328,27 @@ extension DbUserQuerySortBy on QueryBuilder<DbUser, DbUser, QSortBy> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowers() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowers', Sort.asc);
+      return query.addSortBy(r'numFriends', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowersDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFriendsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowers', Sort.desc);
+      return query.addSortBy(r'numFriends', Sort.desc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowing() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumPosts() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowing', Sort.asc);
+      return query.addSortBy(r'numPosts', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowingDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumPostsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowing', Sort.desc);
+      return query.addSortBy(r'numPosts', Sort.desc);
     });
   }
 
@@ -3409,27 +3378,15 @@ extension DbUserQuerySortBy on QueryBuilder<DbUser, DbUser, QSortBy> {
 }
 
 extension DbUserQuerySortThenBy on QueryBuilder<DbUser, DbUser, QSortThenBy> {
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollower() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFriend() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'follower', Sort.asc);
+      return query.addSortBy(r'friend', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollowerDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFriendDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'follower', Sort.desc);
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollowing() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'following', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollowingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'following', Sort.desc);
+      return query.addSortBy(r'friend', Sort.desc);
     });
   }
 
@@ -3457,27 +3414,27 @@ extension DbUserQuerySortThenBy on QueryBuilder<DbUser, DbUser, QSortThenBy> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowers() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowers', Sort.asc);
+      return query.addSortBy(r'numFriends', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowersDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFriendsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowers', Sort.desc);
+      return query.addSortBy(r'numFriends', Sort.desc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowing() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumPosts() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowing', Sort.asc);
+      return query.addSortBy(r'numPosts', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowingDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumPostsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowing', Sort.desc);
+      return query.addSortBy(r'numPosts', Sort.desc);
     });
   }
 
@@ -3507,15 +3464,9 @@ extension DbUserQuerySortThenBy on QueryBuilder<DbUser, DbUser, QSortThenBy> {
 }
 
 extension DbUserQueryWhereDistinct on QueryBuilder<DbUser, DbUser, QDistinct> {
-  QueryBuilder<DbUser, DbUser, QDistinct> distinctByFollower() {
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByFriend() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'follower');
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QDistinct> distinctByFollowing() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'following');
+      return query.addDistinctBy(r'friend');
     });
   }
 
@@ -3525,15 +3476,15 @@ extension DbUserQueryWhereDistinct on QueryBuilder<DbUser, DbUser, QDistinct> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumFollowers() {
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'numFollowers');
+      return query.addDistinctBy(r'numFriends');
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumFollowing() {
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumPosts() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'numFollowing');
+      return query.addDistinctBy(r'numPosts');
     });
   }
 
@@ -3560,15 +3511,9 @@ extension DbUserQueryProperty on QueryBuilder<DbUser, DbUser, QQueryProperty> {
     });
   }
 
-  QueryBuilder<DbUser, bool, QQueryOperations> followerProperty() {
+  QueryBuilder<DbUser, bool, QQueryOperations> friendProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'follower');
-    });
-  }
-
-  QueryBuilder<DbUser, bool, QQueryOperations> followingProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'following');
+      return query.addPropertyName(r'friend');
     });
   }
 
@@ -3578,15 +3523,15 @@ extension DbUserQueryProperty on QueryBuilder<DbUser, DbUser, QQueryProperty> {
     });
   }
 
-  QueryBuilder<DbUser, int?, QQueryOperations> numFollowersProperty() {
+  QueryBuilder<DbUser, int?, QQueryOperations> numFriendsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'numFollowers');
+      return query.addPropertyName(r'numFriends');
     });
   }
 
-  QueryBuilder<DbUser, int?, QQueryOperations> numFollowingProperty() {
+  QueryBuilder<DbUser, int?, QQueryOperations> numPostsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'numFollowing');
+      return query.addPropertyName(r'numPosts');
     });
   }
 

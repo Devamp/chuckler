@@ -33,13 +33,12 @@ class DbUser {
   Id id = Isar.autoIncrement;
   @Index(unique: true, replace: true)
   String? username;
-  int? numFollowers;
-  int? numFollowing;
-  bool follower = false;
-  bool following = false;
+  int? numFriends;
+  int? numPosts;
+  bool friend = false;
   bool isCurrentUser = false;
   String profilePicture = "";
-  DbUser(this.username,this.numFollowing,this.numFollowers, this.profilePicture);
+  DbUser(this.username,this.numFriends, this.numPosts, this.profilePicture);
 }
 
 

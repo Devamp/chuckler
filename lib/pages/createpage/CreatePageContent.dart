@@ -1,7 +1,5 @@
 // ignore_for_file: unused_local_variable
-
-import 'dart:math';
-
+import 'package:chuckler/DatabaseQueries.dart';
 import 'package:chuckler/pages/createpage/create_page_loadingbar.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -59,30 +57,18 @@ class _CreatePageContentState extends State<CreatePageContent>
           .limit(1)
           .get();
       if (docRef.docs.isEmpty) {
-        //if he/she has not already posted post
-        final now = DateTime.now().toUtc();
-        final timestamp = Timestamp.fromDate(now);
-        CollectionReference collection = firebase.collection('Posts');
-        var rng = Random();
-        var random1 = rng.nextInt(pow(2, 32).toInt());
-        var random2 = rng.nextInt(pow(2, 32).toInt());
-        var bigRandom = (random1 << 32) | random2;
         canPost[promptVal] = false;
-        return collection
-            .add({
-              'answer': _controller.text,
-              'dislikes': 0,
-              'likes': 0,
-              'wins': 0,
-              'uid': userId,
-              'username': userName,
-              'promptId': promptId,
-              'random': bigRandom,
-              'promptDateId': promtDateId,
-              'date': timestamp
-            })
-            .then((value) => print("Data Added"))
-            .catchError((error) => print("Failed to add data: $error"));
+        try {
+          createPost(firebase, _controller.text, userId, userName, promptId,
+              promtDateId
+          );
+          incrementNumPosts(firebase, userId);
+        }
+        catch(error){
+          print("Error: $error");
+        }
+        return;
+
       } else {
         canPost[promptVal] = false;
       }

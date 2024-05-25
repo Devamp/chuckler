@@ -41,8 +41,8 @@ class SignupPage extends StatelessWidget {
       await firestore.collection('Users').doc(uid).set({
         'username': username,
         'age': age,
-        'followers': 0,
-        'following': 0,
+        'friends': 0,
+        'posts': 0,
         'profileImage': ""
       });
     } catch (e) {

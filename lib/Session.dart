@@ -9,15 +9,15 @@ class UserService with ChangeNotifier {
   String? _postAnswer;
   String? _loginTime;
   String? _profilePhoto;
-  int? _following;
-  int? _followers;
+  int? _friends;
+  int? _numPosts;
   List<DbPrompt> _prompts = List.empty(growable: true);
   List<DbPost> _currentPosts = List<DbPost>.empty(growable: true);
   String? _currentFeedPromptId;
   String? get userId => _userId;
   String? get currentFeedPromptId => _currentFeedPromptId;
-  int? get following => _following;
-  int? get followers => _followers;
+  int? get friends => _friends;
+  int? get numPosts => _numPosts;
   String? get postAnswer => _postAnswer;
   String? get logTime => _loginTime;
   String? get profilePhoto => _profilePhoto;
@@ -67,13 +67,13 @@ class UserService with ChangeNotifier {
   }
 
 
-  void setFollowing(int followingCount) {
-    _following = followingCount;
+  void setNumPosts(int numPosts) {
+    _numPosts = numPosts;
     notifyListeners();
   }
 
-  void setFollowers(int followersCount) {
-    _followers = followersCount;
+  void setFriends(int friendCount) {
+    _friends = friendCount;
     notifyListeners();
   }
 
@@ -88,13 +88,13 @@ class UserService with ChangeNotifier {
 
   }
 
-  void clearFollowing() {
-    _following = null;
+  void clearFriends() {
+    _friends = null;
 
   }
 
-  void clearFollowers() {
-    _followers = null;
+  void clearNumPosts() {
+    _numPosts = null;
 
   }
 
@@ -113,8 +113,8 @@ class UserService with ChangeNotifier {
 
   void logout() {
     clearUserId();
-    clearFollowing();
-    clearFollowers();
+    clearFriends();
+    clearNumPosts();
     clearPrompts();
     notifyListeners();
 

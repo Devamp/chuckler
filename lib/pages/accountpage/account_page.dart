@@ -99,37 +99,37 @@ class  AccountPage extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          userService.following!.toString(),
+                          userService.friends!.toString(),
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                         ),
                         Text(
-                          'Following',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          'Friends',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ],
                     ),
                     SizedBox(
-                      width: 22,
+                      width: 18,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          userService.followers!.toString(),
+                          userService.numPosts!.toString(),
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                         ),
                         Text(
-                          'Followers',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          'Posts',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ],
                     ),

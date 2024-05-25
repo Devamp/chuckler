@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database/models.dart';
+import 'dart:math';
 
 //TODO LOOK AT IMPLEMENTING A DEBOUNCER TO PREVENT READ ABUSE
 
@@ -32,6 +33,37 @@ Future<void> addCommentToPost(FirebaseFirestore firestore, String postId,
   } catch (e) {
     print('Error adding comment: $e');
   }
+}
+
+/**
+ * Create a new post
+ */
+Future<void> createPost(
+    FirebaseFirestore firebase, String answer, String userId, String userName, String promptId, String promptDateId
+)async{
+  final now = DateTime.now().toUtc();
+  final timestamp = Timestamp.fromDate(now);
+  CollectionReference collection = firebase.collection('Posts');
+  var rng = Random();
+  var random1 = rng.nextInt(pow(2, 32).toInt());
+  var random2 = rng.nextInt(pow(2, 32).toInt());
+  var bigRandom = (random1 << 32) | random2;
+  //canPost[promptVal] = false;
+  collection
+      .add({
+    'answer': answer,
+    'dislikes': 0,
+    'likes': 0,
+    'wins': 0,
+    'uid': userId,
+    'username': userName,
+    'promptId': promptId,
+    'random': bigRandom,
+    'promptDateId': promptDateId,
+    'date': timestamp
+  })
+      .then((value) => print("Data Added"))
+      .catchError((error) => print("Failed to add data: $error"));
 }
 
 ///READ METHODS
@@ -94,11 +126,11 @@ Future<DbUser?> getLoggedInUserInfo(FirebaseFirestore firestore, String uid) asy
   try {
     DocumentSnapshot doc = await firestore.collection("Users").doc(uid).get();
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    dynamic followers = data['followers'];
-    dynamic following = data['following'];
+    dynamic posts = data['posts'];
+    dynamic friends = data['friends'];
     dynamic username = data['username'];
     dynamic profilePicture = data['profileImage'];
-    return DbUser(username, following, followers, profilePicture);
+    return DbUser(username, friends, posts, profilePicture);
   }catch(error){
     print("Error $error");
     return null;
@@ -186,6 +218,16 @@ Future<List<DbComment>> getComments(
 ///UPDATE METHODS
 ///
 ///
+
+/**
+ * Description increment user number of posts
+ */
+Future<void> incrementNumPosts(FirebaseFirestore firestore, String uid) async {
+  firestore.collection('Users').doc(uid).update(
+    {'posts': FieldValue.increment(1)}
+  );
+}
+
 
 /**
     When liking a post we will create a like-relationship document, and incrament the posts number of likes
