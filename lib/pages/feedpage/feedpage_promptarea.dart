@@ -19,8 +19,8 @@ class FeedPagePromptArea extends StatelessWidget {
                 margin: EdgeInsets.fromLTRB(
                     MediaQuery.of(context).size.width / 30, 0, MediaQuery.of(context).size.width/ 30, MediaQuery.of(context).size.width / 40),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF383838),
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.amber, width: 5)
                 ),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -49,8 +49,7 @@ class FeedPagePromptArea extends StatelessWidget {
                             ),
                           )),
                     ]))),
-       Text("Choose the best answer", style: TextStyle(color: Colors.white, fontFamily: 'Livvic', fontWeight: FontWeight.w600, fontSize: 20),),
-        Container(height: 5, width: screenWidth/1.2, margin: EdgeInsets.all(4), decoration: BoxDecoration(color: const Color(0xFF383838) ),)
+
       ],
     );
   }
