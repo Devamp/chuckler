@@ -8,7 +8,6 @@ class DbPost {
 
   @Index(unique: true, replace: true)
   String? postId;
-
   String? answer;
   String? username;
   int? wins;
@@ -16,6 +15,7 @@ class DbPost {
   int? dislikes;
   String? uid;
   bool seen = false;
+  bool mine = false;
   DbPost(this.postId, this.answer, this.username, this.uid, this.likes, this.dislikes, this.wins);
 
 }
@@ -29,6 +29,8 @@ class DbPrompt {
   String? promptId;
   String? date;
   String? type;
+  //If liked is 0 no selection -1 is for dislike 1 is for a like
+  int liked = 0;
   DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date, this.type);
 }
 

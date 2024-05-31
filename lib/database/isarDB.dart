@@ -9,7 +9,13 @@ class IsarService {
     if (Isar.instanceNames.isEmpty) {
       final dir = await getApplicationDocumentsDirectory();
       db = await Isar.open(
-        [DbPostSchema, DbPromptSchema, DbUserSchema, DbCommentSchema, DbNotificationSchema], // Here we will add a schema's
+        [
+          DbPostSchema,
+          DbPromptSchema,
+          DbUserSchema,
+          DbCommentSchema,
+          DbNotificationSchema
+        ], // Here we will add a schema's
         directory: dir.path,
         inspector: true,
       );
@@ -19,6 +25,7 @@ class IsarService {
   }
 
   /// CREATE FUNCTIONS
+
   Future<void> addUserToDb(DbUser user) async {
     await db.writeTxn(() async {
       await db.dbUsers.put(user);
@@ -34,9 +41,21 @@ class IsarService {
 
   //Adds a list of prompts to the database
   Future<void> addPromptsToDB(List<DbPrompt> prompts) async {
-    await db.writeTxn(() async {
-      await db.dbPrompts.putAll(prompts);
-    });
+    for (DbPrompt prompt in prompts) {
+      DbPrompt? p = await db.dbPrompts
+          .filter()
+          .promptDateIdEqualTo(prompt.promptDateId)
+          .and()
+          .promptIdEqualTo(prompt.promptId)
+          .findFirst();
+      if (p != null) {
+        //Update appropriately
+      } else {
+        await db.writeTxn(() async {
+          await db.dbPrompts.put(prompt);
+        });
+      }
+    }
   }
 
   //Adds one post to the database
@@ -78,8 +97,7 @@ class IsarService {
   Future<DbUser?> getUserFromDb(String userid) async {
     try {
       return await db.dbUsers.filter().uidEqualTo(userid).findFirst();
-    }
-    catch(error){
+    } catch (error) {
       return null;
     }
   }

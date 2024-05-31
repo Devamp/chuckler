@@ -41,7 +41,7 @@ class CommentModal extends StatelessWidget {
       friendButton = 2;
     }
     else if (modalUser!.pendingFriend! ||
-        modalUser!.pendingFriends.contains(userSession.userId)) {
+        modalUser!.pendingFriends.contains(userSession.loggedInUser!.uid)) {
       friendButton = 1;
     }
 
@@ -105,9 +105,11 @@ class CommentModal extends StatelessWidget {
                                     child: ChangingButton(
                                         index: 0,
                                         icons: [
-                                          Icons.thumb_up_off_alt,
-                                          Icons.thumb_up_off_alt_rounded
+                                          Icons.thumb_up_alt_rounded,
+                                          Icons.thumb_up_alt_rounded,
                                         ],
+                                        bgColors: [Colors.transparent, Colors.amber],
+                                        iconColors: [Colors.grey, Colors.green],
                                         pressed: () {
                                           FirebaseFirestore firestore =
                                               Provider.of<FirebaseFirestore>(
@@ -126,36 +128,37 @@ class CommentModal extends StatelessWidget {
                                         Icons.person,
                                         Icons.check_circle
                                       ],
-                                      //TODO add following function
+                                      bgColors: [Colors.transparent, Colors.amber, Colors.amber],
+                                      iconColors: [Colors.grey, Colors.grey, Colors.green],
                                       pressed: () {
-                                        if (userSession.pendingFriendsList!
+                                        if (userSession.loggedInUser!.pendingFriends
                                             .contains(modalUser!.uid!)) {
                                           friend(
                                               firebase,
-                                              userSession.userId!,
+                                              userSession.loggedInUser!.uid!,
                                               modalUser!.uid!,
-                                              userSession.username!,
+                                              userSession.loggedInUser!.username!,
                                               modalUser!.username!,
-                                              userSession.friendsList!,
+                                              userSession.loggedInUser!.friends,
                                               true);
                                          modalUser!.friend = true;
                                           isar.addUserToDb(modalUser!);
-                                          userSession.pendingFriendsList!.remove(modalUser!.uid);
-                                          userSession.setFriends(userSession.friends! + 1 );
+                                          userSession.loggedInUser!.pendingFriends.remove(modalUser!.uid);
+                                          userSession.setUserFriends(userSession.loggedInUser!.numFriends! + 1);
                                           return 2;
                                         } else if (friendButton != 2 &&
                                             !modalUser!.pendingFriends
-                                                .contains(userSession.userId)) {
+                                                .contains(userSession.loggedInUser!.uid!)) {
                                           friend(
                                               firebase,
-                                              userSession.userId!,
+                                              userSession.loggedInUser!.uid!,
                                               modalUser!.uid!,
-                                              userSession.username!,
+                                              userSession.loggedInUser!.username!,
                                               modalUser!.username!,
-                                              userSession.friendsList!,
+                                              userSession.loggedInUser!.friends!,
                                               false);
                                           modalUser!.pendingFriends = [
-                                            userSession.userId!
+                                            userSession.loggedInUser!.uid!
                                           ];
                                           isar.addUserToDb(modalUser!);
                                           return 1;

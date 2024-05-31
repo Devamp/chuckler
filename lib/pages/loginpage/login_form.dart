@@ -106,15 +106,7 @@ class _LoginFormState extends State<LoginForm> {
 
       DbUser? theUser = await getLoggedInUserInfo(firestore, userId);
       if (theUser != null) {
-      print("NNNNNNBNBNOT NULL");
-        userSession.setUserId(userId);
-        userSession.setUsername(theUser.username!);
-        userSession.setFriends(theUser.numFriends!);
-        userSession.setProfilePhoto(theUser.profilePicture);
-        userSession.setNumPosts(theUser.numPosts!);
-        userSession.setFriendsList(theUser.friends);
-        userSession.setPendingFriendsList(theUser.pendingFriends);
-        userSession.setPendingFriend(theUser.numPendingFriends!);
+        userSession.setLoggedInUser(theUser);
       }
       String? lTime = await getCachedLoginTime();
       userSession.setLoginTime(lTime);

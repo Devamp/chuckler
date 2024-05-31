@@ -14,6 +14,7 @@ import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 import 'prompt_identifier.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:chuckler/pages/createpage/create_page_middle.dart';
 
 class CreatePageContent extends StatefulWidget {
   const CreatePageContent({super.key});
@@ -59,9 +60,9 @@ class _CreatePageContentState extends State<CreatePageContent>
       if (docRef.docs.isEmpty) {
         canPost[promptVal] = false;
         try {
-          createPost(firebase, _controller.text, userId, userName, promptId,
-              promtDateId
-          );
+          ////TODO FIX THIS
+          //createPost(firebase, _controller.text
+         // );
           incrementNumPosts(firebase, userId);
         }
         catch(error){
@@ -126,7 +127,7 @@ class _CreatePageContentState extends State<CreatePageContent>
   Widget build(BuildContext context) {
     //Set variables
     UserService userSession = Provider.of<UserService>(context, listen: false);
-    userName = userSession.username!;
+    userName = userSession.loggedInUser!.username!;
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
     List<DbPrompt> prompts = userSession.prompts!;
@@ -184,7 +185,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                         children: <Widget>[
                           Expanded(
                               flex: 2,
-                              child: IconButton(
+                              child: promptVal > 0 ? IconButton(
                                 alignment: Alignment.center,
                                 onPressed: () {
                                   textControllerStates[promptVal] =
@@ -202,13 +203,13 @@ class _CreatePageContentState extends State<CreatePageContent>
                                   Icons.chevron_left_outlined,
                                   color: Colors.amber,
                                 ),
-                              )),
+                              ) : Container()),
                           const Expanded(
                               flex: 10, child: CreatePageLoadingBar()),
                           //PROMPT W/ USER ANSWER
                           Expanded(
                               flex: 2,
-                              child: IconButton(
+                              child: (promptVal < prompts.length -1) ? IconButton(
                                 alignment: Alignment.center,
                                 onPressed: () {
                                   textControllerStates[promptVal] =
@@ -226,7 +227,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                                   Icons.chevron_right_outlined,
                                   color: Colors.amber,
                                 ),
-                              )),
+                              ): Container()),
                         ])),
                 Expanded(flex: 1, child: Container())
               ]),
@@ -236,31 +237,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                 flex: 12,
                 child: Container(
                   alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ChangingButton(
-                          index: 0,
-                          icons: [
-                            Icons.thumb_up_off_alt,
-                            Icons.thumb_up
-                          ],
-                          pressed: () {
-                            return 1;
-                          }),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.info, color: Colors.grey,)),
-                      ChangingButton(
-                          index: 0,
-                          icons: [
-                            Icons.thumb_down_off_alt,
-                            Icons.thumb_down
-                          ],
-                          pressed: () {
-                            return 1;
-                          })
-                    ],
-                  ),
+                  child: CreateMiddle(),
                 ),
               )
             : Expanded(flex: 1, child: Container()),

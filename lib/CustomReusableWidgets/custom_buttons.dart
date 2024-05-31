@@ -47,9 +47,12 @@ class ElevatedIconButton extends StatelessWidget {
 class ChangingButton extends StatefulWidget {
 int index;
 List<IconData> icons;
+List<Color> bgColors;
+List<Color> iconColors;
+
 final int Function() pressed;
 
-ChangingButton({super.key, required this.index, required this.icons, required this.pressed});
+ChangingButton({super.key, required this.index, required this.icons, required this.bgColors, required this.iconColors, required this.pressed});
 
   @override
   _ChangingButtonState createState() => _ChangingButtonState();
@@ -81,13 +84,8 @@ class _ChangingButtonState extends  State<ChangingButton> {
           }
         },
         style: ButtonStyle(
-        backgroundColor:
-        WidgetStateProperty.all<Color>(
-            Colors.amber),
-        foregroundColor:
-        widget.index == (widget.icons.length-1) ?WidgetStateProperty.all<Color>(
-            Colors.green) : WidgetStateProperty.all<Color>(
-            Colors.black),
+        backgroundColor:WidgetStateProperty.all<Color>(widget.bgColors[widget.index]),
+        foregroundColor:WidgetStateProperty.all<Color>(widget.iconColors[widget.index]),
         shape: WidgetStateProperty.all<
             RoundedRectangleBorder>(
         RoundedRectangleBorder(

@@ -101,13 +101,13 @@ class FeedPageContent extends StatelessWidget {
     DbUser? user = await isarService.getUserFromDb(uid);
     user ??= await getAUser(firestore, uid);
     if (user != null) {
-      if (userSession.friendsList!.isNotEmpty) {
-        if (userSession.friendsList!.contains(user.uid!)) {
+      if (userSession.loggedInUser!.friends.isNotEmpty) {
+        if (userSession.loggedInUser!.friends.contains(user.uid!)) {
           user.friend = true;
         }
       }
-      if (userSession.pendingFriendsList!.isNotEmpty) {
-        if (userSession.pendingFriendsList!.contains(user.uid!)) {
+      if (userSession.loggedInUser!.pendingFriends.isNotEmpty) {
+        if (userSession.loggedInUser!.pendingFriends.contains(user.uid!)) {
           user.pendingFriend = true;
         }
       }
@@ -283,13 +283,15 @@ class FeedPageContent extends StatelessWidget {
                                         Icons.favorite_border,
                                         Icons.favorite
                                       ],
+                                      bgColors: [Colors.transparent, Colors.amber],
+                                      iconColors: [Colors.grey, Colors.pinkAccent],
                                       pressed: () {
                                         return 1;
                                       }))),
                           Expanded(
                               child: ElevatedIconButton(
-                                  color: Colors.amber,
-                                  iconColor: Colors.black,
+                                  color: Colors.transparent,
+                                  iconColor: Colors.amber,
                                   fractionHeight: 25,
                                   icon: Icons.comment)),
                           Expanded(
@@ -301,6 +303,8 @@ class FeedPageContent extends StatelessWidget {
                                         Icons.heart_broken_outlined,
                                         Icons.heart_broken
                                       ],
+                                      bgColors: [Colors.transparent, Colors.amber],
+                                      iconColors: [Colors.grey, Colors.pinkAccent],
                                       pressed: () {
                                         return 1;
                                       }))),

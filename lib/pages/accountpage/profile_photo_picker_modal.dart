@@ -42,8 +42,8 @@ class ProfilePhotoPickerModal extends StatelessWidget {
             //TODO MAKE SURE THAT AUTHOR IS ADDED TO META DATA AND ONLY THE AUTHOR CAN EDIT
             await imageToUpload.putFile(File(file.path));
             String pfp =await imageToUpload.getDownloadURL();
-            if(pfp != userService.profilePhoto) {
-              userService.setProfilePhoto(pfp);
+            if(pfp != userService.loggedInUser!.profilePicture) {
+              userService.setUserProfilePicture(pfp);
               updateProfilePhoto(firestore, pfp, auth.currentUser!.uid);
             }
           } catch (error) {}

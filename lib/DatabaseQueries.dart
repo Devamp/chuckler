@@ -38,13 +38,9 @@ Future<void> addCommentToPost(FirebaseFirestore firestore, String postId,
 /**
  * Create a new post
  */
-Future<void> createPost(
+Future<DbPost> createPost(
     FirebaseFirestore firebase,
-    String answer,
-    String userId,
-    String userName,
-    String promptId,
-    String promptDateId) async {
+   DbUser u, DbPrompt prompt, answer) async {
   final now = DateTime.now().toUtc();
   final timestamp = Timestamp.fromDate(now);
   CollectionReference collection = firebase.collection('Posts');
@@ -53,21 +49,26 @@ Future<void> createPost(
   var random2 = rng.nextInt(pow(2, 32).toInt());
   var bigRandom = (random1 << 32) | random2;
   //canPost[promptVal] = false;
-  collection
+  String docId = "";
+  await collection
       .add({
         'answer': answer,
         'dislikes': 0,
         'likes': 0,
         'wins': 0,
-        'uid': userId,
-        'username': userName,
-        'promptId': promptId,
+        'uid': u.uid,
+        'username': u.username,
+        'promptId': prompt.promptId,
         'random': bigRandom,
-        'promptDateId': promptDateId,
+        'promptDateId': prompt.promptDateId,
         'date': timestamp
       })
-      .then((value) => print("Data Added"))
+      .then((docRef) => {docId = docRef.id})
       .catchError((error) => print("Failed to add data: $error"));
+
+  DbPost posted = DbPost(docId,answer,u.username, u.uid, 0 , 0 , 0);
+  posted.mine = true;
+  return posted;
 }
 
 ///READ METHODS
