@@ -16,7 +16,7 @@ class  AccountPage extends StatelessWidget{
   Widget build(BuildContext context) {
     UserService userSession = Provider.of<UserService>(context);
 
-    if (userSession.userId != null) {
+    if (userSession.username != null) {
       //username = userSession.userId!;
     //  followers = userSession.followers!;
       //following = userSession.following!;
@@ -61,9 +61,9 @@ class  AccountPage extends StatelessWidget{
                   SizedBox(
                     height: 40,
                   ),
-                  ProfilePhotoPickerModal(username: userService.userId!, img: userService.profilePhoto),
+                  ProfilePhotoPickerModal(username: userService.username!, img: userService.profilePhoto),
                   Text(
-                    userService.userId!,
+                    userService.username!,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

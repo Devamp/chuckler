@@ -39,8 +39,12 @@ Future<void> addCommentToPost(FirebaseFirestore firestore, String postId,
  * Create a new post
  */
 Future<void> createPost(
-    FirebaseFirestore firebase, String answer, String userId, String userName, String promptId, String promptDateId
-)async{
+    FirebaseFirestore firebase,
+    String answer,
+    String userId,
+    String userName,
+    String promptId,
+    String promptDateId) async {
   final now = DateTime.now().toUtc();
   final timestamp = Timestamp.fromDate(now);
   CollectionReference collection = firebase.collection('Posts');
@@ -51,17 +55,17 @@ Future<void> createPost(
   //canPost[promptVal] = false;
   collection
       .add({
-    'answer': answer,
-    'dislikes': 0,
-    'likes': 0,
-    'wins': 0,
-    'uid': userId,
-    'username': userName,
-    'promptId': promptId,
-    'random': bigRandom,
-    'promptDateId': promptDateId,
-    'date': timestamp
-  })
+        'answer': answer,
+        'dislikes': 0,
+        'likes': 0,
+        'wins': 0,
+        'uid': userId,
+        'username': userName,
+        'promptId': promptId,
+        'random': bigRandom,
+        'promptDateId': promptDateId,
+        'date': timestamp
+      })
       .then((value) => print("Data Added"))
       .catchError((error) => print("Failed to add data: $error"));
 }
@@ -109,8 +113,8 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
     final gs = await cr.get();
     if (gs.docs.isNotEmpty) {
       for (QueryDocumentSnapshot ds in gs.docs) {
-        Map<String,dynamic> data = ds.data() as Map<String,dynamic>;
-        dynamic before =  data['before'];
+        Map<String, dynamic> data = ds.data() as Map<String, dynamic>;
+        dynamic before = data['before'];
         dynamic after = data['after'];
         dynamic type = data['type'];
         prompts.add(DbPrompt(before, after, pid, ds.id,
@@ -120,9 +124,11 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
   }
   return prompts;
 }
+
 /**
  * Description Retrieve logged in user information*/
-Future<DbUser?> getLoggedInUserInfo(FirebaseFirestore firestore, String uid) async {
+Future<DbUser?> getLoggedInUserInfo(
+    FirebaseFirestore firestore, String uid) async {
   try {
     DocumentSnapshot doc = await firestore.collection("Users").doc(uid).get();
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
@@ -130,12 +136,54 @@ Future<DbUser?> getLoggedInUserInfo(FirebaseFirestore firestore, String uid) asy
     dynamic friends = data['friends'];
     dynamic username = data['username'];
     dynamic profilePicture = data['profileImage'];
-    return DbUser(username, friends, posts, profilePicture);
-  }catch(error){
+    dynamic pendingFriends = data['pendingFriends'];
+    List<String> friendsList = List.empty(growable: true);
+    List<String> pendingFriendsList = List.empty(growable: true);
+    if (friends > 0) {
+      for (dynamic x in data['friendsList']) {
+        friendsList.add(x.toString());
+      }
+    }
+    if (pendingFriends > 0) {
+      if (data.containsKey("pendingFriendsList")) {
+        for (dynamic x in data['pendingFriendsList']) {
+          pendingFriendsList.add(x.toString());
+        }
+      }
+      // pendingFriendsList = data['pendingFriendsList'];
+    }
+    DbUser theUser = DbUser(uid, username, friends, posts, profilePicture);
+    theUser.friends = friendsList;
+    theUser.pendingFriends = pendingFriendsList;
+    theUser.numPendingFriends = pendingFriends;
+    return theUser;
+  } catch (error) {
     print("Error $error");
     return null;
   }
+}
 
+/**
+ *
+ */
+Future<DbUser?> getAUser(FirebaseFirestore firebase, String uid) async {
+  try {
+    DocumentSnapshot doc = await firebase.collection("Users").doc(uid).get();
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    dynamic posts = data['posts'];
+    dynamic friends = data['friends'];
+    dynamic username = data['username'];
+    dynamic profilePicture = data['profileImage'];
+    dynamic pendingFriends = data['pendingFriends'];
+    DbUser theUser = DbUser(uid, username, friends, posts, profilePicture);
+    if (pendingFriends > 0) {
+      theUser.pendingFriends = data['pendingFriendsList'];
+    }
+    return theUser;
+  } catch (error) {
+    print("Error $error");
+    return null;
+  }
 }
 
 /**
@@ -155,13 +203,14 @@ Future<List<DbPost>> getPosts(
     lastDate = DateTime.parse(loginTime);
   }
 
-  //Query
+//Query
   QuerySnapshot querySnapshot = await firestore
       .collection('Posts')
       .where('promptId', isEqualTo: prmtId)
       .where('promptDateId', isEqualTo: prmtDateId)
       .where('date', isGreaterThanOrEqualTo: lastDate)
-      .limit(10).get();
+      .limit(10)
+      .get();
   if (querySnapshot.docs.isEmpty) {
     querySnapshot = await firestore
         .collection('Posts')
@@ -171,17 +220,22 @@ Future<List<DbPost>> getPosts(
         .get();
   }
 
-  //create the postList
+//create the postList
   List<DbPost> toReturn = List<DbPost>.empty(growable: true);
   if (querySnapshot.docs.isEmpty) {
     print("STILL EMPTY");
     return toReturn;
   } else {
-    for (QueryDocumentSnapshot doc in querySnapshot.docs){
+    for (QueryDocumentSnapshot doc in querySnapshot.docs) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       dynamic answer = data['answer'];
-     dynamic username = data['username'];
-      toReturn.add(DbPost(doc.id, answer, username));
+      dynamic username = data['username'];
+      dynamic likes = data['likes'];
+      dynamic dislikes = data['dislikes'];
+      dynamic wins = data['wins'];
+      dynamic uid = data['uid'];
+      toReturn
+          .add(DbPost(doc.id, answer, username, uid, likes, dislikes, wins));
     }
     return toReturn;
   }
@@ -223,25 +277,28 @@ Future<List<DbComment>> getComments(
  * Description increment user number of posts
  */
 Future<void> incrementNumPosts(FirebaseFirestore firestore, String uid) async {
-  firestore.collection('Users').doc(uid).update(
-    {'posts': FieldValue.increment(1)}
-  );
+  firestore
+      .collection('Users')
+      .doc(uid)
+      .update({'posts': FieldValue.increment(1)});
 }
-
 
 /**
     When liking a post we will create a like-relationship document, and incrament the posts number of likes
  */
-Future<void> likeAPost(
-    FirebaseFirestore firestore, String likerUid, String postId, String postOwnerUid) async {
+Future<void> likeAPost(FirebaseFirestore firestore, String likerUid,
+    String postId, String postOwnerUid) async {
   DateTime now = DateTime.now().toUtc();
 
   final timestamp = Timestamp.fromDate(now);
   try {
-    firestore
-        .collection("Notifications")
-        .doc()
-        .set({'type': "like", 'postId': postId, 'liker': likerUid, 'date': timestamp, 'notify': [postOwnerUid]});
+    firestore.collection("Notifications").doc().set({
+      'type': "like",
+      'postId': postId,
+      'liker': likerUid,
+      'date': timestamp,
+      'notify': [postOwnerUid]
+    });
     firestore
         .collection("Posts")
         .doc(postId)
@@ -266,13 +323,49 @@ Future<void> postWin(FirebaseFirestore firestore, String postId) async {
 /// ADDS a following document when a user creates a follow...This can be used bidirectionally
 /// inorder to minimize both the reads and writes for document
 /// Returns 0 if pending, 1 if friended, and -1 if error
-Future<int> friend(FirebaseFirestore firestore, String userFriendingUid,
-    String userToFriendUid) async {
-  //TODO finish implementing friending
-  DateTime now = DateTime.now().toUtc();
+Future<int> friend(
+    FirebaseFirestore firestore,
+    String userFriendingUid,
+    String userToFriendUid,
+    String friendingUsername,
+    String toFriendUsername,
+    List<String> friendsList,
+    bool complete) async {
+  List<String> u = [userFriendingUid];
+  List<String> them = [userToFriendUid];
+  List<String> uUsername = [friendingUsername];
+  List<String> themUsername = [toFriendUsername];
+  if (!complete) {
+    await firestore.collection('Users').doc(userToFriendUid).update({
+      'pendingFriendsList': FieldValue.arrayUnion(u),
+      'pendingFriends': FieldValue.increment(1)
+    });
+  } else {
+    DateTime now = DateTime.now().toUtc();
 
-  final timestamp = Timestamp.fromDate(now);
- return 0;
+    final timestamp = Timestamp.fromDate(now);
+    await firestore.collection('Users').doc(userFriendingUid).update({
+      'pendingFriendsList': FieldValue.arrayRemove(them),
+      'pendingFriends': FieldValue.increment(-1),
+      'friends': FieldValue.increment(1),
+      'friendsList': FieldValue.arrayUnion(themUsername)
+    });
+    await firestore.collection('Users').doc(userToFriendUid).update({
+      'friends': FieldValue.increment(1),
+      'friendsList': FieldValue.arrayUnion(uUsername)
+    });
+    if (friendsList.isNotEmpty) {
+      await firestore.collection('Notifications').add({
+        'type': 0,
+        'message': '$friendingUsername and $toFriendUsername are now friends!',
+        'uid1': userFriendingUid,
+        'uid2': userToFriendUid,
+        'date': timestamp,
+        'inform': friendsList
+      });
+    }
+  }
+  return 0;
 }
 
 ///Updates the profile photo url for a user

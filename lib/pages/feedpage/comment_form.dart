@@ -111,11 +111,11 @@ class _CommentFormState extends State<CommentForm> {
                                 Provider.of<FirebaseFirestore>(context,
                                     listen: false);
                             addCommentToPost(firestore, widget.cfData.postId!,
-                                userService.userId!, myController.text);
+                                userService.username!, myController.text);
                             comments.add(
                                 DbComment("YOUR USERNAME", myController.text));
                             myController.text = "";
-                            print(userService.userId!);
+                            print(userService.username!);
                           },
                         )
                       : null,

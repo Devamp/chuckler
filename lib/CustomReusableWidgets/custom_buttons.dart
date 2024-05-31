@@ -48,6 +48,7 @@ class ChangingButton extends StatefulWidget {
 int index;
 List<IconData> icons;
 final int Function() pressed;
+
 ChangingButton({super.key, required this.index, required this.icons, required this.pressed});
 
   @override
@@ -55,7 +56,7 @@ ChangingButton({super.key, required this.index, required this.icons, required th
 }
 
 class _ChangingButtonState extends  State<ChangingButton> {
-
+  bool disable = false;
 
 
 
@@ -72,9 +73,12 @@ class _ChangingButtonState extends  State<ChangingButton> {
     final screenHeight = MediaQuery.of(context).size.height;
     return ElevatedButton(
         onPressed: (){
-          setState(() {
-            widget.index = widget.pressed();
-          });
+          if(!disable) {
+            setState(() {
+              widget.index = widget.pressed();
+              disable = true;
+            });
+          }
         },
         style: ButtonStyle(
         backgroundColor:

@@ -9,7 +9,7 @@ class IsarService {
     if (Isar.instanceNames.isEmpty) {
       final dir = await getApplicationDocumentsDirectory();
       db = await Isar.open(
-        [DbPostSchema, DbPromptSchema], // Here we will add a schema's
+        [DbPostSchema, DbPromptSchema, DbUserSchema, DbCommentSchema, DbNotificationSchema], // Here we will add a schema's
         directory: dir.path,
         inspector: true,
       );
@@ -19,6 +19,11 @@ class IsarService {
   }
 
   /// CREATE FUNCTIONS
+  Future<void> addUserToDb(DbUser user) async {
+    await db.writeTxn(() async {
+      await db.dbUsers.put(user);
+    });
+  }
 
   //Adds a list of posts to the database
   Future<void> addPostsToDB(List<DbPost> posts) async {
@@ -57,11 +62,27 @@ class IsarService {
 
   Future<List<DbPrompt>> getDailyPromptsFromDB() async {
     DateTime now = DateTime.now().toUtc();
-    final utcMidnight = now.subtract(Duration(hours: now.hour, minutes: now.minute, seconds: now.second, milliseconds: now.microsecond));
-  final prompts = await db.dbPrompts.filter().dateEqualTo(utcMidnight.toIso8601String().substring(0,10)).findAll();
-  return prompts;
-}
+    final utcMidnight = now.subtract(Duration(
+        hours: now.hour,
+        minutes: now.minute,
+        seconds: now.second,
+        milliseconds: now.microsecond));
+    final prompts = await db.dbPrompts
+        .filter()
+        .dateEqualTo(utcMidnight.toIso8601String().substring(0, 10))
+        .findAll();
+    return prompts;
+  }
 
+  ///Get a user from the database with uid = to the provided one
+  Future<DbUser?> getUserFromDb(String userid) async {
+    try {
+      return await db.dbUsers.filter().uidEqualTo(userid).findFirst();
+    }
+    catch(error){
+      return null;
+    }
+  }
 
   ///UPDATE FUNCTIONS
   //Get two unseen posts and set the values to seen

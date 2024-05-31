@@ -6,6 +6,10 @@ import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 import 'package:chuckler/pages/feedpage/comment_form.dart';
 import 'package:provider/provider.dart';
+import 'package:chuckler/database/models.dart';
+import 'package:chuckler/database/isarDB.dart';
+
+import '../../Session.dart';
 
 /**
  * The following is the code for the LONG tap modal
@@ -15,15 +19,32 @@ class CommentModal extends StatelessWidget {
   final cfData;
   final screenHeight;
   final screenWidth;
+  final DbUser? modalUser;
 
   const CommentModal(
       {super.key,
       required this.cfData,
+      required this.modalUser,
       required this.screenWidth,
       required this.screenHeight});
 
   @override
   Widget build(BuildContext context) {
+    UserService userSession = Provider.of<UserService>(context, listen: false);
+    FirebaseFirestore firebase =
+        Provider.of<FirebaseFirestore>(context, listen: false);
+    IsarService isar = Provider.of<IsarService>(context, listen: true);
+
+    int friendButton = 0;
+    bool disableFriendButton = false;
+    if (modalUser!.friend) {
+      friendButton = 2;
+    }
+    else if (modalUser!.pendingFriend! ||
+        modalUser!.pendingFriends.contains(userSession.userId)) {
+      friendButton = 1;
+    }
+
     return SingleChildScrollView(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -81,20 +102,67 @@ class CommentModal extends StatelessWidget {
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),
                                     //TODO add like function
-                                    child: ChangingButton(index: 0, icons: [Icons.thumb_up_off_alt, Icons.thumb_up_off_alt_rounded],pressed: (){
-                                      FirebaseFirestore firestore = Provider.of<FirebaseFirestore>(context, listen: false);
-                                      //likeAPost(firestore, usernameLiker, postId, postOwnerUid)
-                                      return 1;})),
+                                    child: ChangingButton(
+                                        index: 0,
+                                        icons: [
+                                          Icons.thumb_up_off_alt,
+                                          Icons.thumb_up_off_alt_rounded
+                                        ],
+                                        pressed: () {
+                                          FirebaseFirestore firestore =
+                                              Provider.of<FirebaseFirestore>(
+                                                  context,
+                                                  listen: false);
+                                          //likeAPost(firestore, usernameLiker, postId, postOwnerUid)
+                                          return 1;
+                                        })),
                                 Container(
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                    child: ChangingButton(index: 0, icons: [
-                                      Icons.person_add_alt_rounded,
-                                      Icons.person,
-                                      Icons.check_circle
-                                    ],
+                                    child: ChangingButton(
+                                      index: friendButton,
+                                      icons: [
+                                        Icons.person_add_alt_rounded,
+                                        Icons.person,
+                                        Icons.check_circle
+                                      ],
                                       //TODO add following function
-                                      pressed: (){ return 2;},
+                                      pressed: () {
+                                        if (userSession.pendingFriendsList!
+                                            .contains(modalUser!.uid!)) {
+                                          friend(
+                                              firebase,
+                                              userSession.userId!,
+                                              modalUser!.uid!,
+                                              userSession.username!,
+                                              modalUser!.username!,
+                                              userSession.friendsList!,
+                                              true);
+                                         modalUser!.friend = true;
+                                          isar.addUserToDb(modalUser!);
+                                          userSession.pendingFriendsList!.remove(modalUser!.uid);
+                                          userSession.setFriends(userSession.friends! + 1 );
+                                          return 2;
+                                        } else if (friendButton != 2 &&
+                                            !modalUser!.pendingFriends
+                                                .contains(userSession.userId)) {
+                                          friend(
+                                              firebase,
+                                              userSession.userId!,
+                                              modalUser!.uid!,
+                                              userSession.username!,
+                                              modalUser!.username!,
+                                              userSession.friendsList!,
+                                              false);
+                                          modalUser!.pendingFriends = [
+                                            userSession.userId!
+                                          ];
+                                          isar.addUserToDb(modalUser!);
+                                          return 1;
+                                        } else {
+                                          return friendButton;
+                                        }
+                                      },
                                     ))
                               ]),
                         ),

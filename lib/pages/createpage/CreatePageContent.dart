@@ -32,7 +32,7 @@ class _CreatePageContentState extends State<CreatePageContent>
   String userId = "";
   String userName = "";
   String promptId = "";
-  String promtDateId = "";
+ String promtDateId = "";
   String timeRemaining = "";
   List<bool> canPost = List.empty(growable: true);
   List<String> textControllerStates = List.empty(growable: true);
@@ -126,7 +126,7 @@ class _CreatePageContentState extends State<CreatePageContent>
   Widget build(BuildContext context) {
     //Set variables
     UserService userSession = Provider.of<UserService>(context, listen: false);
-    userName = userSession.userId!;
+    userName = userSession.username!;
     double screenWidth = MediaQuery.sizeOf(context).width;
     double screenHeight = MediaQuery.sizeOf(context).height;
     List<DbPrompt> prompts = userSession.prompts!;
@@ -153,11 +153,11 @@ class _CreatePageContentState extends State<CreatePageContent>
                 const Expanded(flex: 6, child: PromptIdentifier()),
                 Expanded(
                     flex: 20,
-                    child: Center(
+                    child: Padding(padding: EdgeInsets.fromLTRB(15, 0, 15, 0), child: Center(
                         child: AutoSizeText.rich(
                       TextSpan(
                         style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 30,
                             color: Colors.white,
                             fontFamily: 'OpenSans',
                             fontWeight: FontWeight.normal),
@@ -172,7 +172,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                       textAlign: TextAlign.center,
                       maxLines: 10,
                       minFontSize: 2,
-                    ))),
+                    )))),
                 Divider(
                   color: Colors.grey,
                   thickness: 1,

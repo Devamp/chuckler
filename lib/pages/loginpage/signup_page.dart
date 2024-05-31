@@ -42,6 +42,7 @@ class SignupPage extends StatelessWidget {
         'username': username,
         'age': age,
         'friends': 0,
+        'pendingFriends': 0,
         'posts': 0,
         'profileImage': ""
       });

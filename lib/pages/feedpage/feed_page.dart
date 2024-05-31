@@ -92,6 +92,30 @@ class FeedPageContent extends StatelessWidget {
     userSession.setCurrentPosts(posts);
   }
 
+  /*Get the user information for the modal*/
+  Future<DbUser?> getModalUser(context, String uid) async {
+    FirebaseFirestore firestore =
+        Provider.of<FirebaseFirestore>(context, listen: false);
+    IsarService isarService = Provider.of<IsarService>(context, listen: false);
+    UserService userSession = Provider.of<UserService>(context, listen: false);
+    DbUser? user = await isarService.getUserFromDb(uid);
+    user ??= await getAUser(firestore, uid);
+    if (user != null) {
+      if (userSession.friendsList!.isNotEmpty) {
+        if (userSession.friendsList!.contains(user.uid!)) {
+          user.friend = true;
+        }
+      }
+      if (userSession.pendingFriendsList!.isNotEmpty) {
+        if (userSession.pendingFriendsList!.contains(user.uid!)) {
+          user.pendingFriend = true;
+        }
+      }
+      isarService.addUserToDb(user);
+    }
+    return user;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -157,7 +181,12 @@ class FeedPageContent extends StatelessWidget {
                                   onTap: () async {
                                     await getNextTwoPosts(context);
                                   },
-                                  onLongPress: () {
+                                  onLongPress: () async {
+                                    DbUser? modalUser = await getModalUser(
+                                        context,
+                                        userSession.currentPosts!
+                                            .elementAt(index)
+                                            .uid!);
                                     //Display selection in modal before moving to next post
                                     showModalBottomSheet<void>(
                                       backgroundColor: Colors.transparent,
@@ -170,6 +199,8 @@ class FeedPageContent extends StatelessWidget {
                                         return CommentModal(
                                             cfData: userSession.currentPosts!
                                                 .elementAt(index),
+                                            modalUser:
+                                               modalUser,
                                             screenWidth: screenWidth,
                                             screenHeight: screenHeight);
                                       },
@@ -240,22 +271,39 @@ class FeedPageContent extends StatelessWidget {
                       ))),
                       Center(
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(child: Center(heightFactor: 2, child: ChangingButton(
-                              index: 0,
-                              icons: [Icons.favorite_border, Icons.favorite],
-                              pressed: () {
-                                return 1;
-                              }))),
-                          Expanded(child: ElevatedIconButton(color: Colors.amber, iconColor: Colors.black, fractionHeight: 25, icon: Icons.comment)),
-                          Expanded(child: Center(heightFactor: 2, child: ChangingButton(
-                              index: 0,
-                              icons: [Icons.heart_broken_outlined, Icons.heart_broken],
-                              pressed: () {
-                                return 1;
-                              }))),
+                          Expanded(
+                              child: Center(
+                                  heightFactor: 2,
+                                  child: ChangingButton(
+                                      index: 0,
+                                      icons: [
+                                        Icons.favorite_border,
+                                        Icons.favorite
+                                      ],
+                                      pressed: () {
+                                        return 1;
+                                      }))),
+                          Expanded(
+                              child: ElevatedIconButton(
+                                  color: Colors.amber,
+                                  iconColor: Colors.black,
+                                  fractionHeight: 25,
+                                  icon: Icons.comment)),
+                          Expanded(
+                              child: Center(
+                                  heightFactor: 2,
+                                  child: ChangingButton(
+                                      index: 0,
+                                      icons: [
+                                        Icons.heart_broken_outlined,
+                                        Icons.heart_broken
+                                      ],
+                                      pressed: () {
+                                        return 1;
+                                      }))),
                         ],
                       ))
                     ])))

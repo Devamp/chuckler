@@ -11,8 +11,12 @@ class UserService with ChangeNotifier {
   String? _profilePhoto;
   int? _friends;
   int? _numPosts;
+  int? _pendingFriends;
+  String? _username;
   List<DbPrompt> _prompts = List.empty(growable: true);
   List<DbPost> _currentPosts = List<DbPost>.empty(growable: true);
+  List<String> _friendsList = List<String>.empty(growable: true);
+  List<String> _pendingFriendsList = List<String>.empty(growable: true);
   String? _currentFeedPromptId;
   String? get userId => _userId;
   String? get currentFeedPromptId => _currentFeedPromptId;
@@ -20,18 +24,38 @@ class UserService with ChangeNotifier {
   int? get numPosts => _numPosts;
   String? get postAnswer => _postAnswer;
   String? get logTime => _loginTime;
+  String? get username => _username;
   String? get profilePhoto => _profilePhoto;
+  int? get pendingFriends => _pendingFriends;
   List<DbPrompt>? get prompts => _prompts;
   List<DbPost>? get currentPosts => _currentPosts;
+  List<String>? get friendsList => _friendsList;
+  List<String>? get pendingFriendsList => _pendingFriendsList;
   //get the lastLogin as a datetime object
   DateTime getDTLogIn(){
-    if(_loginTime == null){
+    if(_loginTime == null){ //6199885725
       return DateTime(1990);
     }
     else {
       return DateTime.parse(_loginTime!);
     }
 
+  }
+  void setFriendsList(List<String> fl){
+    _friendsList = fl;
+    notifyListeners();
+  }
+  void setPendingFriend(int pf){
+    _pendingFriends = pf;
+    notifyListeners();
+  }
+  void setUsername(String username){
+    _username = username;
+    notifyListeners();
+  }
+  void setPendingFriendsList(List<String> pfl){
+    _pendingFriendsList= pfl;
+    notifyListeners();
   }
   void setCurrentFeedPromptId(String s){
     _currentFeedPromptId = s;

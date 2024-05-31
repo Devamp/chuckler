@@ -11,8 +11,12 @@ class DbPost {
 
   String? answer;
   String? username;
+  int? wins;
+  int? likes;
+  int? dislikes;
+  String? uid;
   bool seen = false;
-  DbPost(this.postId, this.answer, this.username);
+  DbPost(this.postId, this.answer, this.username, this.uid, this.likes, this.dislikes, this.wins);
 
 }
 
@@ -35,10 +39,16 @@ class DbUser {
   String? username;
   int? numFriends;
   int? numPosts;
+  int? numPendingFriends;
   bool friend = false;
   bool isCurrentUser = false;
+  bool pendingFriend = false;
   String profilePicture = "";
-  DbUser(this.username,this.numFriends, this.numPosts, this.profilePicture);
+  @Index(unique: true, replace: true)
+  String? uid;
+  List<String> friends = List.empty(growable: true);
+  List<String> pendingFriends = List.empty(growable: true);
+  DbUser(this.uid, this.username,this.numFriends, this.numPosts, this.profilePicture);
 }
 
 

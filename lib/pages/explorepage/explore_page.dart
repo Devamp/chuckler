@@ -81,7 +81,7 @@ class _ExplorePageState extends State<ExplorePage> {
               ),
             ),
             Expanded(
-              flex: 5,
+              flex: 4,
               child: SizedBox(
                 width: double.infinity,
                 height: 10,
@@ -111,7 +111,7 @@ class _ExplorePageState extends State<ExplorePage> {
               alignment: const AlignmentDirectional(0, 0),
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 5),
-                child: Text('Today\'s Prompts',
+                child: Text('Achievements',
                     style: Theme.of(context).textTheme.headlineMedium,),
               ),
             ),
