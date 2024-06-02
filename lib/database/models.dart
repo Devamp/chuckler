@@ -16,7 +16,9 @@ class DbPost {
   String? uid;
   bool seen = false;
   bool mine = false;
-  DbPost(this.postId, this.answer, this.username, this.uid, this.likes, this.dislikes, this.wins);
+  String? promptId;
+  String? promptDateId;
+  DbPost(this.postId, this.answer, this.username, this.uid, this.likes, this.dislikes, this.wins, this.promptId, this.promptDateId);
 
 }
 

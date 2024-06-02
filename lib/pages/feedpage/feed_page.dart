@@ -88,7 +88,7 @@ class FeedPageContent extends StatelessWidget {
         i++;
       }
     }
-
+    userSession.setCurrentFeedPromptId(posts.first.promptId!);
     userSession.setCurrentPosts(posts);
   }
 
@@ -139,7 +139,7 @@ class FeedPageContent extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                          padding: EdgeInsets.fromLTRB(0, 15, 0, 2),
+                          padding: EdgeInsets.fromLTRB(10, 15, 0, 10),
                           child: RichText(
                               text: TextSpan(children: [
                             TextSpan(
@@ -147,21 +147,21 @@ class FeedPageContent extends StatelessWidget {
                                 style: TextStyle(
                                     color: userColors[0],
                                     fontFamily: "Livvic",
-                                    fontSize: screenHeight / 30,
+                                    fontSize: screenHeight / 34,
                                     fontWeight: FontWeight.w600)),
                             TextSpan(
                                 text: " VS ",
                                 style: TextStyle(
                                     color: Colors.amber,
                                     fontFamily: "Livvic",
-                                    fontSize: screenHeight / 30,
+                                    fontSize: screenHeight / 32,
                                     fontWeight: FontWeight.w600)),
                             TextSpan(
                                 text: "Username2 ",
                                 style: TextStyle(
                                     color: userColors[1],
                                     fontFamily: "Livvic",
-                                    fontSize: screenHeight / 30,
+                                    fontSize: screenHeight / 34,
                                     fontWeight: FontWeight.w600))
                           ]))),
                       Divider(
@@ -169,6 +169,7 @@ class FeedPageContent extends StatelessWidget {
                         color: Colors.white54,
                       ),
                       Expanded(
+                        flex: 15,
                           child: Container(
                               child: ListView.builder(
                         itemCount: userSession.currentPosts!.length,
@@ -179,7 +180,9 @@ class FeedPageContent extends StatelessWidget {
                             children: [
                               InkWell(
                                   onTap: () async {
-                                    await getNextTwoPosts(context);
+                                    userSession.setViewingPost("  __${userSession.currentPosts![index].answer!}__  ");
+                                    userSession.setViewingColor(userColors[index]);
+                                    //await getNextTwoPosts(context);
                                   },
                                   onLongPress: () async {
                                     DbUser? modalUser = await getModalUser(
@@ -269,7 +272,7 @@ class FeedPageContent extends StatelessWidget {
                           );
                         },
                       ))),
-                      Center(
+                      Expanded(flex: 4, child: Center(
                           child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -283,8 +286,8 @@ class FeedPageContent extends StatelessWidget {
                                         Icons.favorite_border,
                                         Icons.favorite
                                       ],
-                                      bgColors: [Colors.transparent, Colors.amber],
-                                      iconColors: [Colors.grey, Colors.pinkAccent],
+                                      bgColors: [Colors.transparent, Colors.black],
+                                      iconColors: [userColors[0], userColors[0]],
                                       pressed: () {
                                         return 1;
                                       }))),
@@ -300,16 +303,18 @@ class FeedPageContent extends StatelessWidget {
                                   child: ChangingButton(
                                       index: 0,
                                       icons: [
-                                        Icons.heart_broken_outlined,
-                                        Icons.heart_broken
+                                        Icons.favorite_border_rounded,
+                                        Icons.favorite
                                       ],
-                                      bgColors: [Colors.transparent, Colors.amber],
-                                      iconColors: [Colors.grey, Colors.pinkAccent],
+                                      bgColors: [Colors.transparent, Colors.black],
+                                      iconColors: [userColors[1], userColors[1]],
                                       pressed: () {
                                         return 1;
                                       }))),
                         ],
-                      ))
+                      ))),
+                      Text("1/10 Matchups", style: Theme.of(context).textTheme.bodyMedium,),
+                      Expanded(flex:1, child:Container())
                     ])))
       ],
     ));

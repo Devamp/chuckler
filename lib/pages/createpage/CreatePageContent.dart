@@ -33,7 +33,7 @@ class _CreatePageContentState extends State<CreatePageContent>
   String userId = "";
   String userName = "";
   String promptId = "";
- String promtDateId = "";
+  String promtDateId = "";
   String timeRemaining = "";
   List<bool> canPost = List.empty(growable: true);
   List<String> textControllerStates = List.empty(growable: true);
@@ -62,14 +62,12 @@ class _CreatePageContentState extends State<CreatePageContent>
         try {
           ////TODO FIX THIS
           //createPost(firebase, _controller.text
-         // );
+          // );
           incrementNumPosts(firebase, userId);
-        }
-        catch(error){
+        } catch (error) {
           print("Error: $error");
         }
         return;
-
       } else {
         canPost[promptVal] = false;
       }
@@ -96,13 +94,12 @@ class _CreatePageContentState extends State<CreatePageContent>
   void initState() {
     super.initState();
     focusNode.addListener(() {
-      if(!focusNode.hasFocus){
+      if (!focusNode.hasFocus) {
         if (_controller.text.trim().isEmpty) {
           _controller.text = "Answer the Prompt Here";
         }
       }
-      setState(() {
-      });
+      setState(() {});
     });
     checkTheUser();
   }
@@ -154,26 +151,29 @@ class _CreatePageContentState extends State<CreatePageContent>
                 const Expanded(flex: 6, child: PromptIdentifier()),
                 Expanded(
                     flex: 20,
-                    child: Padding(padding: EdgeInsets.fromLTRB(15, 0, 15, 0), child: Center(
-                        child: AutoSizeText.rich(
-                      TextSpan(
-                        style: const TextStyle(
-                            fontSize: 30,
-                            color: Colors.white,
-                            fontFamily: 'OpenSans',
-                            fontWeight: FontWeight.normal),
-                        children: <TextSpan>[
-                          TextSpan(text: prompts[promptVal].before),
+                    child: Padding(
+                        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        child: Center(
+                            child: AutoSizeText.rich(
                           TextSpan(
-                              text: _controller.text,
-                              style: const TextStyle(color: Color(0xFFffd230))),
-                          TextSpan(text: prompts[promptVal].after),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 10,
-                      minFontSize: 2,
-                    )))),
+                            style: const TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                                fontFamily: 'OpenSans',
+                                fontWeight: FontWeight.normal),
+                            children: <TextSpan>[
+                              TextSpan(text: prompts[promptVal].before),
+                              TextSpan(
+                                  text: _controller.text,
+                                  style: const TextStyle(
+                                      color: Color(0xFFffd230))),
+                              TextSpan(text: prompts[promptVal].after),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 10,
+                          minFontSize: 2,
+                        )))),
                 Divider(
                   color: Colors.grey,
                   thickness: 1,
@@ -185,49 +185,53 @@ class _CreatePageContentState extends State<CreatePageContent>
                         children: <Widget>[
                           Expanded(
                               flex: 2,
-                              child: promptVal > 0 ? IconButton(
-                                alignment: Alignment.center,
-                                onPressed: () {
-                                  textControllerStates[promptVal] =
-                                      _controller.text;
-                                  if ((promptVal - 1) >= 0) {
-                                    setState(() {
-                                      promptVal = promptVal - 1;
-                                      _controller.text =
-                                          textControllerStates[promptVal];
-                                    });
-                                  }
-                                },
-                                splashRadius: 10,
-                                icon: const Icon(
-                                  Icons.chevron_left_outlined,
-                                  color: Colors.amber,
-                                ),
-                              ) : Container()),
+                              child: promptVal > 0
+                                  ? IconButton(
+                                      alignment: Alignment.center,
+                                      onPressed: () {
+                                        textControllerStates[promptVal] =
+                                            _controller.text;
+                                        if ((promptVal - 1) >= 0) {
+                                          setState(() {
+                                            promptVal = promptVal - 1;
+                                            _controller.text =
+                                                textControllerStates[promptVal];
+                                          });
+                                        }
+                                      },
+                                      splashRadius: 10,
+                                      icon: const Icon(
+                                        Icons.chevron_left_outlined,
+                                        color: Colors.amber,
+                                      ),
+                                    )
+                                  : Container()),
                           const Expanded(
                               flex: 10, child: CreatePageLoadingBar()),
                           //PROMPT W/ USER ANSWER
                           Expanded(
                               flex: 2,
-                              child: (promptVal < prompts.length -1) ? IconButton(
-                                alignment: Alignment.center,
-                                onPressed: () {
-                                  textControllerStates[promptVal] =
-                                      _controller.text;
-                                  if ((promptVal + 1) < prompts.length) {
-                                    setState(() {
-                                      promptVal++;
-                                      _controller.text =
-                                          textControllerStates[promptVal];
-                                    });
-                                  }
-                                },
-                                splashRadius: 10,
-                                icon: const Icon(
-                                  Icons.chevron_right_outlined,
-                                  color: Colors.amber,
-                                ),
-                              ): Container()),
+                              child: (promptVal < prompts.length - 1)
+                                  ? IconButton(
+                                      alignment: Alignment.center,
+                                      onPressed: () {
+                                        textControllerStates[promptVal] =
+                                            _controller.text;
+                                        if ((promptVal + 1) < prompts.length) {
+                                          setState(() {
+                                            promptVal++;
+                                            _controller.text =
+                                                textControllerStates[promptVal];
+                                          });
+                                        }
+                                      },
+                                      splashRadius: 10,
+                                      icon: const Icon(
+                                        Icons.chevron_right_outlined,
+                                        color: Colors.amber,
+                                      ),
+                                    )
+                                  : Container()),
                         ])),
                 Expanded(flex: 1, child: Container())
               ]),
@@ -249,106 +253,107 @@ class _CreatePageContentState extends State<CreatePageContent>
                     constraints: BoxConstraints.tight(
                         Size(double.infinity, screenHeight / 3)),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                      Expanded(flex: 2, child: Container()),
+                          Expanded(flex: 2, child: Container()),
 //Text Box Container - INPUT
-                      Expanded(
-                        flex: 30,
-                        child: Column(children: [
-                          KeyboardVisibilityBuilder(
-                              builder: (context, isKeyboardVisible) {
-                            if (isKeyboardVisible == true) {
-                              keyBoardOut = true;
-                            }
-                            if (!isKeyboardVisible && keyBoardOut) {
-                              keyBoardOut = false;
-                              focusNode.unfocus();
-                            }
-                            return TextField(
-                              textInputAction: TextInputAction.go,
-                              controller: _controller,
-                              onEditingComplete: () {
-                                print("This happened");
-                                focusNode.unfocus();
-                              },
-                              onTap: () {
-                                if (_controller.text.trim() ==
-                                    "Answer the Prompt Here") {
-                                  _controller.text = "";
-                                  setState(() {});
+                          Expanded(
+                            flex: 30,
+                            child: Column(children: [
+                              KeyboardVisibilityBuilder(
+                                  builder: (context, isKeyboardVisible) {
+                                if (isKeyboardVisible == true) {
+                                  keyBoardOut = true;
                                 }
-                              },
-                              onTapOutside: (pointer) {
-                                focusNode.unfocus();
-                              },
-                              onChanged: (text) {
-                                setState(() {});
-                              },
-                              maxLines: 4,
-                              minLines: 1,
-                              maxLength: 500,
-                              keyboardType: TextInputType.multiline,
-                              cursorColor: Colors.white,
-                              focusNode: focusNode,
-                              style: const TextStyle(color: Colors.amber),
-                              decoration: InputDecoration(
-                                constraints: BoxConstraints(
-                                  maxWidth: screenWidth / 1.5,
-                                ),
-                                hintText: "Answer Prompt Here",
-                                border: const OutlineInputBorder(),
-                                focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.amber, width: 3)),
-                                contentPadding: const EdgeInsets.all(10),
-                              ),
-                            );
-                          }),
-                          Container(
-                              color: Colors.black,
-//Row For the Post Button
-                              child: ElevatedIconButton(
-                                  color: Colors.amber,
-                                  iconColor: Colors.black,
-                                  fractionHeight: 40,
-                                  text: "Post",
-                                  width: screenWidth / 3,
-                                  onPressed: () {
-                                    if (isUser) {
-                                      //Uncomment below to post data
-                                      postData();
-                                    } else {
-                                      // User is not logged in
-                                      // Show a dialog and offer to take the user back to the login screen
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                                title:
-                                                    const Text('Not Logged In'),
-                                                content: const Text(
-                                                    'You cannot post unless you are logged in.'),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    child: const Text(
-                                                        'Go to Login'),
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                          context,
-                                                          SmoothPageTransition(
-                                                            child: LoginPage(),
-                                                          ));
-                                                    },
-                                                  )
-                                                ]);
-                                          });
+                                if (!isKeyboardVisible && keyBoardOut) {
+                                  keyBoardOut = false;
+                                  focusNode.unfocus();
+                                }
+                                return TextField(
+                                  textInputAction: TextInputAction.go,
+                                  controller: _controller,
+                                  onEditingComplete: () {
+                                    print("This happened");
+                                    focusNode.unfocus();
+                                  },
+                                  onTap: () {
+                                    if (_controller.text.trim() ==
+                                        "Answer the Prompt Here") {
+                                      _controller.text = "";
+                                      setState(() {});
                                     }
-                                  }))
-                        ]),
-                      )
-                    ])))),
+                                  },
+                                  onTapOutside: (pointer) {
+                                    focusNode.unfocus();
+                                  },
+                                  onChanged: (text) {
+                                    setState(() {});
+                                  },
+                                  maxLines: 4,
+                                  minLines: 1,
+                                  maxLength: 500,
+                                  keyboardType: TextInputType.multiline,
+                                  cursorColor: Colors.white,
+                                  focusNode: focusNode,
+                                  style: const TextStyle(color: Colors.amber),
+                                  decoration: InputDecoration(
+                                    constraints: BoxConstraints(
+                                      maxWidth: screenWidth / 1.5,
+                                    ),
+                                    hintText: "Answer Prompt Here",
+                                    border: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.amber, width: 3)),
+                                    contentPadding: const EdgeInsets.all(10),
+                                  ),
+                                );
+                              }),
+                              Container(
+                                  color: Colors.black,
+//Row For the Post Button
+                                  child: ElevatedIconButton(
+                                      color: Colors.amber,
+                                      iconColor: Colors.black,
+                                      fractionHeight: 40,
+                                      text: "Post",
+                                      width: screenWidth / 3,
+                                      onPressed: () {
+                                        if (isUser) {
+                                          //Uncomment below to post data
+                                          postData();
+                                        } else {
+                                          // User is not logged in
+                                          // Show a dialog and offer to take the user back to the login screen
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                    title: const Text(
+                                                        'Not Logged In'),
+                                                    content: const Text(
+                                                        'You cannot post unless you are logged in.'),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        child: const Text(
+                                                            'Go to Login'),
+                                                        onPressed: () {
+                                                          Navigator.push(
+                                                              context,
+                                                              SmoothPageTransition(
+                                                                child:
+                                                                    LoginPage(),
+                                                              ));
+                                                        },
+                                                      )
+                                                    ]);
+                                              });
+                                        }
+                                      }))
+                            ]),
+                          )
+                        ])))),
       ],
     );
   }

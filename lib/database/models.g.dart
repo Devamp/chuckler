@@ -32,28 +32,43 @@ const DbPostSchema = CollectionSchema(
       name: r'likes',
       type: IsarType.long,
     ),
-    r'postId': PropertySchema(
+    r'mine': PropertySchema(
       id: 3,
+      name: r'mine',
+      type: IsarType.bool,
+    ),
+    r'postId': PropertySchema(
+      id: 4,
       name: r'postId',
       type: IsarType.string,
     ),
+    r'promptDateId': PropertySchema(
+      id: 5,
+      name: r'promptDateId',
+      type: IsarType.string,
+    ),
+    r'promptId': PropertySchema(
+      id: 6,
+      name: r'promptId',
+      type: IsarType.string,
+    ),
     r'seen': PropertySchema(
-      id: 4,
+      id: 7,
       name: r'seen',
       type: IsarType.bool,
     ),
     r'uid': PropertySchema(
-      id: 5,
+      id: 8,
       name: r'uid',
       type: IsarType.string,
     ),
     r'username': PropertySchema(
-      id: 6,
+      id: 9,
       name: r'username',
       type: IsarType.string,
     ),
     r'wins': PropertySchema(
-      id: 7,
+      id: 10,
       name: r'wins',
       type: IsarType.long,
     )
@@ -105,6 +120,18 @@ int _dbPostEstimateSize(
     }
   }
   {
+    final value = object.promptDateId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.promptId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.uid;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -128,11 +155,14 @@ void _dbPostSerialize(
   writer.writeString(offsets[0], object.answer);
   writer.writeLong(offsets[1], object.dislikes);
   writer.writeLong(offsets[2], object.likes);
-  writer.writeString(offsets[3], object.postId);
-  writer.writeBool(offsets[4], object.seen);
-  writer.writeString(offsets[5], object.uid);
-  writer.writeString(offsets[6], object.username);
-  writer.writeLong(offsets[7], object.wins);
+  writer.writeBool(offsets[3], object.mine);
+  writer.writeString(offsets[4], object.postId);
+  writer.writeString(offsets[5], object.promptDateId);
+  writer.writeString(offsets[6], object.promptId);
+  writer.writeBool(offsets[7], object.seen);
+  writer.writeString(offsets[8], object.uid);
+  writer.writeString(offsets[9], object.username);
+  writer.writeLong(offsets[10], object.wins);
 }
 
 DbPost _dbPostDeserialize(
@@ -142,16 +172,19 @@ DbPost _dbPostDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DbPost(
-    reader.readStringOrNull(offsets[3]),
+    reader.readStringOrNull(offsets[4]),
     reader.readStringOrNull(offsets[0]),
-    reader.readStringOrNull(offsets[6]),
-    reader.readStringOrNull(offsets[5]),
+    reader.readStringOrNull(offsets[9]),
+    reader.readStringOrNull(offsets[8]),
     reader.readLongOrNull(offsets[2]),
     reader.readLongOrNull(offsets[1]),
-    reader.readLongOrNull(offsets[7]),
+    reader.readLongOrNull(offsets[10]),
+    reader.readStringOrNull(offsets[6]),
+    reader.readStringOrNull(offsets[5]),
   );
   object.id = id;
-  object.seen = reader.readBool(offsets[4]);
+  object.mine = reader.readBool(offsets[3]);
+  object.seen = reader.readBool(offsets[7]);
   return object;
 }
 
@@ -169,14 +202,20 @@ P _dbPostDeserializeProp<P>(
     case 2:
       return (reader.readLongOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
-    case 4:
       return (reader.readBool(offset)) as P;
+    case 4:
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
+      return (reader.readBool(offset)) as P;
+    case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
+      return (reader.readStringOrNull(offset)) as P;
+    case 10:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -725,6 +764,15 @@ extension DbPostQueryFilter on QueryBuilder<DbPost, DbPost, QFilterCondition> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> mineEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'mine',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QAfterFilterCondition> postIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -866,6 +914,298 @@ extension DbPostQueryFilter on QueryBuilder<DbPost, DbPost, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'postId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'promptDateId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'promptDateId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'promptDateId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'promptDateId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'promptDateId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'promptDateId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'promptId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'promptId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'promptId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'promptId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'promptId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'promptId',
         value: '',
       ));
     });
@@ -1280,6 +1620,18 @@ extension DbPostQuerySortBy on QueryBuilder<DbPost, DbPost, QSortBy> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByMine() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mine', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByMineDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mine', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPostId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'postId', Sort.asc);
@@ -1289,6 +1641,30 @@ extension DbPostQuerySortBy on QueryBuilder<DbPost, DbPost, QSortBy> {
   QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPostIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'postId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPromptDateId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptDateId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPromptDateIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptDateId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPromptId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPromptIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptId', Sort.desc);
     });
   }
 
@@ -1390,6 +1766,18 @@ extension DbPostQuerySortThenBy on QueryBuilder<DbPost, DbPost, QSortThenBy> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByMine() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mine', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByMineDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mine', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPostId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'postId', Sort.asc);
@@ -1399,6 +1787,30 @@ extension DbPostQuerySortThenBy on QueryBuilder<DbPost, DbPost, QSortThenBy> {
   QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPostIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'postId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPromptDateId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptDateId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPromptDateIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptDateId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPromptId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPromptIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptId', Sort.desc);
     });
   }
 
@@ -1471,10 +1883,30 @@ extension DbPostQueryWhereDistinct on QueryBuilder<DbPost, DbPost, QDistinct> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByMine() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'mine');
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QDistinct> distinctByPostId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'postId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByPromptDateId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'promptDateId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByPromptId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'promptId', caseSensitive: caseSensitive);
     });
   }
 
@@ -1530,9 +1962,27 @@ extension DbPostQueryProperty on QueryBuilder<DbPost, DbPost, QQueryProperty> {
     });
   }
 
+  QueryBuilder<DbPost, bool, QQueryOperations> mineProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'mine');
+    });
+  }
+
   QueryBuilder<DbPost, String?, QQueryOperations> postIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'postId');
+    });
+  }
+
+  QueryBuilder<DbPost, String?, QQueryOperations> promptDateIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'promptDateId');
+    });
+  }
+
+  QueryBuilder<DbPost, String?, QQueryOperations> promptIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'promptId');
     });
   }
 
@@ -1587,18 +2037,23 @@ const DbPromptSchema = CollectionSchema(
       name: r'date',
       type: IsarType.string,
     ),
-    r'promptDateId': PropertySchema(
+    r'liked': PropertySchema(
       id: 3,
+      name: r'liked',
+      type: IsarType.long,
+    ),
+    r'promptDateId': PropertySchema(
+      id: 4,
       name: r'promptDateId',
       type: IsarType.string,
     ),
     r'promptId': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'promptId',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'type',
       type: IsarType.string,
     )
@@ -1671,9 +2126,10 @@ void _dbPromptSerialize(
   writer.writeString(offsets[0], object.after);
   writer.writeString(offsets[1], object.before);
   writer.writeString(offsets[2], object.date);
-  writer.writeString(offsets[3], object.promptDateId);
-  writer.writeString(offsets[4], object.promptId);
-  writer.writeString(offsets[5], object.type);
+  writer.writeLong(offsets[3], object.liked);
+  writer.writeString(offsets[4], object.promptDateId);
+  writer.writeString(offsets[5], object.promptId);
+  writer.writeString(offsets[6], object.type);
 }
 
 DbPrompt _dbPromptDeserialize(
@@ -1685,12 +2141,13 @@ DbPrompt _dbPromptDeserialize(
   final object = DbPrompt(
     reader.readStringOrNull(offsets[1]),
     reader.readStringOrNull(offsets[0]),
-    reader.readStringOrNull(offsets[3]),
     reader.readStringOrNull(offsets[4]),
-    reader.readStringOrNull(offsets[2]),
     reader.readStringOrNull(offsets[5]),
+    reader.readStringOrNull(offsets[2]),
+    reader.readStringOrNull(offsets[6]),
   );
   object.id = id;
+  object.liked = reader.readLong(offsets[3]);
   return object;
 }
 
@@ -1708,10 +2165,12 @@ P _dbPromptDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2297,6 +2756,59 @@ extension DbPromptQueryFilter
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> likedEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'liked',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> likedGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'liked',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> likedLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'liked',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> likedBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'liked',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> promptDateIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2784,6 +3296,18 @@ extension DbPromptQuerySortBy on QueryBuilder<DbPrompt, DbPrompt, QSortBy> {
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByLiked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'liked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByLikedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'liked', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByPromptDateId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'promptDateId', Sort.asc);
@@ -2871,6 +3395,18 @@ extension DbPromptQuerySortThenBy
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByLiked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'liked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByLikedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'liked', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByPromptDateId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'promptDateId', Sort.asc);
@@ -2931,6 +3467,12 @@ extension DbPromptQueryWhereDistinct
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QDistinct> distinctByLiked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'liked');
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QDistinct> distinctByPromptDateId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2976,6 +3518,12 @@ extension DbPromptQueryProperty
   QueryBuilder<DbPrompt, String?, QQueryOperations> dateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'date');
+    });
+  }
+
+  QueryBuilder<DbPrompt, int, QQueryOperations> likedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'liked');
     });
   }
 

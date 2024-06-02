@@ -3,15 +3,28 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:provider/provider.dart';
 import 'package:chuckler/Session.dart';
 
+import '../../database/models.dart';
+
 class FeedPagePromptArea extends StatelessWidget {
   const FeedPagePromptArea({super.key});
 
   @override
   Widget build(BuildContext context) {
-    UserService userSession = Provider.of<UserService>(context, listen: false);
+    UserService userSession = Provider.of<UserService>(context, listen: true);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Column(
+    late DbPrompt thePrompt;
+    for(DbPrompt p in userSession.prompts!){
+      if(p.promptId == userSession.currentFeedPromptId){
+        thePrompt = p;
+      }
+    }
+    return InkWell(
+      onTap: (){
+        userSession.clearViewingColor();
+        userSession.clearviewingPost();
+      },
+        child: Column(
       children: [
         Expanded(
             flex: 8,
@@ -38,7 +51,15 @@ class FeedPagePromptArea extends StatelessWidget {
                                 ),
                                 children: <TextSpan>[
                                   TextSpan(
-                                      text: userSession.prompts![0].before,
+                                      text: thePrompt.before,
+                                      style:
+                                      const TextStyle(color: Colors.white)),
+                                  TextSpan(
+                                      text: userSession.viewingPost,
+                                      style:
+                                      TextStyle(color: userSession.viewingColor)),
+                                  TextSpan(
+                                      text: thePrompt.after,
                                       style:
                                       const TextStyle(color: Colors.white)),
                                 ],
@@ -51,7 +72,7 @@ class FeedPagePromptArea extends StatelessWidget {
                     ]))),
 
       ],
-    );
+    ));
   }
 
 }

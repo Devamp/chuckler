@@ -20,7 +20,7 @@ class _AccountPageState extends State<AccountPageContent> {
   int _currentIndex = 0;
   List<DbNotification> notifications = [DbNotification("", "", ""), DbNotification("", "", ""),DbNotification("", "", ""),DbNotification("", "", ""),];
   //TODO INSTANTIATE POSTS WITH REAL DATA
-  List<DbPost> posts = [DbPost("a","b","c", "C", 0, 0, 0), DbPost("a","b","c", "C", 0, 0, 0), DbPost("a","b","c", "C", 0, 0, 0), DbPost("a","b","c", "C", 0, 0, 0), DbPost("a","b","c", "C", 0, 0, 0)];
+  List<DbPost> posts = [DbPost("a","b","c", "C", 0, 0, 0,"",""), DbPost("a","b","c", "C", 0, 0, 0,"",""), DbPost("a","b","c", "C", 0, 0, 0,"",""), DbPost("a","b","c", "C", 0, 0, 0,"",""), ];
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _firstTime = true;
   Widget currentScreen = Container();

@@ -66,7 +66,7 @@ Future<DbPost> createPost(
       .then((docRef) => {docId = docRef.id})
       .catchError((error) => print("Failed to add data: $error"));
 
-  DbPost posted = DbPost(docId,answer,u.username, u.uid, 0 , 0 , 0);
+  DbPost posted = DbPost(docId,answer,u.username, u.uid, 0 , 0 , 0, prompt.promptId, prompt.promptDateId);
   posted.mine = true;
   return posted;
 }
@@ -236,7 +236,7 @@ Future<List<DbPost>> getPosts(
       dynamic wins = data['wins'];
       dynamic uid = data['uid'];
       toReturn
-          .add(DbPost(doc.id, answer, username, uid, likes, dislikes, wins));
+          .add(DbPost(doc.id, answer, username, uid, likes, dislikes, wins, prmtId, prmtDateId));
     }
     return toReturn;
   }
