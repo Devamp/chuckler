@@ -9,6 +9,7 @@ import 'package:chuckler/pages/loginpage/login_page.dart';
 import 'package:chuckler/PageTransitioner.dart';
 import '../../Session.dart';
 import 'package:provider/provider.dart';
+import '../../database/isarDB.dart';
 import '../../database/models.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 import 'prompt_identifier.dart';
@@ -50,6 +51,7 @@ class _CreatePageContentState extends State<CreatePageContent>
       //check if user has already posted
       FirebaseFirestore firebase =
           Provider.of<FirebaseFirestore>(context, listen: false);
+      UserService userSession = Provider.of<UserService>(context, listen: false);
       final docRef = await firebase
           .collection('Posts')
           .where('uid', isEqualTo: userId)
@@ -57,12 +59,16 @@ class _CreatePageContentState extends State<CreatePageContent>
           .where('promptDateId', isEqualTo: promtDateId)
           .limit(1)
           .get();
+      //If the user has not posted
       if (docRef.docs.isEmpty) {
         canPost[promptVal] = false;
         try {
-          ////TODO FIX THIS
-          //createPost(firebase, _controller.text
-          // );
+          //Retrieve newly created post
+          DbPost justPosted = await createPost(firebase, userSession.loggedInUser!, userSession.prompts![promptVal], _controller.text);
+          //Add post to local DB
+          IsarService isar = Provider.of<IsarService>(context, listen:  false);
+          //Incrament user posts stat
+          isar.addOnePostToDB(justPosted);
           incrementNumPosts(firebase, userId);
         } catch (error) {
           print("Error: $error");

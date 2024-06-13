@@ -93,6 +93,24 @@ class IsarService {
     return prompts;
   }
 
+  ///Gets the logged in users posts
+  Future<List<DbPost>> getLoggedInUserPostsDB() async {
+    List<DbPost> userPosts = List.empty(growable: true);
+    userPosts = await db.dbPosts.filter().mineEqualTo(true).findAll();
+    return userPosts;
+  }
+
+  ///Get a prompt based on information from a pust
+  Future<DbPrompt?> getASpecificPromptDB(
+      String prmptId, String prmptDateId) async {
+    return await db.dbPrompts
+        .filter()
+        .promptIdEqualTo(prmptId)
+        .and()
+        .promptDateIdEqualTo(prmptDateId)
+        .findFirst();
+  }
+
   ///Get a user from the database with uid = to the provided one
   Future<DbUser?> getUserFromDb(String userid) async {
     try {

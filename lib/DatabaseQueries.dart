@@ -66,6 +66,7 @@ Future<DbPost> createPost(
       .then((docRef) => {docId = docRef.id})
       .catchError((error) => print("Failed to add data: $error"));
 
+
   DbPost posted = DbPost(docId,answer,u.username, u.uid, 0 , 0 , 0, prompt.promptId, prompt.promptDateId);
   posted.mine = true;
   return posted;
