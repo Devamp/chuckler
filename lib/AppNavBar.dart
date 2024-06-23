@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:chuckler/pages/create_page.dart';
-import 'package:chuckler/pages/feed_page.dart';
-import 'package:chuckler/pages/explore_page.dart';
-import 'package:chuckler/pages/account_page.dart';
+import 'package:chuckler/pages/createpage/create_page.dart';
+import 'package:chuckler/pages/feedpage/feed_page.dart';
+import 'package:chuckler/pages/explorepage/explore_page.dart';
+import 'package:chuckler/pages/accountpage/account_page.dart';
 
 
 class NavigationBarController extends StatefulWidget {

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,19 +12,39 @@ class SignupPage extends StatelessWidget {
   String email = '';
   String password = '';
   int age = 18;
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  /// Check If Document Exists
+   /**THis is not set up Right TODO SET UP PAYED ACCOUNT FOR THIS
+  Future<bool> checkIfDocExists(String docId) async {
+    try {
+      final HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('checkUsername');
+      final results = await callable(username); // Pass username directly
+      // Check for errors (optional)
+      if (results.data['error'] != null) {
+        throw Exception('Error checking username');
+      }
+      return results.data['exists'] as bool;
+      return true;
+    } catch (e) {
+      return true;
+    }
+  }*/
+
+  ///Register the user with username as doc id
   Future<void> registerUser(String uid) async {
     try {
-      await firestore.collection('Users').add({
-        'userID': uid,
+      await firestore.collection('Users').doc(uid).set({
         'username': username,
         'age': age,
-        'followers': 0,
-        'following': 0,
-        'profileImage': "https://firebasestorage.googleapis.com/v0/b/chuckler-622ff.appspot.com/o/Chuckler%20(4).png?alt=media&token=36bd76de-9248-47a8-9a76-d477cdbc6cd0"
+        'friends': 0,
+        'pendingFriends': 0,
+        'posts': 0,
+        'profileImage': ""
       });
     } catch (e) {
       print('Error: $e');
@@ -90,7 +110,7 @@ class SignupPage extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         borderSide: const BorderSide(
-                          color: Colors.white,
+                          color: Colors.black,
                           width: 1.0,
                         ),
                       ),
@@ -114,7 +134,7 @@ class SignupPage extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         borderSide: const BorderSide(
-                          color: Colors.white,
+                          color: Colors.black,
                           width: 1.0,
                         ),
                       ),
@@ -138,7 +158,7 @@ class SignupPage extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                         borderSide: const BorderSide(
-                          color: Colors.white,
+                          color: Colors.black,
                           width: 1.0,
                         ),
                       ),
@@ -154,20 +174,28 @@ class SignupPage extends StatelessWidget {
                     width: 200,
                     child: ElevatedButton(
                       onPressed: () async {
+                        if(isLoading.value){return;}
+                        isLoading.value = true;
                         //Register User if it is valid information
                         if (username.isNotEmpty &&
                             email.isNotEmpty &&
                             password.isNotEmpty) {
                           try {
+                            bool isUserName = false;
+                            //TODO add pay account and use this checkIfDocExists(username);
+                            if (isUserName) {
+                              throw (Error.safeToString(
+                                  "Username already exists"));
+                            }
                             UserCredential result =
                                 await _auth.createUserWithEmailAndPassword(
                               email: email,
                               password: password,
                             );
-                            //Register user with unique uid from authentication
+                            //Register user with unique uid from authentication this can be done asynchronously
                             registerUser(
                                 result.user!.uid); // add user info to db
-
+                            isLoading.value = false;
                             // ignore: use_build_context_synchronously
                             showDialog(
                               context: context,
@@ -188,6 +216,7 @@ class SignupPage extends StatelessWidget {
                               },
                             );
                           } catch (e) {
+                            isLoading.value = false;
                             String errorMessage = e.toString();
                             int startIndex = errorMessage.indexOf(']');
                             String endMessage =
@@ -231,20 +260,31 @@ class SignupPage extends StatelessWidget {
                         ),
                       ),
                       // ignore: prefer_const_constructors
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.app_registration_rounded),
-                          SizedBox(width: 8.0),
-                          Text(
-                            'REGISTER',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                        ],
+                      child: ValueListenableBuilder(
+                        valueListenable: isLoading,
+                        builder: (context, value, child) {
+                          return value ? CircularProgressIndicator() : child!;
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(Icons.app_registration_rounded),
+                                SizedBox(width: 8.0),
+                                Text(
+                                  'Register Account',
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  SizedBox(height: 15.0),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, '/login');
@@ -252,12 +292,22 @@ class SignupPage extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.only(left: 20.0),
                       alignment: Alignment.center,
-                      child: Text(
-                        'Already have an account? Sign in!',
-                        style: TextStyle(
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 14.0,
                             color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: 'Already have an account?',
+                                style: TextStyle(fontSize: 18)),
+                            TextSpan(
+                                text: ' Login Here',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -273,6 +323,7 @@ class SignupPage extends StatelessWidget {
 
 class SliderWidget extends StatefulWidget {
   const SliderWidget({super.key, required this.onSliderValueChanged});
+
   final void Function(int) onSliderValueChanged;
 
   @override
