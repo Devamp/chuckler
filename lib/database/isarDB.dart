@@ -9,7 +9,13 @@ class IsarService {
     if (Isar.instanceNames.isEmpty) {
       final dir = await getApplicationDocumentsDirectory();
       db = await Isar.open(
-        [DbPostSchema, DbPromptSchema], // Here we will add a schema's
+        [
+          DbPostSchema,
+          DbPromptSchema,
+          DbUserSchema,
+          DbCommentSchema,
+          DbNotificationSchema
+        ], // Here we will add a schema's
         directory: dir.path,
         inspector: true,
       );
@@ -20,6 +26,12 @@ class IsarService {
 
   /// CREATE FUNCTIONS
 
+  Future<void> addUserToDb(DbUser user) async {
+    await db.writeTxn(() async {
+      await db.dbUsers.put(user);
+    });
+  }
+
   //Adds a list of posts to the database
   Future<void> addPostsToDB(List<DbPost> posts) async {
     await db.writeTxn(() async {
@@ -29,9 +41,21 @@ class IsarService {
 
   //Adds a list of prompts to the database
   Future<void> addPromptsToDB(List<DbPrompt> prompts) async {
-    await db.writeTxn(() async {
-      await db.dbPrompts.putAll(prompts);
-    });
+    for (DbPrompt prompt in prompts) {
+      DbPrompt? p = await db.dbPrompts
+          .filter()
+          .promptDateIdEqualTo(prompt.promptDateId)
+          .and()
+          .promptIdEqualTo(prompt.promptId)
+          .findFirst();
+      if (p != null) {
+        //Update appropriately
+      } else {
+        await db.writeTxn(() async {
+          await db.dbPrompts.put(prompt);
+        });
+      }
+    }
   }
 
   //Adds one post to the database
@@ -57,11 +81,44 @@ class IsarService {
 
   Future<List<DbPrompt>> getDailyPromptsFromDB() async {
     DateTime now = DateTime.now().toUtc();
-    final utcMidnight = now.subtract(Duration(hours: now.hour, minutes: now.minute, seconds: now.second, milliseconds: now.microsecond));
-  final prompts = await db.dbPrompts.filter().dateEqualTo(utcMidnight.toIso8601String().substring(0,10)).findAll();
-  return prompts;
-}
+    final utcMidnight = now.subtract(Duration(
+        hours: now.hour,
+        minutes: now.minute,
+        seconds: now.second,
+        milliseconds: now.microsecond));
+    final prompts = await db.dbPrompts
+        .filter()
+        .dateEqualTo(utcMidnight.toIso8601String().substring(0, 10))
+        .findAll();
+    return prompts;
+  }
 
+  ///Gets the logged in users posts
+  Future<List<DbPost>> getLoggedInUserPostsDB() async {
+    List<DbPost> userPosts = List.empty(growable: true);
+    userPosts = await db.dbPosts.filter().mineEqualTo(true).findAll();
+    return userPosts;
+  }
+
+  ///Get a prompt based on information from a pust
+  Future<DbPrompt?> getASpecificPromptDB(
+      String prmptId, String prmptDateId) async {
+    return await db.dbPrompts
+        .filter()
+        .promptIdEqualTo(prmptId)
+        .and()
+        .promptDateIdEqualTo(prmptDateId)
+        .findFirst();
+  }
+
+  ///Get a user from the database with uid = to the provided one
+  Future<DbUser?> getUserFromDb(String userid) async {
+    try {
+      return await db.dbUsers.filter().uidEqualTo(userid).findFirst();
+    } catch (error) {
+      return null;
+    }
+  }
 
   ///UPDATE FUNCTIONS
   //Get two unseen posts and set the values to seen

@@ -22,20 +22,55 @@ const DbPostSchema = CollectionSchema(
       name: r'answer',
       type: IsarType.string,
     ),
-    r'postId': PropertySchema(
+    r'dislikes': PropertySchema(
       id: 1,
+      name: r'dislikes',
+      type: IsarType.long,
+    ),
+    r'likes': PropertySchema(
+      id: 2,
+      name: r'likes',
+      type: IsarType.long,
+    ),
+    r'mine': PropertySchema(
+      id: 3,
+      name: r'mine',
+      type: IsarType.bool,
+    ),
+    r'postId': PropertySchema(
+      id: 4,
       name: r'postId',
       type: IsarType.string,
     ),
+    r'promptDateId': PropertySchema(
+      id: 5,
+      name: r'promptDateId',
+      type: IsarType.string,
+    ),
+    r'promptId': PropertySchema(
+      id: 6,
+      name: r'promptId',
+      type: IsarType.string,
+    ),
     r'seen': PropertySchema(
-      id: 2,
+      id: 7,
       name: r'seen',
       type: IsarType.bool,
     ),
+    r'uid': PropertySchema(
+      id: 8,
+      name: r'uid',
+      type: IsarType.string,
+    ),
     r'username': PropertySchema(
-      id: 3,
+      id: 9,
       name: r'username',
       type: IsarType.string,
+    ),
+    r'wins': PropertySchema(
+      id: 10,
+      name: r'wins',
+      type: IsarType.long,
     )
   },
   estimateSize: _dbPostEstimateSize,
@@ -85,6 +120,24 @@ int _dbPostEstimateSize(
     }
   }
   {
+    final value = object.promptDateId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.promptId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.uid;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.username;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -100,9 +153,16 @@ void _dbPostSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.answer);
-  writer.writeString(offsets[1], object.postId);
-  writer.writeBool(offsets[2], object.seen);
-  writer.writeString(offsets[3], object.username);
+  writer.writeLong(offsets[1], object.dislikes);
+  writer.writeLong(offsets[2], object.likes);
+  writer.writeBool(offsets[3], object.mine);
+  writer.writeString(offsets[4], object.postId);
+  writer.writeString(offsets[5], object.promptDateId);
+  writer.writeString(offsets[6], object.promptId);
+  writer.writeBool(offsets[7], object.seen);
+  writer.writeString(offsets[8], object.uid);
+  writer.writeString(offsets[9], object.username);
+  writer.writeLong(offsets[10], object.wins);
 }
 
 DbPost _dbPostDeserialize(
@@ -112,12 +172,19 @@ DbPost _dbPostDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DbPost(
-    reader.readStringOrNull(offsets[1]),
+    reader.readStringOrNull(offsets[4]),
     reader.readStringOrNull(offsets[0]),
-    reader.readStringOrNull(offsets[3]),
+    reader.readStringOrNull(offsets[9]),
+    reader.readStringOrNull(offsets[8]),
+    reader.readLongOrNull(offsets[2]),
+    reader.readLongOrNull(offsets[1]),
+    reader.readLongOrNull(offsets[10]),
+    reader.readStringOrNull(offsets[6]),
+    reader.readStringOrNull(offsets[5]),
   );
   object.id = id;
-  object.seen = reader.readBool(offsets[2]);
+  object.mine = reader.readBool(offsets[3]);
+  object.seen = reader.readBool(offsets[7]);
   return object;
 }
 
@@ -131,11 +198,25 @@ P _dbPostDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
-      return (reader.readBool(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
+      return (reader.readBool(offset)) as P;
+    case 4:
       return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
+      return (reader.readBool(offset)) as P;
+    case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
+      return (reader.readStringOrNull(offset)) as P;
+    case 10:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -494,6 +575,75 @@ extension DbPostQueryFilter on QueryBuilder<DbPost, DbPost, QFilterCondition> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> dislikesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'dislikes',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> dislikesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'dislikes',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> dislikesEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dislikes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> dislikesGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dislikes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> dislikesLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dislikes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> dislikesBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dislikes',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -542,6 +692,83 @@ extension DbPostQueryFilter on QueryBuilder<DbPost, DbPost, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> likesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'likes',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> likesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'likes',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> likesEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'likes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> likesGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'likes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> likesLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'likes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> likesBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'likes',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> mineEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'mine',
+        value: value,
       ));
     });
   }
@@ -692,11 +919,447 @@ extension DbPostQueryFilter on QueryBuilder<DbPost, DbPost, QFilterCondition> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'promptDateId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'promptDateId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'promptDateId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'promptDateId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'promptDateId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'promptDateId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptDateIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'promptDateId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'promptId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'promptId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'promptId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'promptId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'promptId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'promptId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> promptIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'promptId',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QAfterFilterCondition> seenEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'seen',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'uid',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'uid',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'uid',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidContains(String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'uid',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'uid',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> uidIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'uid',
+        value: '',
       ));
     });
   }
@@ -846,6 +1509,74 @@ extension DbPostQueryFilter on QueryBuilder<DbPost, DbPost, QFilterCondition> {
       ));
     });
   }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> winsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'wins',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> winsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'wins',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> winsEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'wins',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> winsGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'wins',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> winsLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'wins',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterFilterCondition> winsBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'wins',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension DbPostQueryObject on QueryBuilder<DbPost, DbPost, QFilterCondition> {}
@@ -865,6 +1596,42 @@ extension DbPostQuerySortBy on QueryBuilder<DbPost, DbPost, QSortBy> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByDislikes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dislikes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByDislikesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dislikes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByLikes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'likes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByLikesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'likes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByMine() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mine', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByMineDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mine', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPostId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'postId', Sort.asc);
@@ -874,6 +1641,30 @@ extension DbPostQuerySortBy on QueryBuilder<DbPost, DbPost, QSortBy> {
   QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPostIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'postId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPromptDateId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptDateId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPromptDateIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptDateId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPromptId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByPromptIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptId', Sort.desc);
     });
   }
 
@@ -889,6 +1680,18 @@ extension DbPostQuerySortBy on QueryBuilder<DbPost, DbPost, QSortBy> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByUid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByUidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uid', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByUsername() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.asc);
@@ -898,6 +1701,18 @@ extension DbPostQuerySortBy on QueryBuilder<DbPost, DbPost, QSortBy> {
   QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByUsernameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'username', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByWins() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'wins', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> sortByWinsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'wins', Sort.desc);
     });
   }
 }
@@ -915,6 +1730,18 @@ extension DbPostQuerySortThenBy on QueryBuilder<DbPost, DbPost, QSortThenBy> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByDislikes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dislikes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByDislikesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dislikes', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -924,6 +1751,30 @@ extension DbPostQuerySortThenBy on QueryBuilder<DbPost, DbPost, QSortThenBy> {
   QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByLikes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'likes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByLikesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'likes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByMine() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mine', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByMineDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mine', Sort.desc);
     });
   }
 
@@ -939,6 +1790,30 @@ extension DbPostQuerySortThenBy on QueryBuilder<DbPost, DbPost, QSortThenBy> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPromptDateId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptDateId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPromptDateIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptDateId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPromptId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByPromptIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'promptId', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QAfterSortBy> thenBySeen() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'seen', Sort.asc);
@@ -948,6 +1823,18 @@ extension DbPostQuerySortThenBy on QueryBuilder<DbPost, DbPost, QSortThenBy> {
   QueryBuilder<DbPost, DbPost, QAfterSortBy> thenBySeenDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'seen', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByUid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByUidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uid', Sort.desc);
     });
   }
 
@@ -962,6 +1849,18 @@ extension DbPostQuerySortThenBy on QueryBuilder<DbPost, DbPost, QSortThenBy> {
       return query.addSortBy(r'username', Sort.desc);
     });
   }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByWins() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'wins', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QAfterSortBy> thenByWinsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'wins', Sort.desc);
+    });
+  }
 }
 
 extension DbPostQueryWhereDistinct on QueryBuilder<DbPost, DbPost, QDistinct> {
@@ -972,10 +1871,42 @@ extension DbPostQueryWhereDistinct on QueryBuilder<DbPost, DbPost, QDistinct> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByDislikes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'dislikes');
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByLikes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'likes');
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByMine() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'mine');
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QDistinct> distinctByPostId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'postId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByPromptDateId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'promptDateId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByPromptId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'promptId', caseSensitive: caseSensitive);
     });
   }
 
@@ -985,10 +1916,23 @@ extension DbPostQueryWhereDistinct on QueryBuilder<DbPost, DbPost, QDistinct> {
     });
   }
 
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByUid(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'uid', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<DbPost, DbPost, QDistinct> distinctByUsername(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'username', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbPost, DbPost, QDistinct> distinctByWins() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'wins');
     });
   }
 }
@@ -1006,9 +1950,39 @@ extension DbPostQueryProperty on QueryBuilder<DbPost, DbPost, QQueryProperty> {
     });
   }
 
+  QueryBuilder<DbPost, int?, QQueryOperations> dislikesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'dislikes');
+    });
+  }
+
+  QueryBuilder<DbPost, int?, QQueryOperations> likesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'likes');
+    });
+  }
+
+  QueryBuilder<DbPost, bool, QQueryOperations> mineProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'mine');
+    });
+  }
+
   QueryBuilder<DbPost, String?, QQueryOperations> postIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'postId');
+    });
+  }
+
+  QueryBuilder<DbPost, String?, QQueryOperations> promptDateIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'promptDateId');
+    });
+  }
+
+  QueryBuilder<DbPost, String?, QQueryOperations> promptIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'promptId');
     });
   }
 
@@ -1018,9 +1992,21 @@ extension DbPostQueryProperty on QueryBuilder<DbPost, DbPost, QQueryProperty> {
     });
   }
 
+  QueryBuilder<DbPost, String?, QQueryOperations> uidProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'uid');
+    });
+  }
+
   QueryBuilder<DbPost, String?, QQueryOperations> usernameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'username');
+    });
+  }
+
+  QueryBuilder<DbPost, int?, QQueryOperations> winsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'wins');
     });
   }
 }
@@ -1051,18 +2037,23 @@ const DbPromptSchema = CollectionSchema(
       name: r'date',
       type: IsarType.string,
     ),
-    r'promptDateId': PropertySchema(
+    r'liked': PropertySchema(
       id: 3,
+      name: r'liked',
+      type: IsarType.long,
+    ),
+    r'promptDateId': PropertySchema(
+      id: 4,
       name: r'promptDateId',
       type: IsarType.string,
     ),
     r'promptId': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'promptId',
       type: IsarType.string,
     ),
     r'type': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'type',
       type: IsarType.string,
     )
@@ -1135,9 +2126,10 @@ void _dbPromptSerialize(
   writer.writeString(offsets[0], object.after);
   writer.writeString(offsets[1], object.before);
   writer.writeString(offsets[2], object.date);
-  writer.writeString(offsets[3], object.promptDateId);
-  writer.writeString(offsets[4], object.promptId);
-  writer.writeString(offsets[5], object.type);
+  writer.writeLong(offsets[3], object.liked);
+  writer.writeString(offsets[4], object.promptDateId);
+  writer.writeString(offsets[5], object.promptId);
+  writer.writeString(offsets[6], object.type);
 }
 
 DbPrompt _dbPromptDeserialize(
@@ -1149,12 +2141,13 @@ DbPrompt _dbPromptDeserialize(
   final object = DbPrompt(
     reader.readStringOrNull(offsets[1]),
     reader.readStringOrNull(offsets[0]),
-    reader.readStringOrNull(offsets[3]),
     reader.readStringOrNull(offsets[4]),
-    reader.readStringOrNull(offsets[2]),
     reader.readStringOrNull(offsets[5]),
+    reader.readStringOrNull(offsets[2]),
+    reader.readStringOrNull(offsets[6]),
   );
   object.id = id;
+  object.liked = reader.readLong(offsets[3]);
   return object;
 }
 
@@ -1172,10 +2165,12 @@ P _dbPromptDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1761,6 +2756,59 @@ extension DbPromptQueryFilter
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> likedEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'liked',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> likedGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'liked',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> likedLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'liked',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> likedBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'liked',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> promptDateIdIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -2248,6 +3296,18 @@ extension DbPromptQuerySortBy on QueryBuilder<DbPrompt, DbPrompt, QSortBy> {
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByLiked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'liked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByLikedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'liked', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByPromptDateId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'promptDateId', Sort.asc);
@@ -2335,6 +3395,18 @@ extension DbPromptQuerySortThenBy
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByLiked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'liked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByLikedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'liked', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByPromptDateId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'promptDateId', Sort.asc);
@@ -2395,6 +3467,12 @@ extension DbPromptQueryWhereDistinct
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QDistinct> distinctByLiked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'liked');
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QDistinct> distinctByPromptDateId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2443,6 +3521,12 @@ extension DbPromptQueryProperty
     });
   }
 
+  QueryBuilder<DbPrompt, int, QQueryOperations> likedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'liked');
+    });
+  }
+
   QueryBuilder<DbPrompt, String?, QQueryOperations> promptDateIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'promptDateId');
@@ -2473,38 +3557,58 @@ const DbUserSchema = CollectionSchema(
   name: r'DbUser',
   id: -9131662857584035194,
   properties: {
-    r'follower': PropertySchema(
+    r'friend': PropertySchema(
       id: 0,
-      name: r'follower',
+      name: r'friend',
       type: IsarType.bool,
     ),
-    r'following': PropertySchema(
+    r'friends': PropertySchema(
       id: 1,
-      name: r'following',
-      type: IsarType.bool,
+      name: r'friends',
+      type: IsarType.stringList,
     ),
     r'isCurrentUser': PropertySchema(
       id: 2,
       name: r'isCurrentUser',
       type: IsarType.bool,
     ),
-    r'numFollowers': PropertySchema(
+    r'numFriends': PropertySchema(
       id: 3,
-      name: r'numFollowers',
+      name: r'numFriends',
       type: IsarType.long,
     ),
-    r'numFollowing': PropertySchema(
+    r'numPendingFriends': PropertySchema(
       id: 4,
-      name: r'numFollowing',
+      name: r'numPendingFriends',
       type: IsarType.long,
+    ),
+    r'numPosts': PropertySchema(
+      id: 5,
+      name: r'numPosts',
+      type: IsarType.long,
+    ),
+    r'pendingFriend': PropertySchema(
+      id: 6,
+      name: r'pendingFriend',
+      type: IsarType.bool,
+    ),
+    r'pendingFriends': PropertySchema(
+      id: 7,
+      name: r'pendingFriends',
+      type: IsarType.stringList,
     ),
     r'profilePicture': PropertySchema(
-      id: 5,
+      id: 8,
       name: r'profilePicture',
       type: IsarType.string,
     ),
+    r'uid': PropertySchema(
+      id: 9,
+      name: r'uid',
+      type: IsarType.string,
+    ),
     r'username': PropertySchema(
-      id: 6,
+      id: 10,
       name: r'username',
       type: IsarType.string,
     )
@@ -2527,6 +3631,19 @@ const DbUserSchema = CollectionSchema(
           caseSensitive: true,
         )
       ],
+    ),
+    r'uid': IndexSchema(
+      id: 8193695471701937315,
+      name: r'uid',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'uid',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
     )
   },
   links: {},
@@ -2543,7 +3660,27 @@ int _dbUserEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.friends.length * 3;
+  {
+    for (var i = 0; i < object.friends.length; i++) {
+      final value = object.friends[i];
+      bytesCount += value.length * 3;
+    }
+  }
+  bytesCount += 3 + object.pendingFriends.length * 3;
+  {
+    for (var i = 0; i < object.pendingFriends.length; i++) {
+      final value = object.pendingFriends[i];
+      bytesCount += value.length * 3;
+    }
+  }
   bytesCount += 3 + object.profilePicture.length * 3;
+  {
+    final value = object.uid;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.username;
     if (value != null) {
@@ -2559,13 +3696,17 @@ void _dbUserSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.follower);
-  writer.writeBool(offsets[1], object.following);
+  writer.writeBool(offsets[0], object.friend);
+  writer.writeStringList(offsets[1], object.friends);
   writer.writeBool(offsets[2], object.isCurrentUser);
-  writer.writeLong(offsets[3], object.numFollowers);
-  writer.writeLong(offsets[4], object.numFollowing);
-  writer.writeString(offsets[5], object.profilePicture);
-  writer.writeString(offsets[6], object.username);
+  writer.writeLong(offsets[3], object.numFriends);
+  writer.writeLong(offsets[4], object.numPendingFriends);
+  writer.writeLong(offsets[5], object.numPosts);
+  writer.writeBool(offsets[6], object.pendingFriend);
+  writer.writeStringList(offsets[7], object.pendingFriends);
+  writer.writeString(offsets[8], object.profilePicture);
+  writer.writeString(offsets[9], object.uid);
+  writer.writeString(offsets[10], object.username);
 }
 
 DbUser _dbUserDeserialize(
@@ -2575,15 +3716,19 @@ DbUser _dbUserDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DbUser(
-    reader.readStringOrNull(offsets[6]),
-    reader.readLongOrNull(offsets[4]),
+    reader.readStringOrNull(offsets[9]),
+    reader.readStringOrNull(offsets[10]),
     reader.readLongOrNull(offsets[3]),
-    reader.readString(offsets[5]),
+    reader.readLongOrNull(offsets[5]),
+    reader.readString(offsets[8]),
   );
-  object.follower = reader.readBool(offsets[0]);
-  object.following = reader.readBool(offsets[1]);
+  object.friend = reader.readBool(offsets[0]);
+  object.friends = reader.readStringList(offsets[1]) ?? [];
   object.id = id;
   object.isCurrentUser = reader.readBool(offsets[2]);
+  object.numPendingFriends = reader.readLongOrNull(offsets[4]);
+  object.pendingFriend = reader.readBool(offsets[6]);
+  object.pendingFriends = reader.readStringList(offsets[7]) ?? [];
   return object;
 }
 
@@ -2597,7 +3742,7 @@ P _dbUserDeserializeProp<P>(
     case 0:
       return (reader.readBool(offset)) as P;
     case 1:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 2:
       return (reader.readBool(offset)) as P;
     case 3:
@@ -2605,8 +3750,16 @@ P _dbUserDeserializeProp<P>(
     case 4:
       return (reader.readLongOrNull(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 6:
+      return (reader.readBool(offset)) as P;
+    case 7:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 8:
+      return (reader.readString(offset)) as P;
+    case 9:
+      return (reader.readStringOrNull(offset)) as P;
+    case 10:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2676,6 +3829,58 @@ extension DbUserByIndex on IsarCollection<DbUser> {
 
   List<Id> putAllByUsernameSync(List<DbUser> objects, {bool saveLinks = true}) {
     return putAllByIndexSync(r'username', objects, saveLinks: saveLinks);
+  }
+
+  Future<DbUser?> getByUid(String? uid) {
+    return getByIndex(r'uid', [uid]);
+  }
+
+  DbUser? getByUidSync(String? uid) {
+    return getByIndexSync(r'uid', [uid]);
+  }
+
+  Future<bool> deleteByUid(String? uid) {
+    return deleteByIndex(r'uid', [uid]);
+  }
+
+  bool deleteByUidSync(String? uid) {
+    return deleteByIndexSync(r'uid', [uid]);
+  }
+
+  Future<List<DbUser?>> getAllByUid(List<String?> uidValues) {
+    final values = uidValues.map((e) => [e]).toList();
+    return getAllByIndex(r'uid', values);
+  }
+
+  List<DbUser?> getAllByUidSync(List<String?> uidValues) {
+    final values = uidValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'uid', values);
+  }
+
+  Future<int> deleteAllByUid(List<String?> uidValues) {
+    final values = uidValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'uid', values);
+  }
+
+  int deleteAllByUidSync(List<String?> uidValues) {
+    final values = uidValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'uid', values);
+  }
+
+  Future<Id> putByUid(DbUser object) {
+    return putByIndex(r'uid', object);
+  }
+
+  Id putByUidSync(DbUser object, {bool saveLinks = true}) {
+    return putByIndexSync(r'uid', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByUid(List<DbUser> objects) {
+    return putAllByIndex(r'uid', objects);
+  }
+
+  List<Id> putAllByUidSync(List<DbUser> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'uid', objects, saveLinks: saveLinks);
   }
 }
 
@@ -2817,26 +4022,294 @@ extension DbUserQueryWhere on QueryBuilder<DbUser, DbUser, QWhereClause> {
       }
     });
   }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> uidIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'uid',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> uidIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'uid',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> uidEqualTo(String? uid) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'uid',
+        value: [uid],
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterWhereClause> uidNotEqualTo(String? uid) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'uid',
+              lower: [],
+              upper: [uid],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'uid',
+              lower: [uid],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'uid',
+              lower: [uid],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'uid',
+              lower: [],
+              upper: [uid],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
 }
 
 extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> followerEqualTo(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendEqualTo(
       bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'follower',
+        property: r'friend',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> followingEqualTo(
-      bool value) {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'following',
+        property: r'friends',
         value: value,
+        caseSensitive: caseSensitive,
       ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'friends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'friends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'friends',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'friends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'friends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsElementContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'friends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsElementMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'friends',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'friends',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      friendsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'friends',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsLengthEqualTo(
+      int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> friendsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'friends',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -2902,59 +4375,59 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersIsNull() {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'numFollowers',
+        property: r'numFriends',
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersIsNotNull() {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'numFollowers',
+        property: r'numFriends',
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersEqualTo(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsEqualTo(
       int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'numFollowers',
+        property: r'numFriends',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersGreaterThan(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsGreaterThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'numFollowers',
+        property: r'numFriends',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersLessThan(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsLessThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'numFollowers',
+        property: r'numFriends',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowersBetween(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFriendsBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -2962,7 +4435,7 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'numFollowers',
+        property: r'numFriends',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -2971,59 +4444,62 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingIsNull() {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      numPendingFriendsIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'numFollowing',
+        property: r'numPendingFriends',
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingIsNotNull() {
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      numPendingFriendsIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'numFollowing',
+        property: r'numPendingFriends',
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingEqualTo(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPendingFriendsEqualTo(
       int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'numFollowing',
+        property: r'numPendingFriends',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingGreaterThan(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      numPendingFriendsGreaterThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'numFollowing',
+        property: r'numPendingFriends',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingLessThan(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPendingFriendsLessThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'numFollowing',
+        property: r'numPendingFriends',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numFollowingBetween(
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPendingFriendsBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -3031,12 +4507,316 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'numFollowing',
+        property: r'numPendingFriends',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'numPosts',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'numPosts',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'numPosts',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'numPosts',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'numPosts',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> numPostsBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'numPosts',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> pendingFriendEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'pendingFriend',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'pendingFriends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'pendingFriends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'pendingFriends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'pendingFriends',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'pendingFriends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'pendingFriends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'pendingFriends',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'pendingFriends',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'pendingFriends',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'pendingFriends',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pendingFriends',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> pendingFriendsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pendingFriends',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pendingFriends',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pendingFriends',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pendingFriends',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition>
+      pendingFriendsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'pendingFriends',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -3166,6 +4946,150 @@ extension DbUserQueryFilter on QueryBuilder<DbUser, DbUser, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'profilePicture',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'uid',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'uid',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'uid',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidContains(String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'uid',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidMatches(String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'uid',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'uid',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterFilterCondition> uidIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'uid',
         value: '',
       ));
     });
@@ -3323,27 +5247,15 @@ extension DbUserQueryObject on QueryBuilder<DbUser, DbUser, QFilterCondition> {}
 extension DbUserQueryLinks on QueryBuilder<DbUser, DbUser, QFilterCondition> {}
 
 extension DbUserQuerySortBy on QueryBuilder<DbUser, DbUser, QSortBy> {
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollower() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFriend() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'follower', Sort.asc);
+      return query.addSortBy(r'friend', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollowerDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFriendDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'follower', Sort.desc);
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollowing() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'following', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByFollowingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'following', Sort.desc);
+      return query.addSortBy(r'friend', Sort.desc);
     });
   }
 
@@ -3359,27 +5271,51 @@ extension DbUserQuerySortBy on QueryBuilder<DbUser, DbUser, QSortBy> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowers() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowers', Sort.asc);
+      return query.addSortBy(r'numFriends', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowersDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFriendsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowers', Sort.desc);
+      return query.addSortBy(r'numFriends', Sort.desc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowing() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumPendingFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowing', Sort.asc);
+      return query.addSortBy(r'numPendingFriends', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumFollowingDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumPendingFriendsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowing', Sort.desc);
+      return query.addSortBy(r'numPendingFriends', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumPosts() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numPosts', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByNumPostsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numPosts', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByPendingFriend() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pendingFriend', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByPendingFriendDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pendingFriend', Sort.desc);
     });
   }
 
@@ -3392,6 +5328,18 @@ extension DbUserQuerySortBy on QueryBuilder<DbUser, DbUser, QSortBy> {
   QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByProfilePictureDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'profilePicture', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByUid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> sortByUidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uid', Sort.desc);
     });
   }
 
@@ -3409,27 +5357,15 @@ extension DbUserQuerySortBy on QueryBuilder<DbUser, DbUser, QSortBy> {
 }
 
 extension DbUserQuerySortThenBy on QueryBuilder<DbUser, DbUser, QSortThenBy> {
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollower() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFriend() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'follower', Sort.asc);
+      return query.addSortBy(r'friend', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollowerDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFriendDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'follower', Sort.desc);
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollowing() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'following', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByFollowingDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'following', Sort.desc);
+      return query.addSortBy(r'friend', Sort.desc);
     });
   }
 
@@ -3457,27 +5393,51 @@ extension DbUserQuerySortThenBy on QueryBuilder<DbUser, DbUser, QSortThenBy> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowers() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowers', Sort.asc);
+      return query.addSortBy(r'numFriends', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowersDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFriendsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowers', Sort.desc);
+      return query.addSortBy(r'numFriends', Sort.desc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowing() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumPendingFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowing', Sort.asc);
+      return query.addSortBy(r'numPendingFriends', Sort.asc);
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumFollowingDesc() {
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumPendingFriendsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'numFollowing', Sort.desc);
+      return query.addSortBy(r'numPendingFriends', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumPosts() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numPosts', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByNumPostsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'numPosts', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByPendingFriend() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pendingFriend', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByPendingFriendDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pendingFriend', Sort.desc);
     });
   }
 
@@ -3490,6 +5450,18 @@ extension DbUserQuerySortThenBy on QueryBuilder<DbUser, DbUser, QSortThenBy> {
   QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByProfilePictureDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'profilePicture', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByUid() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uid', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QAfterSortBy> thenByUidDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'uid', Sort.desc);
     });
   }
 
@@ -3507,15 +5479,15 @@ extension DbUserQuerySortThenBy on QueryBuilder<DbUser, DbUser, QSortThenBy> {
 }
 
 extension DbUserQueryWhereDistinct on QueryBuilder<DbUser, DbUser, QDistinct> {
-  QueryBuilder<DbUser, DbUser, QDistinct> distinctByFollower() {
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByFriend() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'follower');
+      return query.addDistinctBy(r'friend');
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QDistinct> distinctByFollowing() {
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'following');
+      return query.addDistinctBy(r'friends');
     });
   }
 
@@ -3525,15 +5497,33 @@ extension DbUserQueryWhereDistinct on QueryBuilder<DbUser, DbUser, QDistinct> {
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumFollowers() {
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'numFollowers');
+      return query.addDistinctBy(r'numFriends');
     });
   }
 
-  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumFollowing() {
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumPendingFriends() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'numFollowing');
+      return query.addDistinctBy(r'numPendingFriends');
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByNumPosts() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'numPosts');
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByPendingFriend() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'pendingFriend');
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByPendingFriends() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'pendingFriends');
     });
   }
 
@@ -3542,6 +5532,13 @@ extension DbUserQueryWhereDistinct on QueryBuilder<DbUser, DbUser, QDistinct> {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'profilePicture',
           caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbUser, DbUser, QDistinct> distinctByUid(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'uid', caseSensitive: caseSensitive);
     });
   }
 
@@ -3560,15 +5557,15 @@ extension DbUserQueryProperty on QueryBuilder<DbUser, DbUser, QQueryProperty> {
     });
   }
 
-  QueryBuilder<DbUser, bool, QQueryOperations> followerProperty() {
+  QueryBuilder<DbUser, bool, QQueryOperations> friendProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'follower');
+      return query.addPropertyName(r'friend');
     });
   }
 
-  QueryBuilder<DbUser, bool, QQueryOperations> followingProperty() {
+  QueryBuilder<DbUser, List<String>, QQueryOperations> friendsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'following');
+      return query.addPropertyName(r'friends');
     });
   }
 
@@ -3578,21 +5575,46 @@ extension DbUserQueryProperty on QueryBuilder<DbUser, DbUser, QQueryProperty> {
     });
   }
 
-  QueryBuilder<DbUser, int?, QQueryOperations> numFollowersProperty() {
+  QueryBuilder<DbUser, int?, QQueryOperations> numFriendsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'numFollowers');
+      return query.addPropertyName(r'numFriends');
     });
   }
 
-  QueryBuilder<DbUser, int?, QQueryOperations> numFollowingProperty() {
+  QueryBuilder<DbUser, int?, QQueryOperations> numPendingFriendsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'numFollowing');
+      return query.addPropertyName(r'numPendingFriends');
+    });
+  }
+
+  QueryBuilder<DbUser, int?, QQueryOperations> numPostsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'numPosts');
+    });
+  }
+
+  QueryBuilder<DbUser, bool, QQueryOperations> pendingFriendProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'pendingFriend');
+    });
+  }
+
+  QueryBuilder<DbUser, List<String>, QQueryOperations>
+      pendingFriendsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'pendingFriends');
     });
   }
 
   QueryBuilder<DbUser, String, QQueryOperations> profilePictureProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'profilePicture');
+    });
+  }
+
+  QueryBuilder<DbUser, String?, QQueryOperations> uidProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'uid');
     });
   }
 

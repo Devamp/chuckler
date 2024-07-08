@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 
 class PromptIdentifier extends StatelessWidget {
-  const PromptIdentifier({super.key});
+   const PromptIdentifier({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +22,16 @@ class PromptIdentifier extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.center,
                       constraints: BoxConstraints.tight(Size(screenWidth/1.5,double.infinity)),
-                        child: const Text(
+                        child:  Text(
                           textAlign: TextAlign.center,
                   "HERE IS WHAT A DAILY IS!",
-                  style: TextStyle(color: Colors.white, decoration: TextDecoration.none),
+                  style: Theme.of(context).textTheme.displayMedium,
                 )));
               });
         },
         child: Container(
           constraints:
-              BoxConstraints.tight(Size(screenWidth / 1.5, double.infinity)),
+              BoxConstraints.tight(Size(screenWidth / 1.8, double.infinity)),
           decoration: BoxDecoration(
               color: Colors.amber, borderRadius: BorderRadius.circular(20)),
           child: Row(
@@ -43,13 +43,13 @@ class PromptIdentifier extends StatelessWidget {
                 margin: EdgeInsets.fromLTRB(0, 0, screenWidth / 30, 0),
                 child: Icon(
                   Icons.access_time_sharp,
-                  size: screenHeight / 25,
+                  size: screenHeight / 35,
                   color: Colors.amber,
                 ),
               ),
               const OpenSansText(
                   text: "THE DAILY",
-                  fractionScreenHeight: 25,
+                  fractionScreenHeight: 35,
                   color: Colors.black,
                   fw: FontWeight.w700)
             ],

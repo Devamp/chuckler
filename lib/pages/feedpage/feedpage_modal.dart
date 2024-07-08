@@ -1,8 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chuckler/DatabaseQueries.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 import 'package:chuckler/pages/feedpage/comment_form.dart';
+import 'package:provider/provider.dart';
+import 'package:chuckler/database/models.dart';
+import 'package:chuckler/database/isarDB.dart';
+
+import '../../Session.dart';
 
 /**
  * The following is the code for the LONG tap modal
@@ -12,15 +19,32 @@ class CommentModal extends StatelessWidget {
   final cfData;
   final screenHeight;
   final screenWidth;
+  final DbUser? modalUser;
 
   const CommentModal(
       {super.key,
       required this.cfData,
+      required this.modalUser,
       required this.screenWidth,
       required this.screenHeight});
 
   @override
   Widget build(BuildContext context) {
+    UserService userSession = Provider.of<UserService>(context, listen: false);
+    FirebaseFirestore firebase =
+        Provider.of<FirebaseFirestore>(context, listen: false);
+    IsarService isar = Provider.of<IsarService>(context, listen: true);
+
+    int friendButton = 0;
+    bool disableFriendButton = false;
+    if (modalUser!.friend) {
+      friendButton = 2;
+    }
+    else if (modalUser!.pendingFriend! ||
+        modalUser!.pendingFriends.contains(userSession.loggedInUser!.uid)) {
+      friendButton = 1;
+    }
+
     return SingleChildScrollView(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -78,17 +102,70 @@ class CommentModal extends StatelessWidget {
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),
                                     //TODO add like function
-                                    child: ChangingButton(index: 0, icons: [Icons.thumb_up_off_alt_rounded, Icons.thumb_up_off_alt_rounded],pressed: (){return 1;})),
+                                    child: ChangingButton(
+                                        index: 0,
+                                        icons: [
+                                          Icons.thumb_up_alt_rounded,
+                                          Icons.thumb_up_alt_rounded,
+                                        ],
+                                        bgColors: [Colors.transparent, Colors.amber],
+                                        iconColors: [Colors.grey, Colors.green],
+                                        pressed: () {
+                                          FirebaseFirestore firestore =
+                                              Provider.of<FirebaseFirestore>(
+                                                  context,
+                                                  listen: false);
+                                          //likeAPost(firestore, usernameLiker, postId, postOwnerUid)
+                                          return 1;
+                                        })),
                                 Container(
                                     margin:
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                    child: ChangingButton(index: 0, icons: [
-                                      Icons.person_add_alt_rounded,
-                                      Icons.person,
-                                      Icons.check_circle
-                                    ],
-                                      //TODO add following function
-                                      pressed: (){ return 2;},
+                                    child: ChangingButton(
+                                      index: friendButton,
+                                      icons: [
+                                        Icons.person_add_alt_rounded,
+                                        Icons.person,
+                                        Icons.check_circle
+                                      ],
+                                      bgColors: [Colors.transparent, Colors.amber, Colors.amber],
+                                      iconColors: [Colors.grey, Colors.grey, Colors.green],
+                                      pressed: () {
+                                        if (userSession.loggedInUser!.pendingFriends
+                                            .contains(modalUser!.uid!)) {
+                                          friend(
+                                              firebase,
+                                              userSession.loggedInUser!.uid!,
+                                              modalUser!.uid!,
+                                              userSession.loggedInUser!.username!,
+                                              modalUser!.username!,
+                                              userSession.loggedInUser!.friends,
+                                              true);
+                                         modalUser!.friend = true;
+                                          isar.addUserToDb(modalUser!);
+                                          userSession.loggedInUser!.pendingFriends.remove(modalUser!.uid);
+                                          userSession.setUserFriends(userSession.loggedInUser!.numFriends! + 1);
+                                          return 2;
+                                        } else if (friendButton != 2 &&
+                                            !modalUser!.pendingFriends
+                                                .contains(userSession.loggedInUser!.uid!)) {
+                                          friend(
+                                              firebase,
+                                              userSession.loggedInUser!.uid!,
+                                              modalUser!.uid!,
+                                              userSession.loggedInUser!.username!,
+                                              modalUser!.username!,
+                                              userSession.loggedInUser!.friends!,
+                                              false);
+                                          modalUser!.pendingFriends = [
+                                            userSession.loggedInUser!.uid!
+                                          ];
+                                          isar.addUserToDb(modalUser!);
+                                          return 1;
+                                        } else {
+                                          return friendButton;
+                                        }
+                                      },
                                     ))
                               ]),
                         ),

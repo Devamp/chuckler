@@ -41,9 +41,7 @@ class AccountPosts extends StatelessWidget {
                               margin: EdgeInsets.fromLTRB(40, 0, 0, 0),
                               child: Text(
                                 "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ))
                         ],
                       )),

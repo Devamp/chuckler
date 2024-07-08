@@ -21,7 +21,7 @@ class ProfilePhoto extends StatelessWidget {
               ? ProfilePicture(
                   name: username,
                   radius: radius,
-                  fontsize: (radius - 10),
+                  fontsize: (radius*0.9),
                 )
               : Container(
                   width: radius * 2,
@@ -39,8 +39,9 @@ class ProfilePhoto extends StatelessWidget {
       ///TODO LOGIC FOR COLOR / SHOW IF STATUS ATTAINED ONLY
       Positioned(
         right: 0,
-        left: radius*1.5,
-        bottom: 0,
+        left: radius,
+       bottom:0,
+
         child: Container(
             decoration: BoxDecoration(
                 color: Colors.amberAccent, shape: BoxShape.circle),

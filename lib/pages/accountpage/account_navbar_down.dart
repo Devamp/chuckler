@@ -1,8 +1,11 @@
 
+import 'package:chuckler/database/isarDB.dart';
 import 'package:chuckler/pages/accountpage/account_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import '../../Session.dart';
 import 'account_posts.dart';
 import 'package:chuckler/database/models.dart';
 
@@ -20,10 +23,31 @@ class _AccountPageState extends State<AccountPageContent> {
   int _currentIndex = 0;
   List<DbNotification> notifications = [DbNotification("", "", ""), DbNotification("", "", ""),DbNotification("", "", ""),DbNotification("", "", ""),];
   //TODO INSTANTIATE POSTS WITH REAL DATA
-  List<DbPost> posts = [DbPost("a","b","c"),DbPost("a","b","c"),DbPost("a","b","c"),DbPost("a","b","c")];
+  List<DbPost> posts = [DbPost("a","b","c", "C", 0, 0, 0,"",""), DbPost("a","b","c", "C", 0, 0, 0,"",""), DbPost("a","b","c", "C", 0, 0, 0,"",""), DbPost("a","b","c", "C", 0, 0, 0,"",""), ];
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _firstTime = true;
   Widget currentScreen = Container();
+  /*
+  This function gets the users posts, and creates a list of posts...
+  This list is passed to the widget in account_posts.dart
+   */
+  void getMyPosts() async {
+    UserService userSession = Provider.of<UserService>(context, listen: false);
+    IsarService isar = Provider.of<IsarService>(context, listen: false);
+    List<DbPrompt> postPrompts = List<DbPrompt>.empty(growable: true);
+    if(userSession.loggedInUser!.numPosts! > 0){
+      List<DbPost> myPosts = await isar.getLoggedInUserPostsDB();
+      if(myPosts.isNotEmpty){
+        for(DbPost p in myPosts){
+         DbPrompt? prmt = await isar.getASpecificPromptDB(p.promptId!, p.promptDateId!);
+          //postPrompts.add()
+        }
+      }else{
+        //TODO GET POSTS FROM THE DATA BASE
+      }
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {

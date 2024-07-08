@@ -8,11 +8,17 @@ class DbPost {
 
   @Index(unique: true, replace: true)
   String? postId;
-
   String? answer;
   String? username;
+  int? wins;
+  int? likes;
+  int? dislikes;
+  String? uid;
   bool seen = false;
-  DbPost(this.postId, this.answer, this.username);
+  bool mine = false;
+  String? promptId;
+  String? promptDateId;
+  DbPost(this.postId, this.answer, this.username, this.uid, this.likes, this.dislikes, this.wins, this.promptId, this.promptDateId);
 
 }
 
@@ -25,6 +31,8 @@ class DbPrompt {
   String? promptId;
   String? date;
   String? type;
+  //If liked is 0 no selection -1 is for dislike 1 is for a like
+  int liked = 0;
   DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date, this.type);
 }
 
@@ -33,13 +41,18 @@ class DbUser {
   Id id = Isar.autoIncrement;
   @Index(unique: true, replace: true)
   String? username;
-  int? numFollowers;
-  int? numFollowing;
-  bool follower = false;
-  bool following = false;
+  int? numFriends;
+  int? numPosts;
+  int? numPendingFriends;
+  bool friend = false;
   bool isCurrentUser = false;
+  bool pendingFriend = false;
   String profilePicture = "";
-  DbUser(this.username,this.numFollowing,this.numFollowers, this.profilePicture);
+  @Index(unique: true, replace: true)
+  String? uid;
+  List<String> friends = List.empty(growable: true);
+  List<String> pendingFriends = List.empty(growable: true);
+  DbUser(this.uid, this.username,this.numFriends, this.numPosts, this.profilePicture);
 }
 
 

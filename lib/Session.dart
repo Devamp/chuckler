@@ -4,28 +4,27 @@ import 'database/models.dart';
 
 
 class UserService with ChangeNotifier {
-  String? _userId;
+  DbUser? _loggedInUser;
   bool firstLogin = false;
   String? _postAnswer;
   String? _loginTime;
-  String? _profilePhoto;
-  int? _following;
-  int? _followers;
+  String _viewingPost = "____________";
+  Color _viewingColor = Colors.amber;
   List<DbPrompt> _prompts = List.empty(growable: true);
   List<DbPost> _currentPosts = List<DbPost>.empty(growable: true);
   String? _currentFeedPromptId;
-  String? get userId => _userId;
   String? get currentFeedPromptId => _currentFeedPromptId;
-  int? get following => _following;
-  int? get followers => _followers;
   String? get postAnswer => _postAnswer;
   String? get logTime => _loginTime;
-  String? get profilePhoto => _profilePhoto;
+
+  DbUser? get loggedInUser => _loggedInUser;
+  String get viewingPost => _viewingPost;
   List<DbPrompt>? get prompts => _prompts;
   List<DbPost>? get currentPosts => _currentPosts;
+  Color? get viewingColor => _viewingColor;
   //get the lastLogin as a datetime object
   DateTime getDTLogIn(){
-    if(_loginTime == null){
+    if(_loginTime == null){ //6199885725
       return DateTime(1990);
     }
     else {
@@ -37,21 +36,35 @@ class UserService with ChangeNotifier {
     _currentFeedPromptId = s;
     notifyListeners();
   }
-
-  void setProfilePhoto(String s){
-    _profilePhoto =s;
+  void setViewingColor(Color c){
+    _viewingColor = c;
     notifyListeners();
   }
+  void setLoggedInUser(DbUser user){
+    _loggedInUser = user;
+    notifyListeners();
+  }
+
+
 
   void setCurrentPosts(List<DbPost> posts){
     _currentPosts = posts;
     notifyListeners();
   }
-
-  void setUserId(String userId) {
-    _userId = userId;
+  void setViewingPost(String viewingPost){
+    _viewingPost = viewingPost;
     notifyListeners();
   }
+
+  void setUserProfilePicture(String pic){
+    loggedInUser!.profilePicture = pic;
+    notifyListeners();
+  }
+  void setUserFriends(int friends){
+    loggedInUser!.numFriends = friends;
+    notifyListeners();
+  }
+
 
   void setLoginTime(String? logint){
     _loginTime = logint;
@@ -67,36 +80,12 @@ class UserService with ChangeNotifier {
   }
 
 
-  void setFollowing(int followingCount) {
-    _following = followingCount;
-    notifyListeners();
-  }
-
-  void setFollowers(int followersCount) {
-    _followers = followersCount;
-    notifyListeners();
-  }
 
   void addPrompt(DbPrompt p){
     _prompts.add(p);
     notifyListeners();
   }
 
-
-  void clearUserId() {
-    _userId = null;
-
-  }
-
-  void clearFollowing() {
-    _following = null;
-
-  }
-
-  void clearFollowers() {
-    _followers = null;
-
-  }
 
   void clearPostAnswer(){
     _postAnswer = null;
@@ -107,14 +96,18 @@ class UserService with ChangeNotifier {
   }
 
 
+void clearviewingPost(){
+    _viewingPost = "____________";
+    notifyListeners();
+}
 
 
-
+void clearViewingColor(){
+    _viewingColor = Colors.amber;
+    notifyListeners();
+}
 
   void logout() {
-    clearUserId();
-    clearFollowing();
-    clearFollowers();
     clearPrompts();
     notifyListeners();
 

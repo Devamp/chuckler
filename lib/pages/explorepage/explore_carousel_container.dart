@@ -23,11 +23,7 @@ class CarouselContainer extends StatelessWidget {
             padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 0),
             child: Text(
               'Category',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'OpenSans',
-                  letterSpacing: 0,
-                  fontSize: screenHeight / 40),
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
           Container(
@@ -38,21 +34,11 @@ class CarouselContainer extends StatelessWidget {
             child: Column(children: [
               Text(
                 '#100',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'OpenSans',
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w700,
-                    fontSize: screenHeight / 20),
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               Text(
                 'of 100',
-                style: TextStyle(
-                    color: Colors.white,
-                    letterSpacing: 0,
-                    fontFamily: 'OpenSans',
-                    fontWeight: FontWeight.normal,
-                    fontSize: screenHeight / 50),
+                style: Theme.of(context).textTheme.bodyMedium,
               )
             ]),
           ),
@@ -64,7 +50,7 @@ class CarouselContainer extends StatelessWidget {
                     return Column( children: [Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('#' + (index+1).toString(), style: TextStyle(color: Colors.white, fontFamily: 'OpenSans', fontSize: 20, fontWeight: FontWeight.normal),),
+                          Text('#' + (index+1).toString(), style: Theme.of(context).textTheme.bodyMedium,),
                           Container(margin: EdgeInsets.all(5),child: ProfilePhoto(username: "Caden", img: "", radius: 20)),
 
                         ]),

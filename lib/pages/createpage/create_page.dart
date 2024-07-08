@@ -13,11 +13,7 @@ class CreatePage extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Chuckler', textAlign: TextAlign.center,),
-          titleTextStyle: const TextStyle(
-              color: Color(0xFFffd230),
-              fontFamily: 'Livvic',
-              fontSize: 40,
-              fontWeight: FontWeight.bold),
+          titleTextStyle: Theme.of(context).textTheme.displayMedium,
           backgroundColor: Colors.black,
         ),
         body: CreateForm());
@@ -26,7 +22,8 @@ class CreatePage extends StatelessWidget {
 
 class CreateForm extends StatelessWidget {
   const CreateForm({super.key});
-
+  //TODO REPLACE WITH DYNAMIC DATA
+  final postedToday = true;
   @override
   Widget build(BuildContext context) {
     return const Column(

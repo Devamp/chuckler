@@ -3,15 +3,28 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:provider/provider.dart';
 import 'package:chuckler/Session.dart';
 
+import '../../database/models.dart';
+
 class FeedPagePromptArea extends StatelessWidget {
   const FeedPagePromptArea({super.key});
 
   @override
   Widget build(BuildContext context) {
-    UserService userSession = Provider.of<UserService>(context, listen: false);
+    UserService userSession = Provider.of<UserService>(context, listen: true);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Column(
+    late DbPrompt thePrompt;
+    for(DbPrompt p in userSession.prompts!){
+      if(p.promptId == userSession.currentFeedPromptId){
+        thePrompt = p;
+      }
+    }
+    return InkWell(
+      onTap: (){
+        userSession.clearViewingColor();
+        userSession.clearviewingPost();
+      },
+        child: Column(
       children: [
         Expanded(
             flex: 8,
@@ -19,8 +32,8 @@ class FeedPagePromptArea extends StatelessWidget {
                 margin: EdgeInsets.fromLTRB(
                     MediaQuery.of(context).size.width / 30, 0, MediaQuery.of(context).size.width/ 30, MediaQuery.of(context).size.width / 40),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF383838),
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.amber, width: 5)
                 ),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -38,7 +51,15 @@ class FeedPagePromptArea extends StatelessWidget {
                                 ),
                                 children: <TextSpan>[
                                   TextSpan(
-                                      text: userSession.prompts![0].before,
+                                      text: thePrompt.before,
+                                      style:
+                                      const TextStyle(color: Colors.white)),
+                                  TextSpan(
+                                      text: userSession.viewingPost,
+                                      style:
+                                      TextStyle(color: userSession.viewingColor)),
+                                  TextSpan(
+                                      text: thePrompt.after,
                                       style:
                                       const TextStyle(color: Colors.white)),
                                 ],
@@ -49,10 +70,9 @@ class FeedPagePromptArea extends StatelessWidget {
                             ),
                           )),
                     ]))),
-       Text("Choose the best answer", style: TextStyle(color: Colors.white, fontFamily: 'Livvic', fontWeight: FontWeight.w600, fontSize: 20),),
-        Container(height: 5, width: screenWidth/1.2, margin: EdgeInsets.all(4), decoration: BoxDecoration(color: const Color(0xFF383838) ),)
+
       ],
-    );
+    ));
   }
 
 }

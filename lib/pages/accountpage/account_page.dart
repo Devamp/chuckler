@@ -16,7 +16,7 @@ class  AccountPage extends StatelessWidget{
   Widget build(BuildContext context) {
     UserService userSession = Provider.of<UserService>(context);
 
-    if (userSession.userId != null) {
+    if (userSession.loggedInUser!.username != null) {
       //username = userSession.userId!;
     //  followers = userSession.followers!;
       //following = userSession.following!;
@@ -61,9 +61,9 @@ class  AccountPage extends StatelessWidget{
                   SizedBox(
                     height: 40,
                   ),
-                  ProfilePhotoPickerModal(username: userService.userId!, img: userService.profilePhoto),
+                  ProfilePhotoPickerModal(username: userService.loggedInUser!.username!, img: userService.loggedInUser!.profilePicture),
                   Text(
-                    userService.userId!,
+                    userService.loggedInUser!.username!,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -99,37 +99,37 @@ class  AccountPage extends StatelessWidget{
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          userService.following!.toString(),
+                          userService.loggedInUser!.numFriends.toString(),
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                         ),
                         Text(
-                          'Following',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          'Friends',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ],
                     ),
                     SizedBox(
-                      width: 22,
+                      width: 18,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          userService.followers!.toString(),
+                          userService.loggedInUser!.numPosts!.toString(),
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                         ),
                         Text(
-                          'Followers',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          'Posts',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ],
                     ),

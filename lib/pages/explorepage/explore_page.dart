@@ -56,12 +56,7 @@ class _ExplorePageState extends State<ExplorePage> {
                   alignment: const AlignmentDirectional(0, 1),
                   child: Text(
                   "Leaderboard",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'OpenSans',
-                        fontWeight: FontWeight.w700,
-                        fontSize: screenHeight / 20,
-                        letterSpacing: 0),
+                    style: Theme.of(context).textTheme.displayMedium,
                   ),
                 ),
               ),
@@ -82,16 +77,11 @@ class _ExplorePageState extends State<ExplorePage> {
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 5),
                 child: Text('Friends',
-                    style: TextStyle(
-                        letterSpacing: 0,
-                        color: Colors.white,
-                        fontFamily: 'OpenSans',
-                        fontWeight: FontWeight.w700,
-                        fontSize: screenHeight / 30)),
+                    style: Theme.of(context).textTheme.headlineMedium,),
               ),
             ),
             Expanded(
-              flex: 5,
+              flex: 4,
               child: SizedBox(
                 width: double.infinity,
                 height: 10,
@@ -121,13 +111,8 @@ class _ExplorePageState extends State<ExplorePage> {
               alignment: const AlignmentDirectional(0, 0),
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(0, 5, 0, 5),
-                child: Text('Today\'s Prompts',
-                    style: TextStyle(
-                        letterSpacing: 0,
-                        color: Colors.white,
-                        fontFamily: 'OpenSans',
-                        fontWeight: FontWeight.w700,
-                        fontSize: screenHeight / 30)),
+                child: Text('Achievements',
+                    style: Theme.of(context).textTheme.headlineMedium,),
               ),
             ),
             Expanded(
@@ -156,10 +141,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           Align(
                             alignment: const AlignmentDirectional(0, -0.1),
                             child: Text('?',
-                                style: TextStyle(
-                                    letterSpacing: 0,
-                                    color: Colors.grey.withOpacity(0.5),
-                                    fontSize: screenHeight / 30)),
+                                style: Theme.of(context).textTheme.bodyMedium,),
                           ),
                         ],
                       ),

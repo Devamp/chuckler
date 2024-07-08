@@ -1,3 +1,4 @@
+
 # Chuckler
 <div align="center" style="max-width: 50%;">
   <img src="https://github.com/Devamp/chuckler/blob/main/chuckler-logo.png" alt="Project Logo" width='200' height='200'>

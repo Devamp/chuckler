@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +10,11 @@ class CommentForm extends StatefulWidget {
   final double screenHeight;
   final double screenWidth;
 
-  const CommentForm({super.key, required this.cfData, required this.screenHeight, required this.screenWidth});
+  const CommentForm(
+      {super.key,
+      required this.cfData,
+      required this.screenHeight,
+      required this.screenWidth});
 
   @override
   _CommentFormState createState() => _CommentFormState();
@@ -26,7 +29,7 @@ class _CommentFormState extends State<CommentForm> {
 
   void getPostComments() async {
     FirebaseFirestore firestore =
-    Provider.of<FirebaseFirestore>(context, listen: false);
+        Provider.of<FirebaseFirestore>(context, listen: false);
     comments = await getComments(firestore, widget.cfData.postId!);
     if (comments.isEmpty) {
       comments.add(DbComment("", "No comments right now..."));
@@ -69,7 +72,7 @@ class _CommentFormState extends State<CommentForm> {
               itemBuilder: (context, index) {
                 return Text(
                   comments[index].comment!,
-                  style: const TextStyle(color: Colors.white, fontSize: 10),
+                  style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 );
               })),
@@ -97,24 +100,24 @@ class _CommentFormState extends State<CommentForm> {
                   labelText: 'Add a comment',
                   suffixIcon: _hasInput
                       ? IconButton(
-                    splashRadius: 16,
-                    splashColor: Colors.black,
-                    icon: const Icon(
-                      Icons.send,
-                      color: Colors.amber,
-                    ),
-                    onPressed: () {
-                      FirebaseFirestore firestore =
-                      Provider.of<FirebaseFirestore>(context,
-                          listen: false);
-                      addCommentToPost(firestore, widget.cfData.postId!,
-                          userService.userId!, myController.text);
-                      comments.add(
-                          DbComment("YOUR USERNAME", myController.text));
-                      myController.text = "";
-                      print(userService.userId!);
-                    },
-                  )
+                          splashRadius: 16,
+                          splashColor: Colors.black,
+                          icon: const Icon(
+                            Icons.send,
+                            color: Colors.amber,
+                          ),
+                          onPressed: () {
+                            FirebaseFirestore firestore =
+                                Provider.of<FirebaseFirestore>(context,
+                                    listen: false);
+                            addCommentToPost(firestore, widget.cfData.postId!,
+                                userService.loggedInUser!.username!, myController.text);
+                            comments.add(
+                                DbComment("YOUR USERNAME", myController.text));
+                            myController.text = "";
+                            print(userService.loggedInUser!.username!);
+                          },
+                        )
                       : null,
                 ),
               ))),
