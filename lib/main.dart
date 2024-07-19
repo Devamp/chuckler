@@ -8,9 +8,10 @@ import './firebase/firebase_options.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'Session.dart';
 import 'database/isarDB.dart';
+import 'Theme/theme.dart';
+
 //TODO MAKE SURE TO LOOK AT EMULATOR COMMIT BEFORE PRODUCTION
 //TODO THIS WILL ENSURE THAT EMULATOR CODE IS NOT INCLUDED WITH APP .firebaserc, 2 XMLS in android w/TODOS, Firebase JSON
-import 'Theme/theme.dart';
 
 Future<void> main() async {
   DefaultFirebaseOptions fb = DefaultFirebaseOptions();
