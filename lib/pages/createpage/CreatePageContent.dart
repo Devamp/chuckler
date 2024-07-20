@@ -26,6 +26,7 @@ class CreatePageContent extends StatefulWidget {
 
 class _CreatePageContentState extends State<CreatePageContent>
     with WidgetsBindingObserver {
+
   final TextEditingController _controller =
       TextEditingController(text: "Answer the Prompt Here");
 
@@ -47,36 +48,31 @@ class _CreatePageContentState extends State<CreatePageContent>
    */
   Future<void> postData() async {
     //check if user can post
-    if (canPost[promptVal]) {
+    UserService userSession = Provider.of<UserService>(context, listen: false);
+    if (canPost[promptVal] &&
+        userSession.userPostsForPrompts[promptVal] == null) {
+      canPost[promptVal] = false;
       //check if user has already posted
       FirebaseFirestore firebase =
           Provider.of<FirebaseFirestore>(context, listen: false);
-      UserService userSession = Provider.of<UserService>(context, listen: false);
-      final docRef = await firebase
-          .collection('Posts')
-          .where('uid', isEqualTo: userId)
-          .where('promptId', isEqualTo: promptId)
-          .where('promptDateId', isEqualTo: promtDateId)
-          .limit(1)
-          .get();
-      //If the user has not posted
-      if (docRef.docs.isEmpty) {
-        canPost[promptVal] = false;
-        try {
-          //Retrieve newly created post
-          DbPost justPosted = await createPost(firebase, userSession.loggedInUser!, userSession.prompts![promptVal], _controller.text);
-          //Add post to local DB
-          IsarService isar = Provider.of<IsarService>(context, listen:  false);
-          //Incrament user posts stat
-          isar.addOnePostToDB(justPosted);
-          incrementNumPosts(firebase, userId);
-        } catch (error) {
-          print("Error: $error");
-        }
-        return;
-      } else {
-        canPost[promptVal] = false;
+
+      try {
+        //Retrieve newly created post
+        DbPost justPosted = await createPost(
+            firebase,
+            userSession.loggedInUser!,
+            userSession.prompts![promptVal],
+            _controller.text);
+        //Add post to local DB
+        IsarService isar = Provider.of<IsarService>(context, listen: false);
+        //Incrament user posts stat
+        isar.addOnePostToDB(justPosted);
+        incrementNumPosts(firebase, userId);
+        userSession.userPostsForPrompts[promptVal] = justPosted;
+      } catch (error) {
+        print("Error: $error");
       }
+      return;
     }
   }
 
@@ -99,6 +95,11 @@ class _CreatePageContentState extends State<CreatePageContent>
   @override
   void initState() {
     super.initState();
+    UserService userSession = Provider.of<UserService>(context, listen: false);
+    if(userSession.userPostsForPrompts.first != null){
+      _controller.text = userSession.userPostsForPrompts.first!.answer!;
+    }
+    //Set up text box
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
         if (_controller.text.trim().isEmpty) {
@@ -107,6 +108,7 @@ class _CreatePageContentState extends State<CreatePageContent>
       }
       setState(() {});
     });
+    //Ensure user is logged in
     checkTheUser();
   }
 
@@ -136,11 +138,18 @@ class _CreatePageContentState extends State<CreatePageContent>
     List<DbPrompt> prompts = userSession.prompts!;
     promptId = prompts[promptVal].promptId!;
     promtDateId = prompts[promptVal].promptDateId!;
-    for (int i = 0; i < prompts.length; i++) {
+    for (int i = 0; i < userSession.prompts!.length; i++) {
       canPost.add(true);
-      textControllerStates.add("Answer the Prompt Here");
+      if (userSession.userPostsForPrompts[i] == null) {
+        textControllerStates.add("Answer the Prompt Here");
+      } else {
+        if (textControllerStates.length >= prompts.length) {
+          textControllerStates[i] = userSession.userPostsForPrompts[i]!.answer!;
+        } else {
+          textControllerStates.add(userSession.userPostsForPrompts[i]!.answer!);
+        }
+      }
     }
-
     return Column(
       children: [
         //Prompt Area
