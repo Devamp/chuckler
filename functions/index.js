@@ -1,6 +1,6 @@
-const {getFirestore} = require("firebase-admin/firestore");
+const {getFirestore, FieldValue} = require("firebase-admin/firestore");
 // eslint-disable-next-line no-unused-vars
-const {onDocumentCreated, Change} = require("firebase-functions/v2/firestore");
+const {onDocumentCreated} = require("firebase-functions/v2/firestore");
 const {initializeApp} = require("firebase-admin/app");
 initializeApp();
 const db = getFirestore();
@@ -46,6 +46,24 @@ exports.createMatchup = onDocumentCreated("Posts/{docid}", async (event) => {
         promptDateId: mPD.promptDateId,
       });
     }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+// Increments a prompt when a user posts
+exports.incrementPrompt = onDocumentCreated("Posts/{docid}", async (event) => {
+  const eData = event.data.data();
+  try {
+    // Find a post that does not have a match up
+
+    const prompt= await db.collection("PromptDays")
+        .doc(eData.promptDateId)
+        .collection("Prompts")
+        .doc(eData.promptId).get();
+    await prompt.ref.update({
+      "responses": FieldValue.increment(1),
+    });
   } catch (e) {
     console.log(e);
   }
