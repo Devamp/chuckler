@@ -221,8 +221,8 @@ class _CreatePageContentState extends State<CreatePageContent>
                                       ),
                                     )
                                   : Container()),
-                          const Expanded(
-                              flex: 10, child: CreatePageLoadingBar()),
+                          Expanded(
+                              flex: 10, child: CreatePageLoadingBar(pVal: promptVal, friend: null)),
                           //PROMPT W/ USER ANSWER
                           Expanded(
                               flex: 2,
