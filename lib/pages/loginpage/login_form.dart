@@ -142,7 +142,7 @@ class _LoginFormState extends State<LoginForm> {
                 Container(
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                   padding: const EdgeInsets.all(16),
                   child: const Icon(
@@ -160,7 +160,7 @@ class _LoginFormState extends State<LoginForm> {
                   'Enter your email and we will send you a rest link',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.white,
                     fontSize: 15,
                   ),
                 ),
@@ -185,7 +185,7 @@ class _LoginFormState extends State<LoginForm> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15.0),
                       borderSide: const BorderSide(
-                        color: Colors.white,
+                        color: Colors.black,
                         width: 1.0,
                       ),
                     ),
@@ -233,7 +233,7 @@ class _LoginFormState extends State<LoginForm> {
       children: [
         const SizedBox(height: 30),
         TextField(
-           cursorColor: Colors.white,
+          cursorColor: Colors.white,
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
           style: const TextStyle(color: Colors.white),
@@ -256,7 +256,7 @@ class _LoginFormState extends State<LoginForm> {
         ),
         const SizedBox(height: 10),
         TextField(
-           cursorColor: Colors.white,
+          cursorColor: Colors.white,
           controller: _passwordController,
           keyboardType: TextInputType.visiblePassword,
           obscureText: true,
@@ -268,8 +268,8 @@ class _LoginFormState extends State<LoginForm> {
             hintText: "Password",
             hintStyle: const TextStyle(color: Colors.white),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.black, width: 1.0)),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20.0),
               borderSide: const BorderSide(
@@ -374,7 +374,11 @@ class _LoginFormState extends State<LoginForm> {
               child: ValueListenableBuilder(
                 valueListenable: isLoading,
                 builder: (context, value, child) {
-                  return value ? const CircularProgressIndicator(color: Colors.amber,) : child!;
+                  return value
+                      ? const CircularProgressIndicator(
+                          color: Colors.amber,
+                        )
+                      : child!;
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
