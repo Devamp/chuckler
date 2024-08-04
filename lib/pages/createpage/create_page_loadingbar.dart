@@ -19,8 +19,6 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
   String timeRemaining = "";
   int timeLeft = 0;
 
-
-
   //Set the progress indicator
   void _updateProgress() {
     // Get current UTC time
@@ -34,7 +32,6 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
     const totalSecondsInDay = 24 * 60 * 60;
     final hoursRemaining =
         ((totalSecondsInDay - secondsRemaining) / (60 * 60)).round();
-
 
     // Update state and potentially rebuild the widget
     setState(() {
@@ -62,15 +59,14 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
                 color: Colors.white,
                 fontFamily: 'OpenSans',
                 fontSize: screenHeight / 70,
-              fontWeight: FontWeight.w700
-            ),
+                fontWeight: FontWeight.w700),
           )),
       Expanded(flex: 3, child: Container()),
       Expanded(
           flex: 8,
           child: Container(
-            alignment: Alignment.centerRight,
-            decoration: BoxDecoration(),
+              alignment: Alignment.centerRight,
+              decoration: const BoxDecoration(),
               height: 30,
               //TODO add friend image
               child: Row(children: [
