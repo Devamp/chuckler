@@ -20,19 +20,22 @@ class FeedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            'Chuckler',
-            textAlign: TextAlign.center,
+    return Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            colors: [Color.fromRGBO(9, 32, 63, 100), Color.fromRGBO(83, 120, 149, 100), Colors.black, ],
+            center: Alignment(0.6, 0.5),
+            radius:2,
           ),
-          titleTextStyle: Theme.of(context).textTheme.displayMedium,
-          backgroundColor: Colors.black,
         ),
-        body: havePosted ? const CreateForm() : const NoUserPost());
+        child: Column(
+          children: [
+            Expanded(flex: 1, child: Container()),
+            Expanded(
+                flex: 10,
+                child: havePosted ? const CreateForm() : const NoUserPost())
+          ],
+        ));
   }
 }
 
@@ -43,10 +46,7 @@ class CreateForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Expanded(flex: 20, child: FeedPagePromptArea()),
-        Expanded(flex: 30, child: FeedPageContent())
-      ],
+      children: <Widget>[Expanded(flex: 30, child: FeedPageContent())],
     );
   }
 }
@@ -123,200 +123,10 @@ class FeedPageContent extends StatelessWidget {
     UserService userSession = Provider.of<UserService>(context, listen: true);
     print(userSession.currentPosts!.length);
     print("Rebuilding");
-    return Center(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Expanded(
-            child: Container(
-                width: screenWidth / 1.1,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Colors.white10,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.fromLTRB(10, 15, 0, 10),
-                          child: RichText(
-                              text: TextSpan(children: [
-                            TextSpan(
-                                text: "Username1",
-                                style: TextStyle(
-                                    color: userColors[0],
-                                    fontFamily: "Livvic",
-                                    fontSize: screenHeight / 34,
-                                    fontWeight: FontWeight.w600)),
-                            TextSpan(
-                                text: " VS ",
-                                style: TextStyle(
-                                    color: Colors.amber,
-                                    fontFamily: "Livvic",
-                                    fontSize: screenHeight / 32,
-                                    fontWeight: FontWeight.w600)),
-                            TextSpan(
-                                text: "Username2 ",
-                                style: TextStyle(
-                                    color: userColors[1],
-                                    fontFamily: "Livvic",
-                                    fontSize: screenHeight / 34,
-                                    fontWeight: FontWeight.w600))
-                          ]))),
-                      Divider(
-                        thickness: 3,
-                        color: Colors.white54,
-                      ),
-                      Expanded(
-                        flex: 15,
-                          child: Container(
-                              child: ListView.builder(
-                        itemCount: userSession.currentPosts!.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                  onTap: () async {
-                                    userSession.setViewingPost("  __${userSession.currentPosts![index].answer!}__  ");
-                                    userSession.setViewingColor(userColors[index]);
-                                    //await getNextTwoPosts(context);
-                                  },
-                                  onLongPress: () async {
-                                    DbUser? modalUser = await getModalUser(
-                                        context,
-                                        userSession.currentPosts!
-                                            .elementAt(index)
-                                            .uid!);
-                                    //Display selection in modal before moving to next post
-                                    showModalBottomSheet<void>(
-                                      backgroundColor: Colors.transparent,
-                                      isScrollControlled: true,
-                                      useSafeArea: true,
-                                      context: context,
-                                      barrierColor:
-                                          Colors.black.withOpacity(0.9),
-                                      builder: (context) {
-                                        return CommentModal(
-                                            cfData: userSession.currentPosts!
-                                                .elementAt(index),
-                                            modalUser:
-                                               modalUser,
-                                            screenWidth: screenWidth,
-                                            screenHeight: screenHeight);
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                      height: screenHeight / 8,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white10,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Row(children: [
-                                        Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              width: 50,
-                                              height: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  color: userColors[index],
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                            )),
-                                        Expanded(
-                                            flex: 40,
-                                            child: Container(
-                                                margin:
-                                                    const EdgeInsets.fromLTRB(
-                                                        15, 0, 0, 0),
-                                                child: OpenSansText(
-                                                  text: userSession
-                                                      .currentPosts!
-                                                      .elementAt(index)
-                                                      .answer!,
-                                                  fractionScreenHeight: 35,
-                                                  color: userColors[index],
-                                                  fw: FontWeight.normal,
-                                                ))),
-                                        Expanded(
-                                            flex: 4,
-                                            child: IconButton(
-                                              icon: const Icon(Icons.report),
-                                              splashRadius: 20,
-                                              color: Colors.white,
-                                              onPressed: () {},
-                                            ))
-                                      ]))),
-                              index < (userSession.currentPosts!.length - 1)
-                                  ? Container(
-                                      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                      height: 2.0,
-                                      // Height of the divider
-                                      width: double.infinity,
-                                      // Full width
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: userColors,
-                                          // Gradient colors
-                                          begin: Alignment.centerLeft,
-                                          end: Alignment.centerRight,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            ],
-                          );
-                        },
-                      ))),
-                      Expanded(flex: 4, child: Center(
-                          child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                              child: Center(
-                                  heightFactor: 2,
-                                  child: ChangingButton(
-                                      index: 0,
-                                      icons: [
-                                        Icons.favorite_border,
-                                        Icons.favorite
-                                      ],
-                                      bgColors: [Colors.transparent, Colors.black],
-                                      iconColors: [userColors[0], userColors[0]],
-                                      pressed: () {
-                                        return 1;
-                                      }))),
-                          Expanded(
-                              child: ElevatedIconButton(
-                                  color: Colors.transparent,
-                                  iconColor: Colors.amber,
-                                  fractionHeight: 25,
-                                  icon: Icons.comment)),
-                          Expanded(
-                              child: Center(
-                                  heightFactor: 2,
-                                  child: ChangingButton(
-                                      index: 0,
-                                      icons: [
-                                        Icons.favorite_border_rounded,
-                                        Icons.favorite
-                                      ],
-                                      bgColors: [Colors.transparent, Colors.black],
-                                      iconColors: [userColors[1], userColors[1]],
-                                      pressed: () {
-                                        return 1;
-                                      }))),
-                        ],
-                      ))),
-                      Text("1/10 Matchups", style: Theme.of(context).textTheme.bodyMedium,),
-                      Expanded(flex:1, child:Container())
-                    ])))
-      ],
-    ));
+    return ListView.builder(
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return Column(children: []);
+        });
   }
 }
