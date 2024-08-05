@@ -101,6 +101,7 @@ class _CreatePageContentState extends State<CreatePageContent>
     }
     //Set up text box
     focusNode.addListener(() {
+
       if (!focusNode.hasFocus) {
         if (_controller.text.trim().isEmpty) {
           _controller.text = "Answer the Prompt Here";
@@ -159,8 +160,9 @@ class _CreatePageContentState extends State<CreatePageContent>
               constraints: BoxConstraints.tight(
                   Size(screenWidth / 1.1, double.infinity)),
               decoration: BoxDecoration(
+                color: Colors.black54,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.amber, width: 5)),
+                  border: Border.all(color: Colors.black26, width: 5)),
               child: Column(children: [
                 Expanded(flex: 1, child: Container()),
                 const Expanded(flex: 6, child: PromptIdentifier()),
@@ -181,7 +183,8 @@ class _CreatePageContentState extends State<CreatePageContent>
                               TextSpan(
                                   text: _controller.text,
                                   style: const TextStyle(
-                                      color: Color(0xFFffd230))),
+                                      color: Color(0xfffbd0bf))),
+                              //Color(0xff84C3D1)
                               TextSpan(text: prompts[promptVal].after),
                             ],
                           ),
@@ -190,8 +193,8 @@ class _CreatePageContentState extends State<CreatePageContent>
                           minFontSize: 2,
                         )))),
                 Divider(
-                  color: Colors.grey,
-                  thickness: 1,
+                  color: Colors.black12,
+                  thickness: 3,
                 ),
                 Expanded(
                     flex: 6,
@@ -217,7 +220,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                                       splashRadius: 10,
                                       icon: const Icon(
                                         Icons.chevron_left_outlined,
-                                        color: Colors.amber,
+                                        color: Color(0xff84C3D1),
                                       ),
                                     )
                                   : Container()),
@@ -243,7 +246,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                                       splashRadius: 10,
                                       icon: const Icon(
                                         Icons.chevron_right_outlined,
-                                        color: Colors.amber,
+                                        color: Color(0xff84C3D1),
                                       ),
                                     )
                                   : Container()),
@@ -309,28 +312,35 @@ class _CreatePageContentState extends State<CreatePageContent>
                                   minLines: 1,
                                   maxLength: 500,
                                   keyboardType: TextInputType.multiline,
-                                  cursorColor: Colors.white,
+                                  cursorColor: Colors.black,
                                   focusNode: focusNode,
-                                  style: const TextStyle(color: Colors.amber),
+                                  style: TextStyle(color: Color(0xfffbd0bf), fontSize: 18),
                                   decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.black54,
                                     constraints: BoxConstraints(
                                       maxWidth: screenWidth / 1.5,
                                     ),
                                     hintText: "Answer Prompt Here",
-                                    border: const OutlineInputBorder(),
+                                    counterStyle: TextStyle(color: Colors.white54),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.black54, // Unfocused border color
+                                        width: 2.0, // Unfocused border weight
+                                      ),
+                                    ),
                                     focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.amber, width: 3)),
+                                        borderSide: BorderSide( color: Colors.black87,
+                                             width: 3)),
                                     contentPadding: const EdgeInsets.all(10),
                                   ),
                                 );
                               }),
                               Container(
-                                  color: Colors.black,
 //Row For the Post Button
                                   child: ElevatedIconButton(
-                                      color: Colors.amber,
-                                      iconColor: Colors.black,
+                                      color: Colors.black87,
+                                      iconColor: Colors.blueGrey,
                                       fractionHeight: 40,
                                       text: "Post",
                                       width: screenWidth / 3,
@@ -373,3 +383,4 @@ class _CreatePageContentState extends State<CreatePageContent>
     );
   }
 }
+//Color(0xff84C3D1)

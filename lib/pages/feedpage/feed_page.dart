@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
+import 'package:chuckler/CustomReusableWidgets/profile_photo.dart';
 import 'package:chuckler/DatabaseQueries.dart';
 import 'package:chuckler/Session.dart';
 import 'package:flutter/material.dart';
@@ -23,16 +25,23 @@ class FeedPage extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
-            colors: [Color.fromRGBO(9, 32, 63, 100), Color.fromRGBO(83, 120, 149, 100), Colors.black, ],
+            colors: [
+              Color.fromRGBO(9, 32, 63, 1),
+              Color.fromRGBO(83, 120, 149, 1),
+              Colors.black,
+            ],
             center: Alignment(0.6, 0.5),
-            radius:2,
+            radius: 2,
           ),
         ),
         child: Column(
           children: [
-            Expanded(flex: 1, child: Container()),
+            Expanded(flex: 2, child: Container(
+              alignment: Alignment.bottomLeft,
+              child: DropdownButtonExample(),
+            )),
             Expanded(
-                flex: 10,
+                flex: 15,
                 child: havePosted ? const CreateForm() : const NoUserPost())
           ],
         ));
@@ -123,10 +132,47 @@ class FeedPageContent extends StatelessWidget {
     UserService userSession = Provider.of<UserService>(context, listen: true);
     print(userSession.currentPosts!.length);
     print("Rebuilding");
-    return ListView.builder(
+    return Container( child: ListView.builder(
         itemCount: 5,
         itemBuilder: (context, index) {
-          return Column(children: []);
+          return  Container();
+        }));
+  }
+}
+
+/** DROP DOWN MENU */
+class DropdownButtonExample extends StatefulWidget {
+  const DropdownButtonExample({super.key});
+
+  @override
+  State<DropdownButtonExample> createState() => _DropdownButtonExampleState();
+}
+
+class _DropdownButtonExampleState extends State<DropdownButtonExample> {
+  static List<String> list = <String>['Global', 'Local', 'Friends', 'Create+'];
+  String dropdownValue = list.first;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      icon: const Icon(Icons.arrow_drop_down, color: Colors.black,),
+      underline: Container(),
+      dropdownColor: Colors.white70,
+      style: const TextStyle(color: Colors.black, fontSize: 20),
+      padding: EdgeInsets.fromLTRB(40, 0, 0, 0),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
         });
+      },
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
   }
 }
