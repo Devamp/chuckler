@@ -66,7 +66,7 @@ class CarouselContainer extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         Container(
-          height: screenHeight - 250,
+          height: screenHeight - 160,
           width: screenWidth,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(

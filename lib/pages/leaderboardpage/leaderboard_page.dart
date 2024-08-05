@@ -43,20 +43,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              flex: 0,
-              child: SizedBox(
-                width: double.infinity,
-                height: 65,
-                child: Align(
-                  alignment: const Alignment(0, 0),
-                  child: Text(
-                    "Leaderboard",
-                    style: Theme.of(context).textTheme.displayMedium,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
               flex: 1,
               child: SizedBox(
                 width: double.infinity,
