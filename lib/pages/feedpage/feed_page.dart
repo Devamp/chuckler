@@ -169,152 +169,172 @@ class FeedPageContent extends StatelessWidget {
                         color: Colors.white54,
                       ),
                       Expanded(
-                        flex: 15,
+                          flex: 15,
                           child: Container(
                               child: ListView.builder(
-                        itemCount: userSession.currentPosts!.length,
-                        itemBuilder: (context, index) {
-                          return Column(
+                            itemCount: userSession.currentPosts!.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                      onTap: () async {
+                                        userSession.setViewingPost(
+                                            "  __${userSession.currentPosts![index].answer!}__  ");
+                                        userSession
+                                            .setViewingColor(userColors[index]);
+                                        //await getNextTwoPosts(context);
+                                      },
+                                      onLongPress: () async {
+                                        DbUser? modalUser = await getModalUser(
+                                            context,
+                                            userSession.currentPosts!
+                                                .elementAt(index)
+                                                .uid!);
+                                        //Display selection in modal before moving to next post
+                                        showModalBottomSheet<void>(
+                                          backgroundColor: Colors.transparent,
+                                          isScrollControlled: true,
+                                          useSafeArea: true,
+                                          context: context,
+                                          barrierColor:
+                                              Colors.black.withOpacity(0.9),
+                                          builder: (context) {
+                                            return CommentModal(
+                                                cfData: userSession
+                                                    .currentPosts!
+                                                    .elementAt(index),
+                                                modalUser: modalUser,
+                                                screenWidth: screenWidth,
+                                                screenHeight: screenHeight);
+                                          },
+                                        );
+                                      },
+                                      child: Container(
+                                          height: screenHeight / 8,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white10,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Row(children: [
+                                            Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                  width: 50,
+                                                  height: double.infinity,
+                                                  decoration: BoxDecoration(
+                                                      color: userColors[index],
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                )),
+                                            Expanded(
+                                                flex: 40,
+                                                child: Container(
+                                                    margin: const EdgeInsets
+                                                        .fromLTRB(15, 0, 0, 0),
+                                                    child: OpenSansText(
+                                                      text: userSession
+                                                          .currentPosts!
+                                                          .elementAt(index)
+                                                          .answer!,
+                                                      fractionScreenHeight: 35,
+                                                      color: userColors[index],
+                                                      fw: FontWeight.normal,
+                                                    ))),
+                                            Expanded(
+                                                flex: 4,
+                                                child: IconButton(
+                                                  icon:
+                                                      const Icon(Icons.report),
+                                                  splashRadius: 20,
+                                                  color: Colors.white,
+                                                  onPressed: () {},
+                                                ))
+                                          ]))),
+                                  index < (userSession.currentPosts!.length - 1)
+                                      ? Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                          height: 2.0,
+                                          // Height of the divider
+                                          width: double.infinity,
+                                          // Full width
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: userColors,
+                                              // Gradient colors
+                                              begin: Alignment.centerLeft,
+                                              end: Alignment.centerRight,
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
+                              );
+                            },
+                          ))),
+                      Expanded(
+                          flex: 4,
+                          child: Center(
+                              child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              InkWell(
-                                  onTap: () async {
-                                    userSession.setViewingPost("  __${userSession.currentPosts![index].answer!}__  ");
-                                    userSession.setViewingColor(userColors[index]);
-                                    //await getNextTwoPosts(context);
-                                  },
-                                  onLongPress: () async {
-                                    DbUser? modalUser = await getModalUser(
-                                        context,
-                                        userSession.currentPosts!
-                                            .elementAt(index)
-                                            .uid!);
-                                    //Display selection in modal before moving to next post
-                                    showModalBottomSheet<void>(
-                                      backgroundColor: Colors.transparent,
-                                      isScrollControlled: true,
-                                      useSafeArea: true,
-                                      context: context,
-                                      barrierColor:
-                                          Colors.black.withOpacity(0.9),
-                                      builder: (context) {
-                                        return CommentModal(
-                                            cfData: userSession.currentPosts!
-                                                .elementAt(index),
-                                            modalUser:
-                                               modalUser,
-                                            screenWidth: screenWidth,
-                                            screenHeight: screenHeight);
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                      height: screenHeight / 8,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white10,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Row(children: [
-                                        Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              width: 50,
-                                              height: double.infinity,
-                                              decoration: BoxDecoration(
-                                                  color: userColors[index],
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                            )),
-                                        Expanded(
-                                            flex: 40,
-                                            child: Container(
-                                                margin:
-                                                    const EdgeInsets.fromLTRB(
-                                                        15, 0, 0, 0),
-                                                child: OpenSansText(
-                                                  text: userSession
-                                                      .currentPosts!
-                                                      .elementAt(index)
-                                                      .answer!,
-                                                  fractionScreenHeight: 35,
-                                                  color: userColors[index],
-                                                  fw: FontWeight.normal,
-                                                ))),
-                                        Expanded(
-                                            flex: 4,
-                                            child: IconButton(
-                                              icon: const Icon(Icons.report),
-                                              splashRadius: 20,
-                                              color: Colors.white,
-                                              onPressed: () {},
-                                            ))
-                                      ]))),
-                              index < (userSession.currentPosts!.length - 1)
-                                  ? Container(
-                                      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                      height: 2.0,
-                                      // Height of the divider
-                                      width: double.infinity,
-                                      // Full width
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: userColors,
-                                          // Gradient colors
-                                          begin: Alignment.centerLeft,
-                                          end: Alignment.centerRight,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
+                              Expanded(
+                                  child: Center(
+                                      heightFactor: 2,
+                                      child: ChangingButton(
+                                          index: 0,
+                                          icons: [
+                                            Icons.favorite_border,
+                                            Icons.favorite
+                                          ],
+                                          bgColors: [
+                                            Colors.transparent,
+                                            Colors.black
+                                          ],
+                                          iconColors: [
+                                            userColors[0],
+                                            userColors[0]
+                                          ],
+                                          pressed: () {
+                                            return 1;
+                                          }))),
+                              Expanded(
+                                  child: ElevatedIconButton(
+                                      color: Colors.transparent,
+                                      iconColor: Colors.amber,
+                                      fractionHeight: 25,
+                                      icon: Icons.comment)),
+                              Expanded(
+                                  child: Center(
+                                      heightFactor: 2,
+                                      child: ChangingButton(
+                                          index: 0,
+                                          icons: [
+                                            Icons.favorite_border_rounded,
+                                            Icons.favorite
+                                          ],
+                                          bgColors: [
+                                            Colors.transparent,
+                                            Colors.black
+                                          ],
+                                          iconColors: [
+                                            userColors[1],
+                                            userColors[1]
+                                          ],
+                                          pressed: () {
+                                            return 1;
+                                          }))),
                             ],
-                          );
-                        },
-                      ))),
-                      Expanded(flex: 4, child: Center(
-                          child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                              child: Center(
-                                  heightFactor: 2,
-                                  child: ChangingButton(
-                                      index: 0,
-                                      icons: [
-                                        Icons.favorite_border,
-                                        Icons.favorite
-                                      ],
-                                      bgColors: [Colors.transparent, Colors.black],
-                                      iconColors: [userColors[0], userColors[0]],
-                                      pressed: () {
-                                        return 1;
-                                      }))),
-                          Expanded(
-                              child: ElevatedIconButton(
-                                  color: Colors.transparent,
-                                  iconColor: Colors.amber,
-                                  fractionHeight: 25,
-                                  icon: Icons.comment)),
-                          Expanded(
-                              child: Center(
-                                  heightFactor: 2,
-                                  child: ChangingButton(
-                                      index: 0,
-                                      icons: [
-                                        Icons.favorite_border_rounded,
-                                        Icons.favorite
-                                      ],
-                                      bgColors: [Colors.transparent, Colors.black],
-                                      iconColors: [userColors[1], userColors[1]],
-                                      pressed: () {
-                                        return 1;
-                                      }))),
-                        ],
-                      ))),
-                      Text("1/10 Matchups", style: Theme.of(context).textTheme.bodyMedium,),
-                      Expanded(flex:1, child:Container())
+                          ))),
+                      Text(
+                        "1/10 Matchups",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      Expanded(flex: 1, child: Container())
                     ])))
       ],
     ));
