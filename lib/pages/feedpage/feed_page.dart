@@ -13,6 +13,7 @@ import 'feedpage_modal.dart';
 import 'feedpage_promptarea.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 import 'no_user_post.dart';
+import 'matchup.dart';
 
 class FeedPage extends StatelessWidget {
   FeedPage({super.key});
@@ -132,10 +133,14 @@ class FeedPageContent extends StatelessWidget {
     UserService userSession = Provider.of<UserService>(context, listen: true);
     print(userSession.currentPosts!.length);
     print("Rebuilding");
-    return Container( child: ListView.builder(
+    return Container(
+      width: screenWidth/1.1,
+        decoration: BoxDecoration(color: Colors.black54),
+        child: ListView.builder(
+          shrinkWrap: true,
         itemCount: 5,
         itemBuilder: (context, index) {
-          return  Container();
+          return  MatchupTemplate();
         }));
   }
 }

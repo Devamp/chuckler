@@ -19,164 +19,131 @@ class MatchupTemplate extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Container(
-        constraints:
-        BoxConstraints.tight(Size(double.infinity, screenHeight / 2.5)),
-        margin: EdgeInsets.fromLTRB(
-            screenWidth / 30, 10, screenWidth / 30, 5),
-        decoration: BoxDecoration(
-            color: Colors.black54,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.black, width: 4)),
+    return new DecoratedBox(
+        decoration: BoxDecoration(),
         child: Column(children: [
-          Expanded(
-              flex: 1,
-              child: Container(
-                  child: Padding(
-                      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
-                      child: Center(
-                          child: AutoSizeText.rich(
-                            TextSpan(
-                              style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontFamily: 'OpenSans',
-                                  fontStyle: FontStyle.italic),
-                              children: <TextSpan>[
-                                TextSpan(
-                                    text:
-                                    "this is where the prompt will go _______. "),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                            maxLines: 10,
-                            minFontSize: 2,
-                          ))))),
-          Divider(
-            color: Colors.blueGrey,
-            thickness: 2,
+          Container(
+            padding: EdgeInsets.fromLTRB(10, 20, 0, 0),
+            child: Text(
+              "This is where the prompt will go this is where the prompt will go _______. ",
+              style: TextStyle(
+                  fontFamily: "OpenSans",
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w700),
+              textAlign: TextAlign.left,
+            ),
           ),
-          Expanded(
-              flex: 4,
-              child: Column(
+          Column(
+            children: [
+              UserMatchAnswer(),
+              UserMatchAnswer(),
+            ],
+          ),
+          Container(
+              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+              child: Row(
                 children: [
-                  Expanded(
-                      flex: 1,
-                      child: Row(
-                        children: [
-                          Expanded(
-                              flex: 1,
-                              child: ProfilePhoto(
-                                username: "Test",
-                                img: "",
-                                radius: 20,
-                              )),
-                          Expanded(flex: 5, child: Text("USERNAME", style: TextStyle(color: Color(0xfffbd0bf)))),
-                          Expanded(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(Icons.favorite, color: Color(0xfffbd0bf),),
-                                onPressed: () {},
-                              )),
-                        ],
+                  Container(
+                      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      constraints: BoxConstraints(
+                          minWidth: screenWidth / 9, maxWidth: screenWidth / 9),
+                      child: ProfilePhoto(
+                        username: "Test",
+                        img: "",
+                        radius: 15,
                       )),
-                  Expanded(
-                      flex: 2,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(flex: 1, child: Container()),
-                            Expanded(flex: 6, child: Text("Answer one here"))
-                          ])),
-                  Expanded(
-                      flex: 1,
-                      child: Row(
-                        children: [
-                          Expanded(
-                              flex: 1,
-                              child: ProfilePhoto(
-                                username: "Test",
-                                img: "",
-                                radius: 20,
-                              )),
-                          Expanded(flex: 5, child: Text("USERNAME", style: TextStyle(color: Colors.cyan)), ),
-                          Expanded(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(Icons.favorite, color: Colors.cyan,),
-                                onPressed: () {},
-                              )),
-                        ],
+                  Container(
+                      constraints: BoxConstraints(maxWidth: screenWidth / 1.5),
+                      child: Padding(
+                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Center(
+                              child: Text(
+                            "This is where the description for the prompt will go  ",
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )))),
+                  Container(
+                      padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      constraints: BoxConstraints(
+                          minWidth: screenWidth / 9, maxWidth: screenWidth / 9),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.chat_rounded,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {},
                       )),
-                  Expanded(
-                      flex: 2,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(flex: 1, child: Container()),
-                            Expanded(flex: 6, child: Text("Answer one here"))
-                          ])),
                 ],
               )),
           Divider(
-            color: Colors.blueGrey,
             thickness: 2,
-          ),
-          Expanded(
-              flex: 1,
-              child: Container(
-                  child: Row(
-                    children: [
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                              padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              constraints: BoxConstraints.tight(Size(30,30)),
-                              child: ProfilePhoto(
-                                username: "Test",
-                                img: "",
-                                radius: 15,
-                              ))),
-                      Expanded(
-                          flex: 12,
-                          child: Padding(
-                              padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                              child: Center(
-                                  child: AutoSizeText.rich(
-                                    TextSpan(
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                        fontFamily: 'OpenSans',
-                                      ),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text:
-                                            "This is where the description for the prompt will go "),
-                                      ],
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 3,
-                                    minFontSize: 2,
-                                  )))),
-                      Expanded(
-                          flex: 3,
-                          child: Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.chat_rounded,
-                                  size: 30,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {},
-                              ))),
-                    ],
-                  ))),
+            color: Colors.blueGrey,
+          )
         ]));
-
   }
+}
 
+class UserMatchAnswer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              constraints: BoxConstraints(
+                  minWidth: screenWidth / 8, maxWidth: screenWidth / 8),
+            ),
+            Container(
+                constraints: BoxConstraints(
+                    minWidth: screenWidth / 9, maxWidth: screenWidth / 9),
+                child: ProfilePhoto(
+                  username: "Test",
+                  img: "",
+                  radius: 14,
+                )),
+            Container(
+              constraints: BoxConstraints(minWidth: screenWidth / 1.85),
+              child:
+                  Text("USERNAME", style: TextStyle(color: Color(0xfffbd0bf))),
+            ),
+            Container(
+                alignment: Alignment.bottomCenter,
+                constraints: BoxConstraints(
+                    minWidth: screenWidth / 8, maxWidth: screenWidth / 8),
+                child: IconButton(
+                  alignment: Alignment.bottomCenter,
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    size: screenWidth / 20,
+                    Icons.favorite,
+                    color: Color(0xfffbd0bf),
+                  ),
+                  onPressed: () {},
+                )),
+          ],
+        ),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                constraints: BoxConstraints(
+                    minWidth: screenWidth / 4, maxWidth: screenWidth / 4),
+              ),
+              Container(
+                  alignment: Alignment.topCenter,
+                  constraints: BoxConstraints(
+                      minWidth: screenWidth / 1.7, maxWidth: screenWidth / 1.7),
+                  child: Text(
+                    "Answer one here fgsfasggfsfhhdf fhhdffhdhhsdffhfhfh",
+                    style: TextStyle(fontSize: 14),
+                  ))
+            ]),
+      ],
+    );
+  }
 }
