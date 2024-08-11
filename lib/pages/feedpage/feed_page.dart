@@ -13,7 +13,7 @@ import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 import 'no_user_post.dart';
 
 class FeedPage extends StatelessWidget {
-  FeedPage({super.key});
+  const FeedPage({super.key});
 
   //TODO REPLACE WITH DYNAMIC DATA
   final havePosted = true;
@@ -44,7 +44,7 @@ class CreateForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Expanded(flex: 20, child: FeedPagePromptArea()),
+        const Expanded(flex: 20, child: FeedPagePromptArea()),
         Expanded(flex: 30, child: FeedPageContent())
       ],
     );
@@ -68,7 +68,7 @@ class FeedPageContent extends StatelessWidget {
     IsarService isarService = Provider.of<IsarService>(context, listen: false);
     List<DbPost> posts = await isarService.getTwoUnseenPosts();
 
-    if (posts?.isEmpty ?? true) {
+    if (posts.isEmpty ?? true) {
       print("Getting posts from firebase ");
 
       //add to the session
@@ -139,7 +139,7 @@ class FeedPageContent extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                          padding: EdgeInsets.fromLTRB(10, 15, 0, 10),
+                          padding: const EdgeInsets.fromLTRB(10, 15, 0, 10),
                           child: RichText(
                               text: TextSpan(children: [
                             TextSpan(
@@ -164,7 +164,7 @@ class FeedPageContent extends StatelessWidget {
                                     fontSize: screenHeight / 34,
                                     fontWeight: FontWeight.w600))
                           ]))),
-                      Divider(
+                      const Divider(
                         thickness: 3,
                         color: Colors.white54,
                       ),
@@ -256,7 +256,7 @@ class FeedPageContent extends StatelessWidget {
                                   index < (userSession.currentPosts!.length - 1)
                                       ? Container(
                                           margin:
-                                              EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                              const EdgeInsets.fromLTRB(0, 5, 0, 5),
                                           height: 2.0,
                                           // Height of the divider
                                           width: double.infinity,
@@ -287,11 +287,11 @@ class FeedPageContent extends StatelessWidget {
                                       heightFactor: 2,
                                       child: ChangingButton(
                                           index: 0,
-                                          icons: [
+                                          icons: const [
                                             Icons.favorite_border,
                                             Icons.favorite
                                           ],
-                                          bgColors: [
+                                          bgColors: const [
                                             Colors.transparent,
                                             Colors.black
                                           ],
@@ -302,7 +302,7 @@ class FeedPageContent extends StatelessWidget {
                                           pressed: () {
                                             return 1;
                                           }))),
-                              Expanded(
+                              const Expanded(
                                   child: ElevatedIconButton(
                                       color: Colors.transparent,
                                       iconColor: Colors.amber,
@@ -313,11 +313,11 @@ class FeedPageContent extends StatelessWidget {
                                       heightFactor: 2,
                                       child: ChangingButton(
                                           index: 0,
-                                          icons: [
+                                          icons: const [
                                             Icons.favorite_border_rounded,
                                             Icons.favorite
                                           ],
-                                          bgColors: [
+                                          bgColors: const [
                                             Colors.transparent,
                                             Colors.black
                                           ],

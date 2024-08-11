@@ -9,15 +9,15 @@ class AccountNotifications extends StatelessWidget {
   @override
   Widget build(context) {
     print('rebuilding');
-    return  Container(height: notifications.length*80, child: notifications.isNotEmpty
+    return  SizedBox(height: notifications.length*80, child: notifications.isNotEmpty
             ? ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
             itemCount: notifications.length,
             itemBuilder: (context, index) {
               return Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.all(5),
+                    margin: const EdgeInsets.all(5),
                     color: Colors.black,
                     height: 50,
                     child: const Row(
@@ -35,7 +35,7 @@ class AccountNotifications extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Divider(thickness: 0.3, color: Colors.white,)
+                  const Divider(thickness: 0.3, color: Colors.white,)
                 ],
               );
             })

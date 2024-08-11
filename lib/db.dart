@@ -66,13 +66,13 @@ Future<List<dbUser>> getUsers(List<dbUser> users) async {
 //Retrieve numPosts
 Future<int?> getNumPosts() async {
   final prefs = await SharedPreferences.getInstance();
-  return await prefs.getInt('numOfPosts');
+  return prefs.getInt('numOfPosts');
 }
 
 //Retrieve the Post we have not seen yet
 Future<int?> getCurrentPost() async {
   final prefs = await SharedPreferences.getInstance();
-  return await prefs.getInt('onPost');
+  return prefs.getInt('onPost');
 }
 
 //Retrieves the last login time if it exists

@@ -10,7 +10,7 @@ class UserService with ChangeNotifier {
   String? _loginTime;
   String _viewingPost = "____________";
   Color _viewingColor = Colors.amber;
-  List<DbPrompt> _prompts = List.empty(growable: true);
+  final List<DbPrompt> _prompts = List.empty(growable: true);
   List<DbPost> _currentPosts = List<DbPost>.empty(growable: true);
   String? _currentFeedPromptId;
   String? get currentFeedPromptId => _currentFeedPromptId;
@@ -114,6 +114,6 @@ void clearViewingColor(){
   }
 
   void reloadApp() {
-    runApp(MyApp());
+    runApp(const MyApp());
   }
 }

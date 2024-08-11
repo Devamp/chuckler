@@ -16,7 +16,7 @@ class CreatePage extends StatelessWidget {
           titleTextStyle: Theme.of(context).textTheme.displayMedium,
           backgroundColor: Colors.black,
         ),
-        body: CreateForm());
+        body: const CreateForm());
   }
 }
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-/**
- * TODO add appropriate themes
- */
+/// TODO add appropriate themes
 
 ColorScheme lightThemeColors(context) {
   return const ColorScheme(

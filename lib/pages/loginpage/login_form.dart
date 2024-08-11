@@ -26,9 +26,7 @@ class _LoginFormState extends State<LoginForm> {
 
   String resetEmail = '';
 
-  /**
-   * Get the initial posts
-   */
+  /// Get the initial posts
   Future<bool> verifyLogin(email, password, context) async {
     User user;
     try {
@@ -111,7 +109,7 @@ class _LoginFormState extends State<LoginForm> {
       String? lTime = await getCachedLoginTime();
       userSession.setLoginTime(lTime);
       if (!userSession.firstLogin) {
-        print("last login " + userSession.logTime!);
+        print("last login ${userSession.logTime!}");
       }
       cacheLoginTime();
     } catch (e) {

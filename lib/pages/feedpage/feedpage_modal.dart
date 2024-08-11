@@ -11,9 +11,7 @@ import 'package:chuckler/database/isarDB.dart';
 
 import '../../Session.dart';
 
-/**
- * The following is the code for the LONG tap modal
- */
+/// The following is the code for the LONG tap modal
 
 class CommentModal extends StatelessWidget {
   final cfData;
@@ -40,7 +38,7 @@ class CommentModal extends StatelessWidget {
     if (modalUser!.friend) {
       friendButton = 2;
     }
-    else if (modalUser!.pendingFriend! ||
+    else if (modalUser!.pendingFriend ||
         modalUser!.pendingFriends.contains(userSession.loggedInUser!.uid)) {
       friendButton = 1;
     }
@@ -104,12 +102,12 @@ class CommentModal extends StatelessWidget {
                                     //TODO add like function
                                     child: ChangingButton(
                                         index: 0,
-                                        icons: [
+                                        icons: const [
                                           Icons.thumb_up_alt_rounded,
                                           Icons.thumb_up_alt_rounded,
                                         ],
-                                        bgColors: [Colors.transparent, Colors.amber],
-                                        iconColors: [Colors.grey, Colors.green],
+                                        bgColors: const [Colors.transparent, Colors.amber],
+                                        iconColors: const [Colors.grey, Colors.green],
                                         pressed: () {
                                           FirebaseFirestore firestore =
                                               Provider.of<FirebaseFirestore>(
@@ -123,13 +121,13 @@ class CommentModal extends StatelessWidget {
                                         const EdgeInsets.fromLTRB(5, 0, 5, 0),
                                     child: ChangingButton(
                                       index: friendButton,
-                                      icons: [
+                                      icons: const [
                                         Icons.person_add_alt_rounded,
                                         Icons.person,
                                         Icons.check_circle
                                       ],
-                                      bgColors: [Colors.transparent, Colors.amber, Colors.amber],
-                                      iconColors: [Colors.grey, Colors.grey, Colors.green],
+                                      bgColors: const [Colors.transparent, Colors.amber, Colors.amber],
+                                      iconColors: const [Colors.grey, Colors.grey, Colors.green],
                                       pressed: () {
                                         if (userSession.loggedInUser!.pendingFriends
                                             .contains(modalUser!.uid!)) {
@@ -155,7 +153,7 @@ class CommentModal extends StatelessWidget {
                                               modalUser!.uid!,
                                               userSession.loggedInUser!.username!,
                                               modalUser!.username!,
-                                              userSession.loggedInUser!.friends!,
+                                              userSession.loggedInUser!.friends,
                                               false);
                                           modalUser!.pendingFriends = [
                                             userSession.loggedInUser!.uid!

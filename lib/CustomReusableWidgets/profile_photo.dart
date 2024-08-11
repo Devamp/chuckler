@@ -43,7 +43,7 @@ class ProfilePhoto extends StatelessWidget {
        bottom:0,
 
         child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: Colors.amberAccent, shape: BoxShape.circle),
             child: SvgPicture.asset(
               'assets/svgfiles/largerBanana.svg',

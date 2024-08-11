@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 class CreateMiddle extends StatefulWidget {
 
-  CreateMiddle({super.key});
+  const CreateMiddle({super.key});
 
   @override
   _CreateMiddleState createState() => _CreateMiddleState();
@@ -29,26 +29,26 @@ int liked = 0;
       children: [
         ChangingButton(
             index: 0,
-            icons: [
+            icons: const [
               Icons.thumb_up_alt_rounded,
               Icons.thumb_up_alt_rounded
             ],
-            bgColors: [Colors.transparent, Colors.amber],
-            iconColors: [Colors.amber, Colors.green],
+            bgColors: const [Colors.transparent, Colors.amber],
+            iconColors: const [Colors.amber, Colors.green],
             pressed: () {
               if(liked == 0){
                 liked = 1;
               return 1;}else {return 0;}
             }),
-        IconButton(onPressed: (){}, icon: Icon(Icons.info, color: Colors.grey,)),
+        IconButton(onPressed: (){}, icon: const Icon(Icons.info, color: Colors.grey,)),
         ChangingButton(
             index: 0,
-            icons: [
+            icons: const [
               Icons.thumb_down_alt_rounded,
               Icons.thumb_down_alt_rounded
             ],
-            bgColors: [Colors.transparent, Colors.amber],
-            iconColors: [Colors.amber, Colors.red],
+            bgColors: const [Colors.transparent, Colors.amber],
+            iconColors: const [Colors.amber, Colors.red],
             pressed: () {
               if(liked == 0){
                 liked = -1;

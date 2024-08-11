@@ -1,6 +1,5 @@
 import 'package:chuckler/CustomReusableWidgets/profile_photo.dart';
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 class CreatePageLoadingBar extends StatefulWidget {
   const CreatePageLoadingBar({super.key});

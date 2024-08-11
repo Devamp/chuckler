@@ -5,6 +5,8 @@ class AwardsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scrollable(viewportBuilder: viewportBuilder)
+    return Container(
+      child: null, // This is a placeholder; you can add widgets here
+    );
   }
 }

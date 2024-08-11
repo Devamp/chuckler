@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // ignore: must_be_immutable
 class SignupPage extends StatelessWidget {
-  SignupPage({Key? key}) : super(key: key);
+  SignupPage({super.key});
 
   String username = '';
   String email = '';
@@ -247,13 +247,13 @@ class SignupPage extends StatelessWidget {
                       },
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.black),
+                            WidgetStateProperty.all<Color>(Colors.black),
                         foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                            WidgetStateProperty.all<Color>(Colors.white),
+                        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
                             const EdgeInsets.all(10.0)),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
@@ -270,7 +270,7 @@ class SignupPage extends StatelessWidget {
                           children: const [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(Icons.app_registration_rounded),
                                 SizedBox(width: 8.0),
                                 Text(

@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'leaderboard_carousel_container.dart';
 
 class LeaderboardPage extends StatefulWidget {
@@ -42,6 +41,20 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Expanded(
+              flex: 0,
+              child: SizedBox(
+                width: double.infinity,
+                height: 65,
+                child: Align(
+                  alignment: const Alignment(0, 0),
+                  child: Text(
+                    "Leaderboard",
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                ),
+              ),
+            ),
             Expanded(
               flex: 1,
               child: SizedBox(

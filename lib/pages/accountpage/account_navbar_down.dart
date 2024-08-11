@@ -10,7 +10,7 @@ import 'account_posts.dart';
 import 'package:chuckler/database/models.dart';
 
 class AccountPageContent extends StatefulWidget {
-  AccountPageContent({Key? key}) : super(key: key);
+  const AccountPageContent({super.key});
 
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -148,7 +148,7 @@ class _AccountPageState extends State<AccountPageContent> {
   }
 
   Widget getMyAwardsScreen(BuildContext context) {
-    return AwardsPage();
+    return const AwardsPage();
   }
 
   Widget getTodaysEvents(BuildContext context) {

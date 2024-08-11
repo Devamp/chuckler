@@ -6,8 +6,8 @@ class CircleWidget extends StatelessWidget {
   final String username;
   final Color color;
 
-  CircleWidget(
-      {required this.position, required this.color, required this.username});
+  const CircleWidget(
+      {super.key, required this.position, required this.color, required this.username});
 
   @override
   Widget build(BuildContext context) {
