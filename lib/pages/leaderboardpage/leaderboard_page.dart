@@ -13,7 +13,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   final unfocusNode = FocusNode();
 
   // State field(s) for Carousel widget.
-  CarouselController? carouselController;
+  CarouselSliderController? carouselController;
 
   int carouselCurrentIndex = 1;
 
@@ -34,36 +34,57 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.black,
       body: SafeArea(
         top: true,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 0,
-              child: SizedBox(
-                width: double.infinity,
-                height: 65,
-                child: Align(
-                  alignment: const Alignment(0, 0),
-                  child: Text(
-                    "Leaderboard",
-                    style: Theme.of(context).textTheme.displayMedium,
-                  ),
-                ),
-              ),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: RadialGradient(
+            colors: [
+              Color.fromRGBO(9, 32, 63, 1),
+              Color.fromRGBO(83, 120, 149, 1),
+              Colors.black,
+            ],
+            center: Alignment(0,-0.5),
+            radius: 2,
             ),
-            Expanded(
-              flex: 1,
-              child: SizedBox(
-                width: double.infinity,
-                child: CarouselSlider(
-                  items: const [
-                    CarouselContainer(
-                      categoryName: "TODAY'S LEADERS",
-                      names: [
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: CarouselSlider(
+                    items: const [
+                      CarouselContainer(
+                        categoryName: "DAILY LEADERS",
+                        names: [
+                          "Caden Deutscher",
+                          "Devam Patel",
+                          "Anand Gogoi",
+                          "Alec Uyematsu",
+                          "Default Name",
+                          "Default Name",
+                          "Default Name",
+                          "Default Name",
+                          "Default Name",
+                          "Default Name",
+                        ],
+                        points: [
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999
+                        ],
+                      ),
+                      CarouselContainer(categoryName: "MONTHLY LEADERS", names: [
                         "Caden Deutscher",
                         "Devam Patel",
                         "Anand Gogoi",
@@ -74,8 +95,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         "Default Name",
                         "Default Name",
                         "Default Name",
-                      ],
-                      points: [
+                      ], points: [
                         9999,
                         9999,
                         9999,
@@ -86,76 +106,53 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         9999,
                         9999,
                         9999
-                      ],
+                      ]),
+                      CarouselContainer(
+                        categoryName: "HALL OF FAME",
+                        names: [
+                          "Caden Deutscher",
+                          "Devam Patel",
+                          "Anand Gogoi",
+                          "Alec Uyematsu",
+                          "Default Name",
+                          "Default Name",
+                          "Default Name",
+                          "Default Name",
+                          "Default Name",
+                          "Default Name",
+                        ],
+                        points: [
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999,
+                          9999
+                        ],
+                      ),
+                    ],
+                    carouselController: carouselController ??=
+                        CarouselSliderController(),
+                    options: CarouselOptions(
+                      initialPage: 0,
+                      viewportFraction: 1,
+                      disableCenter: true,
+                      enlargeCenterPage: true,
+                      enlargeFactor: 0.8,
+                      enableInfiniteScroll: true,
+                      scrollDirection: Axis.horizontal,
+                      autoPlay: false,
+                      onPageChanged: (index, _) => carouselCurrentIndex = index,
                     ),
-                    CarouselContainer(categoryName: "MONTHLY LEADERS", names: [
-                      "Caden Deutscher",
-                      "Devam Patel",
-                      "Anand Gogoi",
-                      "Alec Uyematsu",
-                      "Default Name",
-                      "Default Name",
-                      "Default Name",
-                      "Default Name",
-                      "Default Name",
-                      "Default Name",
-                    ], points: [
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999
-                    ]),
-                    CarouselContainer(
-                      categoryName: "HALL OF FAME",
-                      names: [
-                        "Caden Deutscher",
-                        "Devam Patel",
-                        "Anand Gogoi",
-                        "Alec Uyematsu",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                      ],
-                      points: [
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999
-                      ],
-                    ),
-                  ],
-                  carouselController: carouselController ??=
-                      CarouselController(),
-                  options: CarouselOptions(
-                    initialPage: 0,
-                    viewportFraction: 1,
-                    disableCenter: true,
-                    enlargeCenterPage: true,
-                    enlargeFactor: 0.8,
-                    enableInfiniteScroll: true,
-                    scrollDirection: Axis.horizontal,
-                    autoPlay: false,
-                    onPageChanged: (index, _) => carouselCurrentIndex = index,
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
