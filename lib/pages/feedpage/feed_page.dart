@@ -1,4 +1,6 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
+import 'package:chuckler/CustomReusableWidgets/profile_photo.dart';
 import 'package:chuckler/DatabaseQueries.dart';
 import 'package:chuckler/Session.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'feedpage_modal.dart';
 import 'feedpage_promptarea.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_text_widgets.dart';
 import 'no_user_post.dart';
+import 'matchup.dart';
 
 class FeedPage extends StatelessWidget {
   const FeedPage({super.key});
@@ -20,19 +23,29 @@ class FeedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            'Chuckler',
-            textAlign: TextAlign.center,
+    return Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            colors: [
+              Color.fromRGBO(9, 32, 63, 1),
+              Color.fromRGBO(83, 120, 149, 1),
+              Colors.black,
+            ],
+            center: Alignment(0.6, 0.5),
+            radius: 2,
           ),
-          titleTextStyle: Theme.of(context).textTheme.displayMedium,
-          backgroundColor: Colors.black,
         ),
-        body: havePosted ? const CreateForm() : const NoUserPost());
+        child: Column(
+          children: [
+            Expanded(flex: 2, child: Container(
+              alignment: Alignment.bottomLeft,
+              child: DropdownButtonExample(),
+            )),
+            Expanded(
+                flex: 15,
+                child: havePosted ? const CreateForm() : const NoUserPost())
+          ],
+        ));
   }
 }
 
@@ -43,10 +56,7 @@ class CreateForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Expanded(flex: 20, child: FeedPagePromptArea()),
-        Expanded(flex: 30, child: FeedPageContent())
-      ],
+      children: <Widget>[Expanded(flex: 30, child: FeedPageContent())],
     );
   }
 }
@@ -123,220 +133,51 @@ class FeedPageContent extends StatelessWidget {
     UserService userSession = Provider.of<UserService>(context, listen: true);
     print(userSession.currentPosts!.length);
     print("Rebuilding");
-    return Center(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Expanded(
-            child: Container(
-                width: screenWidth / 1.1,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Colors.white10,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 15, 0, 10),
-                          child: RichText(
-                              text: TextSpan(children: [
-                            TextSpan(
-                                text: "Username1",
-                                style: TextStyle(
-                                    color: userColors[0],
-                                    fontFamily: "Livvic",
-                                    fontSize: screenHeight / 34,
-                                    fontWeight: FontWeight.w600)),
-                            TextSpan(
-                                text: " VS ",
-                                style: TextStyle(
-                                    color: Colors.amber,
-                                    fontFamily: "Livvic",
-                                    fontSize: screenHeight / 32,
-                                    fontWeight: FontWeight.w600)),
-                            TextSpan(
-                                text: "Username2 ",
-                                style: TextStyle(
-                                    color: userColors[1],
-                                    fontFamily: "Livvic",
-                                    fontSize: screenHeight / 34,
-                                    fontWeight: FontWeight.w600))
-                          ]))),
-                      const Divider(
-                        thickness: 3,
-                        color: Colors.white54,
-                      ),
-                      Expanded(
-                          flex: 15,
-                          child: Container(
-                              child: ListView.builder(
-                            itemCount: userSession.currentPosts!.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  InkWell(
-                                      onTap: () async {
-                                        userSession.setViewingPost(
-                                            "  __${userSession.currentPosts![index].answer!}__  ");
-                                        userSession
-                                            .setViewingColor(userColors[index]);
-                                        //await getNextTwoPosts(context);
-                                      },
-                                      onLongPress: () async {
-                                        DbUser? modalUser = await getModalUser(
-                                            context,
-                                            userSession.currentPosts!
-                                                .elementAt(index)
-                                                .uid!);
-                                        //Display selection in modal before moving to next post
-                                        showModalBottomSheet<void>(
-                                          backgroundColor: Colors.transparent,
-                                          isScrollControlled: true,
-                                          useSafeArea: true,
-                                          context: context,
-                                          barrierColor:
-                                              Colors.black.withOpacity(0.9),
-                                          builder: (context) {
-                                            return CommentModal(
-                                                cfData: userSession
-                                                    .currentPosts!
-                                                    .elementAt(index),
-                                                modalUser: modalUser,
-                                                screenWidth: screenWidth,
-                                                screenHeight: screenHeight);
-                                          },
-                                        );
-                                      },
-                                      child: Container(
-                                          height: screenHeight / 8,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white10,
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: Row(children: [
-                                            Expanded(
-                                                flex: 1,
-                                                child: Container(
-                                                  width: 50,
-                                                  height: double.infinity,
-                                                  decoration: BoxDecoration(
-                                                      color: userColors[index],
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10)),
-                                                )),
-                                            Expanded(
-                                                flex: 40,
-                                                child: Container(
-                                                    margin: const EdgeInsets
-                                                        .fromLTRB(15, 0, 0, 0),
-                                                    child: OpenSansText(
-                                                      text: userSession
-                                                          .currentPosts!
-                                                          .elementAt(index)
-                                                          .answer!,
-                                                      fractionScreenHeight: 35,
-                                                      color: userColors[index],
-                                                      fw: FontWeight.normal,
-                                                    ))),
-                                            Expanded(
-                                                flex: 4,
-                                                child: IconButton(
-                                                  icon:
-                                                      const Icon(Icons.report),
-                                                  splashRadius: 20,
-                                                  color: Colors.white,
-                                                  onPressed: () {},
-                                                ))
-                                          ]))),
-                                  index < (userSession.currentPosts!.length - 1)
-                                      ? Container(
-                                          margin:
-                                              const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                          height: 2.0,
-                                          // Height of the divider
-                                          width: double.infinity,
-                                          // Full width
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: userColors,
-                                              // Gradient colors
-                                              begin: Alignment.centerLeft,
-                                              end: Alignment.centerRight,
-                                            ),
-                                          ),
-                                        )
-                                      : Container(),
-                                ],
-                              );
-                            },
-                          ))),
-                      Expanded(
-                          flex: 4,
-                          child: Center(
-                              child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                  child: Center(
-                                      heightFactor: 2,
-                                      child: ChangingButton(
-                                          index: 0,
-                                          icons: const [
-                                            Icons.favorite_border,
-                                            Icons.favorite
-                                          ],
-                                          bgColors: const [
-                                            Colors.transparent,
-                                            Colors.black
-                                          ],
-                                          iconColors: [
-                                            userColors[0],
-                                            userColors[0]
-                                          ],
-                                          pressed: () {
-                                            return 1;
-                                          }))),
-                              const Expanded(
-                                  child: ElevatedIconButton(
-                                      color: Colors.transparent,
-                                      iconColor: Colors.amber,
-                                      fractionHeight: 25,
-                                      icon: Icons.comment)),
-                              Expanded(
-                                  child: Center(
-                                      heightFactor: 2,
-                                      child: ChangingButton(
-                                          index: 0,
-                                          icons: const [
-                                            Icons.favorite_border_rounded,
-                                            Icons.favorite
-                                          ],
-                                          bgColors: const [
-                                            Colors.transparent,
-                                            Colors.black
-                                          ],
-                                          iconColors: [
-                                            userColors[1],
-                                            userColors[1]
-                                          ],
-                                          pressed: () {
-                                            return 1;
-                                          }))),
-                            ],
-                          ))),
-                      Text(
-                        "1/10 Matchups",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      Expanded(flex: 1, child: Container())
-                    ])))
-      ],
-    ));
+    return Container(
+      width: screenWidth/1.1,
+        decoration: BoxDecoration(color: Colors.black54),
+        child: ListView.builder(
+          shrinkWrap: true,
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return  MatchupTemplate();
+        }));
+  }
+}
+
+/** DROP DOWN MENU */
+class DropdownButtonExample extends StatefulWidget {
+  const DropdownButtonExample({super.key});
+
+  @override
+  State<DropdownButtonExample> createState() => _DropdownButtonExampleState();
+}
+
+class _DropdownButtonExampleState extends State<DropdownButtonExample> {
+  static List<String> list = <String>['Global', 'Local', 'Friends', 'Create+'];
+  String dropdownValue = list.first;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      icon: const Icon(Icons.arrow_drop_down, color: Colors.black,),
+      underline: Container(),
+      dropdownColor: Colors.white70,
+      style: const TextStyle(color: Colors.black, fontSize: 20),
+      padding: EdgeInsets.fromLTRB(40, 0, 0, 0),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+        });
+      },
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
   }
 }

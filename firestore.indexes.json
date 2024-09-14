@@ -1,0 +1,41 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "Posts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "promptDateId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "promptId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "date",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Posts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "promptDateId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "promptId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "random",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

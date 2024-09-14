@@ -33,8 +33,8 @@ int liked = 0;
               Icons.thumb_up_alt_rounded,
               Icons.thumb_up_alt_rounded
             ],
-            bgColors: const [Colors.transparent, Colors.amber],
-            iconColors: const [Colors.amber, Colors.green],
+            bgColors: [Colors.black54, Colors.white],
+            iconColors: [Colors.white24, Colors.black],
             pressed: () {
               if(liked == 0){
                 liked = 1;
@@ -47,8 +47,8 @@ int liked = 0;
               Icons.thumb_down_alt_rounded,
               Icons.thumb_down_alt_rounded
             ],
-            bgColors: const [Colors.transparent, Colors.amber],
-            iconColors: const [Colors.amber, Colors.red],
+            bgColors: [Colors.black54, Colors.white],
+            iconColors: [Colors.white24, Colors.black],
             pressed: () {
               if(liked == 0){
                 liked = -1;

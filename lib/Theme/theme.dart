@@ -36,7 +36,6 @@ ThemeData lightThemeData(BuildContext context) {
   double screenWidth = MediaQuery.of(context).size.width;
   double screenHeight = MediaQuery.of(context).size.height;
   return ThemeData(
-    scaffoldBackgroundColor: lightThemeColors(context).onPrimary,
     textTheme: TextTheme(
       displayMedium: const TextStyle(
           color: Color(0xFFffd230),
@@ -88,7 +87,6 @@ ThemeData darkThemeData(BuildContext context) {
   double screenWidth = MediaQuery.of(context).size.width;
   double screenHeight = MediaQuery.of(context).size.height;
   return ThemeData(
-    scaffoldBackgroundColor: darkThemeColors(context).surface,
     textTheme: TextTheme(
       displayMedium: const TextStyle(
           color: Color(0xFFffd230),

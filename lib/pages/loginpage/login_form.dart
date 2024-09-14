@@ -99,6 +99,8 @@ class _LoginFormState extends State<LoginForm> {
               context, firestore, p.promptId!, p.promptDateId!);
         }
         userSession.addPrompt(p);
+        ///TODO get posts from DB first...Not good for testing
+        userSession.addPostForPrompt(await getUserPostForPrompt(firestore, userId, p.promptDateId!, p.promptId!));
         i++;
       }
 
