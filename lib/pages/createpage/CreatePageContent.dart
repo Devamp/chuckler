@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chuckler/pages/loginpage/login_page.dart';
 import 'package:chuckler/PageTransitioner.dart';
+import 'package:flutter/widgets.dart';
 import '../../Session.dart';
 import 'package:provider/provider.dart';
 import '../../database/isarDB.dart';
@@ -26,7 +27,6 @@ class CreatePageContent extends StatefulWidget {
 
 class _CreatePageContentState extends State<CreatePageContent>
     with WidgetsBindingObserver {
-
   final TextEditingController _controller =
       TextEditingController(text: "Answer the Prompt Here");
 
@@ -96,12 +96,11 @@ class _CreatePageContentState extends State<CreatePageContent>
   void initState() {
     super.initState();
     UserService userSession = Provider.of<UserService>(context, listen: false);
-    if(userSession.userPostsForPrompts.first != null){
+    if (userSession.userPostsForPrompts.first != null) {
       _controller.text = userSession.userPostsForPrompts.first!.answer!;
     }
     //Set up text box
     focusNode.addListener(() {
-
       if (!focusNode.hasFocus) {
         if (_controller.text.trim().isEmpty) {
           _controller.text = "Answer the Prompt Here";
@@ -160,12 +159,26 @@ class _CreatePageContentState extends State<CreatePageContent>
               constraints: BoxConstraints.tight(
                   Size(screenWidth / 1.1, double.infinity)),
               decoration: BoxDecoration(
-                color: Colors.black54,
+                  color: Colors.black54,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.black26, width: 5)),
               child: Column(children: [
                 Expanded(flex: 1, child: Container()),
-                const Expanded(flex: 6, child: PromptIdentifier()),
+                Expanded(
+                    flex: 6,
+                    child: Row(children: [
+                      Expanded(flex: 1, child: Container()),
+                      Expanded(flex: 4, child: PromptIdentifier()),
+                      Expanded(
+                          flex: 2,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.public,
+                              color: Colors.blueGrey,
+                            ),
+                            onPressed: () {},
+                          )),
+                    ])),
                 Expanded(
                     flex: 20,
                     child: Padding(
@@ -225,7 +238,9 @@ class _CreatePageContentState extends State<CreatePageContent>
                                     )
                                   : Container()),
                           Expanded(
-                              flex: 10, child: CreatePageLoadingBar(pVal: promptVal, friend: null)),
+                              flex: 10,
+                              child: CreatePageLoadingBar(
+                                  pVal: promptVal, friend: null)),
                           //PROMPT W/ USER ANSWER
                           Expanded(
                               flex: 2,
@@ -314,7 +329,8 @@ class _CreatePageContentState extends State<CreatePageContent>
                                   keyboardType: TextInputType.multiline,
                                   cursorColor: Colors.black,
                                   focusNode: focusNode,
-                                  style: TextStyle(color: Color(0xfffbd0bf), fontSize: 18),
+                                  style: TextStyle(
+                                      color: Color(0xfffbd0bf), fontSize: 18),
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors.black54,
@@ -322,16 +338,18 @@ class _CreatePageContentState extends State<CreatePageContent>
                                       maxWidth: screenWidth / 1.5,
                                     ),
                                     hintText: "Answer Prompt Here",
-                                    counterStyle: TextStyle(color: Colors.white54),
+                                    counterStyle:
+                                        TextStyle(color: Colors.white54),
                                     enabledBorder: const OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.black54, // Unfocused border color
+                                        color: Colors.black54,
+                                        // Unfocused border color
                                         width: 2.0, // Unfocused border weight
                                       ),
                                     ),
                                     focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide( color: Colors.black87,
-                                             width: 3)),
+                                        borderSide: BorderSide(
+                                            color: Colors.black87, width: 3)),
                                     contentPadding: const EdgeInsets.all(10),
                                   ),
                                 );
