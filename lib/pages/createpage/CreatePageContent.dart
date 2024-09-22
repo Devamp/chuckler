@@ -17,6 +17,7 @@ import 'prompt_identifier.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:chuckler/pages/createpage/create_page_middle.dart';
+import '../constant_strings.dart';
 
 class CreatePageContent extends StatefulWidget {
   const CreatePageContent({super.key});
@@ -28,7 +29,7 @@ class CreatePageContent extends StatefulWidget {
 class _CreatePageContentState extends State<CreatePageContent>
     with WidgetsBindingObserver {
   final TextEditingController _controller =
-      TextEditingController(text: "Answer the Prompt Here");
+      TextEditingController(text: CreatePageTextPrompt);
 
 //state variables
   bool isUser = false;
@@ -103,7 +104,7 @@ class _CreatePageContentState extends State<CreatePageContent>
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
         if (_controller.text.trim().isEmpty) {
-          _controller.text = "Answer the Prompt Here";
+          _controller.text = CreatePageTextPrompt;
         }
       }
       setState(() {});
@@ -141,7 +142,7 @@ class _CreatePageContentState extends State<CreatePageContent>
     for (int i = 0; i < userSession.prompts!.length; i++) {
       canPost.add(true);
       if (userSession.userPostsForPrompts[i] == null) {
-        textControllerStates.add("Answer the Prompt Here");
+        textControllerStates.add(CreatePageTextPrompt);
       } else {
         if (textControllerStates.length >= prompts.length) {
           textControllerStates[i] = userSession.userPostsForPrompts[i]!.answer!;
@@ -312,7 +313,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                                   },
                                   onTap: () {
                                     if (_controller.text.trim() ==
-                                        "Answer the Prompt Here") {
+                                        CreatePageTextPrompt) {
                                       _controller.text = "";
                                       setState(() {});
                                     }
@@ -337,7 +338,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                                     constraints: BoxConstraints(
                                       maxWidth: screenWidth / 1.5,
                                     ),
-                                    hintText: "Answer Prompt Here",
+                                    hintText: CreatePageTextPrompt,
                                     counterStyle:
                                         TextStyle(color: Colors.white54),
                                     enabledBorder: const OutlineInputBorder(

@@ -24,6 +24,7 @@ class PromptIdentifier extends StatelessWidget {
                       constraints: BoxConstraints.tight(Size(screenWidth/1.5,double.infinity)),
                         child:  Text(
                           textAlign: TextAlign.center,
+                  ///TODO this needs to be dynamic
                   "HERE IS WHAT A DAILY IS!",
                   style: Theme.of(context).textTheme.displayMedium,
                 )));
@@ -48,6 +49,7 @@ class PromptIdentifier extends StatelessWidget {
                 ),
               ),
               OpenSansText(
+                ///TODO This also needs to be dynamic
                   text: "THE DAILY",
                   fractionScreenHeight: 35,
                   color: Colors.blueGrey,

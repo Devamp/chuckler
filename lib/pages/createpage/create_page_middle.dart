@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
+import '../constant_strings.dart';
 
 class CreateMiddle extends StatefulWidget {
   CreateMiddle({super.key});
@@ -56,9 +57,10 @@ class _CreateMiddleState extends State<CreateMiddle> {
                                     constraints: BoxConstraints(
                                         maxWidth: screenWidth / 1.2,
                                         maxHeight: screenHeight / 4),
-                                    child: const Text(
+                                    child: Text(
+                                      LikeDislikeInfoText,
                                         style: TextStyle(fontWeight: FontWeight.bold),
-                                        "Like or Dislike to let our creators know how they are doing!  :)")))));
+                                        )))));
                   });
             },
             icon: Icon(
