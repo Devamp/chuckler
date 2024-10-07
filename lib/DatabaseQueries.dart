@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database/models.dart';
 import 'dart:math';
@@ -10,10 +9,8 @@ import 'dart:math';
 ///
 ///
 
-/**
- * @author Caden Deutscher
- * @description - adds a comment to the subcollection 'Comments' in both the user and post objects
- */
+/// @author Caden Deutscher
+/// @description - adds a comment to the subcollection 'Comments' in both the user and post objects
 Future<void> addCommentToPost(FirebaseFirestore firestore, String postId,
     String usernameCommenter, String comment) async {
   DateTime now = DateTime.now().toUtc();
@@ -35,9 +32,7 @@ Future<void> addCommentToPost(FirebaseFirestore firestore, String postId,
   }
 }
 
-/**
- * Create a new post
- */
+/// Create a new post
 Future<DbPost> createPost(
     FirebaseFirestore firebase, DbUser u, DbPrompt prompt, answer) async {
   final now = DateTime.now().toUtc();
@@ -104,7 +99,7 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
       .where('date', isLessThan: endDate)
       .get();
   String pid = querySnapshot.docs.first.id;
-  print("this is the pid" + pid);
+  print("this is the pid$pid");
 
   if (querySnapshot.docs.isEmpty) {
     print("NO DOCS FOUND FOR TODAY $startDate");
@@ -134,8 +129,7 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
   return prompts;
 }
 
-/**
- * Description Retrieve logged in user information*/
+/// Description Retrieve logged in user information
 Future<DbUser?> getLoggedInUserInfo(
     FirebaseFirestore firestore, String uid) async {
   try {
@@ -172,9 +166,7 @@ Future<DbUser?> getLoggedInUserInfo(
   }
 }
 
-/**
- *
- */
+///
 Future<DbUser?> getAUser(FirebaseFirestore firebase, String uid) async {
   try {
     DocumentSnapshot doc = await firebase.collection("Users").doc(uid).get();
@@ -195,9 +187,7 @@ Future<DbUser?> getAUser(FirebaseFirestore firebase, String uid) async {
   }
 }
 
-/**
- * Description: Get the 10 posts from the database...put them in the
- */
+/// Description: Get the 10 posts from the database...put them in the
 Future<List<DbPost>> getPosts(
     FirebaseFirestore firestore, String prmtId, String prmtDateId) async {
   print("specs");
@@ -250,9 +240,7 @@ Future<List<DbPost>> getPosts(
   }
 }
 
-/**
- * Description: Get the first few comments from a post
- */
+/// Description: Get the first few comments from a post
 Future<List<DbComment>> getComments(
     FirebaseFirestore firestore, String postId) async {
   List<DbComment> comments = List<DbComment>.empty(growable: true);
@@ -314,9 +302,7 @@ Future<DbPost?> getUserPostForPrompt(FirebaseFirestore firestore, String uid,
 ///
 ///
 
-/**
- * Description increment user number of posts
- */
+/// Description increment user number of posts
 Future<void> incrementNumPosts(FirebaseFirestore firestore, String uid) async {
   firestore
       .collection('Users')

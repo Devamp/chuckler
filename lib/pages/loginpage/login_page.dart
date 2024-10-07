@@ -3,19 +3,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../Session.dart';
-import 'package:provider/provider.dart';
-import '../../DatabaseQueries.dart';
-import '../../database/models.dart';
-import '../../db.dart';
-import 'dart:math';
-import '../../database/isarDB.dart';
 import 'login_form.dart';
 
 // ignore: must_be_immutable
 class LoginPage extends StatelessWidget {
-  LoginPage({Key? key}) : super(key: key);
+  LoginPage({super.key});
 
 
 

@@ -18,7 +18,7 @@ class RouteGenerator {
       case '/app':
         return MaterialPageRoute(builder: (_) =>  const NavigationBarController(initialPageIndex: 1));
       default:
-        return MaterialPageRoute(builder: (_) => MyApp());
+        return MaterialPageRoute(builder: (_) => const MyApp());
     }
   }
 }

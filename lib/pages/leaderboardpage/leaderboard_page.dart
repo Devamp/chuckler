@@ -1,163 +1,171 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:chuckler/CustomReusableWidgets/CircleWidget.dart';
+import 'package:chuckler/CustomReusableWidgets/profile_photo.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'leaderboard_carousel_container.dart';
 
 class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key});
 
   @override
-  State<LeaderboardPage> createState() => _LeaderboardPageState();
+  // ignore: library_private_types_in_public_api
+  _LeaderboardPage createState() => _LeaderboardPage();
 }
 
-class _LeaderboardPageState extends State<LeaderboardPage> {
-  final unfocusNode = FocusNode();
-
-  // State field(s) for Carousel widget.
-  CarouselController? carouselController;
-
-  int carouselCurrentIndex = 1;
-
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    unfocusNode.dispose();
-    super.dispose();
-  }
+class _LeaderboardPage extends State<LeaderboardPage> {
+  final List<Widget> _leaderboardPages = [
+    const LeadersContainer(categoryTitle: 'Longest Streak'),
+    const LeadersContainer(categoryTitle: 'Most Wins'),
+    const LeadersContainer(categoryTitle: 'Fastest Times'),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        top: true,
+    return SafeArea(
+      top: true,
+      child: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            colors: [
+              Color.fromRGBO(9, 32, 63, 1),
+              Color.fromRGBO(83, 120, 149, 1),
+              Colors.black,
+            ],
+            center: Alignment(0.6, 0.5),
+            radius: 2,
+          ),
+        ),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              flex: 0,
-              child: SizedBox(
-                width: double.infinity,
-                height: 65,
-                child: Align(
-                  alignment: const Alignment(0, 0),
-                  child: Text(
-                    "Leaderboard",
-                    style: Theme.of(context).textTheme.displayMedium,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
+            const Expanded(flex: 4, child: LeadersContainer(categoryTitle: '',)),
+            const Expanded(
               flex: 1,
-              child: SizedBox(
-                width: double.infinity,
-                child: CarouselSlider(
-                  items: const [
-                    CarouselContainer(
-                      categoryName: "TODAY'S LEADERS",
-                      names: [
-                        "Caden Deutscher",
-                        "Devam Patel",
-                        "Anand Gogoi",
-                        "Alec Uyematsu",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                      ],
-                      points: [
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999
-                      ],
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 175,
+                      child: Text(
+                        'Username',
+                      ),
                     ),
-                    CarouselContainer(categoryName: "MONTHLY LEADERS", names: [
-                      "Caden Deutscher",
-                      "Devam Patel",
-                      "Anand Gogoi",
-                      "Alec Uyematsu",
-                      "Default Name",
-                      "Default Name",
-                      "Default Name",
-                      "Default Name",
-                      "Default Name",
-                      "Default Name",
-                    ], points: [
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999,
-                      9999
-                    ]),
-                    CarouselContainer(
-                      categoryName: "HALL OF FAME",
-                      names: [
-                        "Caden Deutscher",
-                        "Devam Patel",
-                        "Anand Gogoi",
-                        "Alec Uyematsu",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                        "Default Name",
-                      ],
-                      points: [
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999,
-                        9999
-                      ],
+                    SizedBox(
+                      width: 50,
+                      child: Text(
+                        'Rank',
+                      ),
                     ),
                   ],
-                  carouselController: carouselController ??=
-                      CarouselController(),
-                  options: CarouselOptions(
-                    initialPage: 0,
-                    viewportFraction: 1,
-                    disableCenter: true,
-                    enlargeCenterPage: true,
-                    enlargeFactor: 0.8,
-                    enableInfiniteScroll: true,
-                    scrollDirection: Axis.horizontal,
-                    autoPlay: false,
-                    onPageChanged: (index, _) => carouselCurrentIndex = index,
-                  ),
                 ),
               ),
             ),
+            Expanded(
+              flex: 5,
+              child: ListView.builder(
+                itemCount: 7,
+                itemBuilder: (BuildContext context, int index) {
+                  int rank = index + 4;
+                  return Container(
+                    margin: const EdgeInsets.only(
+                        left: 10, right: 10, top: 0, bottom: 5),
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
+                        color: Colors.black38),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          child: ProfilePhoto(
+                            username: 'Devam',
+                            img: '',
+                            radius: 20.0,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const SizedBox(
+                          width: 170,
+                          child: Text(
+                            'DevamIsCool',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 70,
+                          child: Text(
+                            rank.toString(),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class LeadersContainer extends StatefulWidget {
+  final String categoryTitle;
+
+  const LeadersContainer({super.key, required this.categoryTitle});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _LeadersContainer createState() => _LeadersContainer();
+}
+
+class _LeadersContainer extends State<LeadersContainer> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(left: 10, right: 10),
+      decoration: const BoxDecoration(
+          color: Colors.black54,
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(40.0),
+              bottomRight: Radius.circular(40.0))),
+      child: const Stack(
+        children: [
+          Positioned(
+              top: 20,
+              left: 100,
+              child: Text(
+                'Longest Streak',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              )),
+          Positioned(
+            bottom: 40,
+            left: 40,
+            child: CircleWidget(
+                position: '3rd', color: Colors.brown, username: 'Devam Patel'),
+          ),
+          Positioned(
+            bottom: 40,
+            right: 40,
+            child: CircleWidget(
+                position: '2nd',
+                color: Colors.grey,
+                username: 'Caden Deutscher'),
+          ),
+          Positioned(
+            top: 70,
+            left: 40,
+            right: 40,
+            child: CircleWidget(
+                position: '1st', color: Colors.amber, username: 'John Wick'),
+          )
+        ],
       ),
     );
   }

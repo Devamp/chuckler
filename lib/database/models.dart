@@ -65,10 +65,8 @@ class DbComment {
   DbComment(this.username, this.comment);
 }
 //TODO IMPLEMENT NOTIFICATIONS
-/**
- * HOW will this work? When a user performs an action that involves another user...Have google cloud functions
- * send a notfication to the User that is the target of the request...This could be liking posts/friend requests...etc
- */
+/// HOW will this work? When a user performs an action that involves another user...Have google cloud functions
+/// send a notfication to the User that is the target of the request...This could be liking posts/friend requests...etc
 @Collection()
 class DbNotification{
   Id id = Isar.autoIncrement;

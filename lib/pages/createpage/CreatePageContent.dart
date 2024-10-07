@@ -14,7 +14,6 @@ import '../../database/isarDB.dart';
 import '../../database/models.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 import 'prompt_identifier.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:chuckler/pages/createpage/create_page_middle.dart';
 import '../constant_strings.dart';
@@ -202,7 +201,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                 Expanded(
                     flex: 20,
                     child: Padding(
-                        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                         child: Center(
                             child: AutoSizeText.rich(
                           TextSpan(
@@ -294,7 +293,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                 flex: 12,
                 child: Container(
                   alignment: Alignment.center,
-                  child: CreateMiddle(),
+                  child: const CreateMiddle(),
                 ),
               )
             : Expanded(flex: 1, child: Container()),

@@ -16,7 +16,7 @@ import 'no_user_post.dart';
 import 'matchup.dart';
 
 class FeedPage extends StatelessWidget {
-  FeedPage({super.key});
+  const FeedPage({super.key});
 
   //TODO REPLACE WITH DYNAMIC DATA
   final havePosted = true;
@@ -79,7 +79,7 @@ class FeedPageContent extends StatelessWidget {
     IsarService isarService = Provider.of<IsarService>(context, listen: false);
     List<DbPost> posts = await isarService.getTwoUnseenPosts();
 
-    if (posts?.isEmpty ?? true) {
+    if (posts.isEmpty ?? true) {
       print("Getting posts from firebase ");
 
       //add to the session

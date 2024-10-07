@@ -25,6 +25,9 @@ class NoUserPost extends StatelessWidget {
                     onPressed: () {
                       // Handle button press action
                     },
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            WidgetStatePropertyAll<Color>(Colors.amber)),
                     child: const Text(
                       'Opt Out',
                       style: TextStyle(
@@ -32,9 +35,6 @@ class NoUserPost extends StatelessWidget {
                           fontFamily: 'OpenSans',
                           fontWeight: FontWeight.w700),
                     ),
-                    style: const ButtonStyle(
-                        backgroundColor:
-                            WidgetStatePropertyAll<Color>(Colors.amber)),
                     // Customize button style
                   ),
                 ),
@@ -46,6 +46,9 @@ class NoUserPost extends StatelessWidget {
                     onPressed: () {
                       // Handle button press action
                     },
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            WidgetStatePropertyAll<Color>(Colors.amber)),
                     child: const Text(
                       'Post',
                       style: TextStyle(
@@ -53,9 +56,6 @@ class NoUserPost extends StatelessWidget {
                           fontFamily: 'OpenSans',
                           fontWeight: FontWeight.w700),
                     ),
-                    style: const ButtonStyle(
-                        backgroundColor:
-                            WidgetStatePropertyAll<Color>(Colors.amber)),
                     // Customize button style
                   ),
                 ),

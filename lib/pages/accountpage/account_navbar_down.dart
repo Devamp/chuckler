@@ -1,5 +1,5 @@
-
 import 'package:chuckler/database/isarDB.dart';
+import 'package:chuckler/pages/accountpage/account_awards.dart';
 import 'package:chuckler/pages/accountpage/account_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
@@ -10,7 +10,7 @@ import 'account_posts.dart';
 import 'package:chuckler/database/models.dart';
 
 class AccountPageContent extends StatefulWidget {
-  AccountPageContent({Key? key}) : super(key: key);
+  const AccountPageContent({super.key});
 
   @override
   _AccountPageState createState() => _AccountPageState();
@@ -21,9 +21,19 @@ class _AccountPageState extends State<AccountPageContent> {
   int followers = 0;
   int following = 0;
   int _currentIndex = 0;
-  List<DbNotification> notifications = [DbNotification("", "", ""), DbNotification("", "", ""),DbNotification("", "", ""),DbNotification("", "", ""),];
+  List<DbNotification> notifications = [
+    DbNotification("", "", ""),
+    DbNotification("", "", ""),
+    DbNotification("", "", ""),
+    DbNotification("", "", ""),
+  ];
   //TODO INSTANTIATE POSTS WITH REAL DATA
-  List<DbPost> posts = [DbPost("a","b","c", "C", 0, 0, 0,"",""), DbPost("a","b","c", "C", 0, 0, 0,"",""), DbPost("a","b","c", "C", 0, 0, 0,"",""), DbPost("a","b","c", "C", 0, 0, 0,"",""), ];
+  List<DbPost> posts = [
+    DbPost("a", "b", "c", "C", 0, 0, 0, "", ""),
+    DbPost("a", "b", "c", "C", 0, 0, 0, "", ""),
+    DbPost("a", "b", "c", "C", 0, 0, 0, "", ""),
+    DbPost("a", "b", "c", "C", 0, 0, 0, "", ""),
+  ];
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _firstTime = true;
   Widget currentScreen = Container();
@@ -35,18 +45,18 @@ class _AccountPageState extends State<AccountPageContent> {
     UserService userSession = Provider.of<UserService>(context, listen: false);
     IsarService isar = Provider.of<IsarService>(context, listen: false);
     List<DbPrompt> postPrompts = List<DbPrompt>.empty(growable: true);
-    if(userSession.loggedInUser!.numPosts! > 0){
+    if (userSession.loggedInUser!.numPosts! > 0) {
       List<DbPost> myPosts = await isar.getLoggedInUserPostsDB();
-      if(myPosts.isNotEmpty){
-        for(DbPost p in myPosts){
-         DbPrompt? prmt = await isar.getASpecificPromptDB(p.promptId!, p.promptDateId!);
+      if (myPosts.isNotEmpty) {
+        for (DbPost p in myPosts) {
+          DbPrompt? prmt =
+              await isar.getASpecificPromptDB(p.promptId!, p.promptDateId!);
           //postPrompts.add()
         }
-      }else{
+      } else {
         //TODO GET POSTS FROM THE DATA BASE
       }
     }
-
   }
 
   @override
@@ -66,6 +76,10 @@ class _AccountPageState extends State<AccountPageContent> {
         BottomNavigationBarItem(
           icon: Icon(Icons.notifications),
           label: 'Notifications',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.verified_rounded),
+          label: 'Awards',
         ),
       ],
       currentIndex: _currentIndex,
@@ -108,6 +122,11 @@ class _AccountPageState extends State<AccountPageContent> {
             });
             break;
 
+          case 3:
+            setState(() {
+              currentScreen = getMyAwardsScreen(context);
+            });
+            break;
         }
       },
     );
@@ -119,12 +138,17 @@ class _AccountPageState extends State<AccountPageContent> {
 
       _firstTime = false;
     }
-    return Column(children: [bar,currentScreen],);
+    return Column(
+      children: [bar, currentScreen],
+    );
   }
 
   Widget getMyPostsScreen(BuildContext context) {
     return AccountPosts(posts: posts);
+  }
 
+  Widget getMyAwardsScreen(BuildContext context) {
+    return const AwardsPage();
   }
 
   Widget getTodaysEvents(BuildContext context) {
@@ -313,7 +337,7 @@ class _AccountPageState extends State<AccountPageContent> {
               overflow: TextOverflow.visible,
             ),
           ),
-           AccountNotifications( notifications:notifications),
+          AccountNotifications(notifications: notifications),
           Container(
             alignment: Alignment.centerLeft,
             child: const Text(
@@ -325,8 +349,7 @@ class _AccountPageState extends State<AccountPageContent> {
               overflow: TextOverflow.visible,
             ),
           ),
-          AccountNotifications( notifications:notifications),
-
+          AccountNotifications(notifications: notifications),
           Container(
             alignment: Alignment.centerLeft,
             child: const Text(
@@ -338,13 +361,9 @@ class _AccountPageState extends State<AccountPageContent> {
               overflow: TextOverflow.visible,
             ),
           ),
-          AccountNotifications(notifications:notifications),
-
+          AccountNotifications(notifications: notifications),
         ],
       ),
     );
   }
-
-
-
 }

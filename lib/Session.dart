@@ -123,6 +123,6 @@ void clearPostsForPrompts(){
   }
 
   void reloadApp() {
-    runApp(MyApp());
+    runApp(const MyApp());
   }
 }

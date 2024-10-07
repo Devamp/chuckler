@@ -37,7 +37,7 @@ Future<void> main() async {
         Provider<IsarService>(create: (context) => IsarService()),
         Provider<FirebaseFirestore>(create: (context) => FirebaseFirestore.instance)
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ));
   } catch (e) {
     print("Error initiating Firebase");
@@ -45,6 +45,8 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
