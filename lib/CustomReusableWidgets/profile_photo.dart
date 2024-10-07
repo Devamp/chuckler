@@ -21,7 +21,7 @@ class ProfilePhoto extends StatelessWidget {
               ? ProfilePicture(
                   name: username,
                   radius: radius,
-                  fontsize: (radius*0.9),
+                  fontsize: (radius * 0.9),
                 )
               : Container(
                   width: radius * 2,
@@ -40,16 +40,11 @@ class ProfilePhoto extends StatelessWidget {
       Positioned(
         right: 0,
         left: radius,
-       bottom:0,
-
+        bottom: 0,
         child: Container(
-            decoration: const BoxDecoration(
-                color: Colors.amberAccent, shape: BoxShape.circle),
-            child: SvgPicture.asset(
-              'assets/svgfiles/largerBanana.svg',
-              fit: BoxFit.contain,
-              height: radius/2 + 5, // Set the desired height
-            )),
+          decoration: const BoxDecoration(
+              color: Colors.amberAccent, shape: BoxShape.circle),
+        ),
       )
     ]);
   }
