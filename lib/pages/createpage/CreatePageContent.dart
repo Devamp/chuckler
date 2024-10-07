@@ -293,7 +293,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                 flex: 12,
                 child: Container(
                   alignment: Alignment.center,
-                  child: const CreateMiddle(),
+                  child:  CreateMiddle(),
                 ),
               )
             : Expanded(flex: 1, child: Container()),
