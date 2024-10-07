@@ -177,7 +177,26 @@ class _CreatePageContentState extends State<CreatePageContent>
                               Icons.public,
                               color: Colors.blueGrey,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Dialog(
+                                  child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: FittedBox(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                              padding: EdgeInsets.all(12),
+                                              constraints: BoxConstraints(
+                                                  maxWidth: screenWidth / 1.2,
+                                                  maxHeight: screenHeight / 4),
+                                              child: Text(
+                                                LikeDislikeInfoText,
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )))));
+                            },
                           )),
                     ])),
                 Expanded(

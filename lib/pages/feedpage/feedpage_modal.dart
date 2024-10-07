@@ -191,7 +191,7 @@ class CommentModal extends StatelessWidget {
                         Expanded(
                             flex: 6,
                             child: CommentForm(
-                              cfData: cfData,
+
                               screenHeight: screenHeight,
                               screenWidth: screenWidth,
                             )),

@@ -3,6 +3,7 @@ import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 import 'package:chuckler/CustomReusableWidgets/profile_photo.dart';
 import 'package:chuckler/DatabaseQueries.dart';
 import 'package:chuckler/Session.dart';
+import 'package:chuckler/pages/feedpage/comment_form.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +73,20 @@ class MatchupTemplate extends StatelessWidget {
                           size: 30,
                           color: Colors.white,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          showModalBottomSheet(context: context, builder:(BuildContext context) {
+
+                            return Container(
+                              width: screenWidth,
+                              alignment: Alignment.bottomCenter,
+                              height: screenHeight,
+                              color: Colors.black,
+                              child: CommentForm( screenHeight: screenHeight, screenWidth: screenWidth,)
+                            );
+                          }
+
+                          );
+                        },
                       )),
                 ],
               )),

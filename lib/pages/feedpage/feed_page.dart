@@ -43,7 +43,8 @@ class FeedPage extends StatelessWidget {
             )),
             Expanded(
                 flex: 15,
-                child: havePosted ? const CreateForm() : const NoUserPost())
+                /// havePosted ? const CreateForm() :
+                child:havePosted ? const CreateForm() :  const NoUserPost())
           ],
         ));
   }

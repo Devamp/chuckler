@@ -17,7 +17,6 @@ class UserService with ChangeNotifier {
   String? get currentFeedPromptId => _currentFeedPromptId;
   String? get postAnswer => _postAnswer;
   String? get logTime => _loginTime;
-
   DbUser? get loggedInUser => _loggedInUser;
   String get viewingPost => _viewingPost;
   List<DbPrompt>? get prompts => _prompts;
