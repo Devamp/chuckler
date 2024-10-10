@@ -1,5 +1,6 @@
 import 'package:chuckler/CustomReusableWidgets/CircleWidget.dart';
 import 'package:chuckler/CustomReusableWidgets/profile_photo.dart';
+import 'package:chuckler/pages/public-page.dart';
 import 'package:flutter/material.dart';
 
 class LeaderboardPage extends StatefulWidget {
@@ -37,7 +38,11 @@ class _LeaderboardPage extends State<LeaderboardPage> {
         ),
         child: Column(
           children: [
-            const Expanded(flex: 4, child: LeadersContainer(categoryTitle: '',)),
+            const Expanded(
+                flex: 4,
+                child: LeadersContainer(
+                  categoryTitle: '',
+                )),
             const Expanded(
               flex: 1,
               child: Center(
@@ -67,42 +72,54 @@ class _LeaderboardPage extends State<LeaderboardPage> {
                 itemCount: 7,
                 itemBuilder: (BuildContext context, int index) {
                   int rank = index + 4;
-                  return Container(
-                    margin: const EdgeInsets.only(
-                        left: 10, right: 10, top: 0, bottom: 5),
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5.0),
-                        color: Colors.black38),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          child: ProfilePhoto(
-                            username: 'Devam',
-                            img: '',
-                            radius: 20.0,
+                  return GestureDetector(
+                    onTap: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const PublicPage(username: 'devamp'),
+                        ),
+                      )
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          left: 10, right: 10, top: 0, bottom: 5),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.0),
+                          color: Colors.black38),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            child: ProfilePhoto(
+                              username: 'Devam',
+                              img: '',
+                              radius: 20.0,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        const SizedBox(
-                          width: 170,
-                          child: Text(
-                            'DevamIsCool',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          const SizedBox(
+                            width: 10,
                           ),
-                        ),
-                        SizedBox(
-                          width: 70,
-                          child: Text(
-                            rank.toString(),
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          const SizedBox(
+                            width: 170,
+                            child: Text(
+                              'DevamIsCool',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            width: 70,
+                            child: Text(
+                              rank.toString(),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
