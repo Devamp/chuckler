@@ -31,6 +31,7 @@ class _CreatePageContentState extends State<CreatePageContent>
       TextEditingController(text: CreatePageTextPrompt);
 
 //state variables
+  bool disableText = false;
   bool isUser = false;
   String userId = "";
   String userName = "";
@@ -49,7 +50,7 @@ class _CreatePageContentState extends State<CreatePageContent>
   Future<void> postData() async {
     //check if user can post
     UserService userSession = Provider.of<UserService>(context, listen: false);
-    if (canPost[promptVal] &&
+    if (canPost[promptVal] && !disableText &&
         userSession.userPostsForPrompts[promptVal] == null) {
       canPost[promptVal] = false;
       //check if user has already posted
@@ -96,7 +97,7 @@ class _CreatePageContentState extends State<CreatePageContent>
   void initState() {
     super.initState();
     UserService userSession = Provider.of<UserService>(context, listen: false);
-    if (userSession.userPostsForPrompts.first != null) {
+    if (userSession.userPostsForPrompts.isNotEmpty) {
       _controller.text = userSession.userPostsForPrompts.first!.answer!;
     }
     //Set up text box
@@ -140,14 +141,22 @@ class _CreatePageContentState extends State<CreatePageContent>
     promtDateId = prompts[promptVal].promptDateId!;
     for (int i = 0; i < userSession.prompts!.length; i++) {
       canPost.add(true);
-      if (userSession.userPostsForPrompts[i] == null) {
-        textControllerStates.add(CreatePageTextPrompt);
-      } else {
-        if (textControllerStates.length >= prompts.length) {
-          textControllerStates[i] = userSession.userPostsForPrompts[i]!.answer!;
+      if (userSession.prompts!.first.promptId != "Default") {
+        if (userSession.userPostsForPrompts[i] == null) {
+          textControllerStates.add(CreatePageTextPrompt);
         } else {
-          textControllerStates.add(userSession.userPostsForPrompts[i]!.answer!);
+          if (textControllerStates.length >= prompts.length) {
+            textControllerStates[i] =
+            userSession.userPostsForPrompts[i]!.answer!;
+          } else {
+            textControllerStates.add(
+                userSession.userPostsForPrompts[i]!.answer!);
+          }
         }
+      }
+      else {
+        disableText = true;
+        _controller.text = " ";
       }
     }
     return Column(
@@ -325,6 +334,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                                 return TextField(
                                   textInputAction: TextInputAction.go,
                                   controller: _controller,
+                                  readOnly: disableText,
                                   onEditingComplete: () {
                                     print("This happened");
                                     focusNode.unfocus();

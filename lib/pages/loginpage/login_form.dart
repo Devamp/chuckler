@@ -69,41 +69,56 @@ class _LoginFormState extends State<LoginForm> {
     final UserService userSession =
         Provider.of<UserService>(context, listen: false);
     final isarService = Provider.of<IsarService>(context, listen: false);
-
+    List<DbPrompt> promptsToAdd = List<DbPrompt>.empty(growable: true);
     try {
-      List<DbPrompt> promptsToAdd = List<DbPrompt>.empty(growable: true);
       promptsToAdd = await isarService.getDailyPromptsFromDB();
+      print("Isar test");
       //check if user has already logged in
       if (promptsToAdd.isEmpty) {
         //if so get stored prompts
         promptsToAdd = await getDailyPrompts(firestore);
+        print("Nothing happened here");
         if (promptsToAdd.isNotEmpty) {
           print("getting prompts from db");
           isarService.addPromptsToDB(promptsToAdd);
         }
       }
+    }
+   catch (e) {
+  print('Error: $e');
+  }
+    //error here
+      print("THis happened");
+      var dontSkip = true;
       if (promptsToAdd.isEmpty) {
         //TODO ADD SOMETHING TO HANDLE IF NOTHING IS IN THE DB
+        DbPrompt p = DbPrompt("You're here early", ";)", "Default", "Default", "Default", "Prompt");
+        userSession.addPrompt(p);
+        dontSkip = false;
       }
       //add to the session
-      var getRand = promptsToAdd.length;
-      Random r = Random();
-      getRand = r.nextInt(getRand);
-      print("randomnum");
-      print(getRand);
-      var i = 0;
-      for (DbPrompt p in promptsToAdd) {
-        if (i == getRand) {
-          userSession.setCurrentFeedPromptId(p.promptId!);
-          await getInitialPosts(
-              context, firestore, p.promptId!, p.promptDateId!);
-        }
-        userSession.addPrompt(p);
-        ///TODO get posts from DB first...Not good for testing
-        userSession.addPostForPrompt(await getUserPostForPrompt(firestore, userId, p.promptDateId!, p.promptId!));
-        i++;
-      }
+      if(dontSkip) {
+        var getRand = promptsToAdd.length;
+        Random r = Random();
+        getRand = r.nextInt(getRand);
+        print("randomnum");
+        print(getRand);
+        var i = 0;
+        for (DbPrompt p in promptsToAdd) {
+          if (i == getRand) {
+            userSession.setCurrentFeedPromptId(p.promptId!);
+            await getInitialPosts(
+                context, firestore, p.promptId!, p.promptDateId!);
+          }
+          userSession.addPrompt(p);
 
+          ///TODO get posts from DB first...Not good for testing
+          userSession.addPostForPrompt(await getUserPostForPrompt(
+              firestore, userId, p.promptDateId!, p.promptId!));
+          i++;
+        }
+      }
+      print("THE USER IS RUNNING");
       DbUser? theUser = await getLoggedInUserInfo(firestore, userId);
       if (theUser != null) {
         userSession.setLoggedInUser(theUser);
@@ -114,9 +129,7 @@ class _LoginFormState extends State<LoginForm> {
         print("last login ${userSession.logTime!}");
       }
       cacheLoginTime();
-    } catch (e) {
-      print('Error: $e');
-    }
+
   }
 
   void showForgotPasswordSheet(BuildContext context) {
