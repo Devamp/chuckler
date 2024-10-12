@@ -44,7 +44,7 @@ class ProfilePhotoPickerModal extends StatelessWidget {
               userService.setUserProfilePicture(pfp);
               updateProfilePhoto(firestore, pfp, auth.currentUser!.uid);
             }
-          } catch (error) {}
+          } catch (error) {print(error);}
         },
         child:ProfilePhoto(username: username, img: img, radius: 50,));
   }

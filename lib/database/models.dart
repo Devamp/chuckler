@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:isar/isar.dart';
 
 part 'models.g.dart';
@@ -30,11 +32,21 @@ class DbPrompt {
   String? promptDateId;
   String? promptId;
   String? date;
+  String? location;
   String? type;
+  String? imgId;
   int responses = 0;
   //If liked is 0 no selection -1 is for dislike 1 is for a like
   int liked = 0;
   DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date, this.type);
+}
+
+@Collection()
+class CachedImages {
+  Id id = Isar.autoIncrement;
+  late String imgId;
+  late List<int> imageBytes;
+  CachedImages(this.imgId, this.imageBytes);
 }
 
 @Collection()

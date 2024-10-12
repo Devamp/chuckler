@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database/models.dart';
 import 'dart:math';
@@ -115,11 +118,14 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
         dynamic type = data['type'];
         DbPrompt toAdd = DbPrompt(before, after, pid, ds.id,
             utcMidnight.toIso8601String().substring(0, 10), type);
+        if(type == "Meme"){
+          toAdd.imgId = data['imgId'];
+        }
         try{
           toAdd.responses = data['responses'];
         }
         catch(e){
-          print(e);
+          print( "$e In getDaily");
         }
         prompts.add(toAdd);
       }
@@ -127,6 +133,30 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
     }
   }
   return prompts;
+}
+/**
+ * Using the path of an image in firestore get the image bits
+ */
+Future<Uint8List?> getStoredImage(String imgPath) async {
+  Reference storageRef;
+  try {
+    storageRef = FirebaseStorage.instance.ref().child(imgPath);
+    /// I can store the link using this: String downloadURL = await storageRef.getDownloadURL();
+    Uint8List? imageData = await storageRef.getData(10 * 1024 * 1024); // Max size: 10MB
+    if (imageData != null) {
+      print('Image data retrieved successfully');
+    } else {
+      print('No image data found');
+    }
+
+    return imageData;
+  }
+  catch(e){
+    print("$e issue getting image");
+  }
+
+
+
 }
 
 /// Description Retrieve logged in user information

@@ -2037,23 +2037,33 @@ const DbPromptSchema = CollectionSchema(
       name: r'date',
       type: IsarType.string,
     ),
-    r'liked': PropertySchema(
+    r'imgId': PropertySchema(
       id: 3,
+      name: r'imgId',
+      type: IsarType.string,
+    ),
+    r'liked': PropertySchema(
+      id: 4,
       name: r'liked',
       type: IsarType.long,
     ),
     r'promptDateId': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'promptDateId',
       type: IsarType.string,
     ),
     r'promptId': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'promptId',
       type: IsarType.string,
     ),
+    r'responses': PropertySchema(
+      id: 7,
+      name: r'responses',
+      type: IsarType.long,
+    ),
     r'type': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'type',
       type: IsarType.string,
     )
@@ -2097,6 +2107,12 @@ int _dbPromptEstimateSize(
     }
   }
   {
+    final value = object.imgId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.promptDateId;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -2126,10 +2142,12 @@ void _dbPromptSerialize(
   writer.writeString(offsets[0], object.after);
   writer.writeString(offsets[1], object.before);
   writer.writeString(offsets[2], object.date);
-  writer.writeLong(offsets[3], object.liked);
-  writer.writeString(offsets[4], object.promptDateId);
-  writer.writeString(offsets[5], object.promptId);
-  writer.writeString(offsets[6], object.type);
+  writer.writeString(offsets[3], object.imgId);
+  writer.writeLong(offsets[4], object.liked);
+  writer.writeString(offsets[5], object.promptDateId);
+  writer.writeString(offsets[6], object.promptId);
+  writer.writeLong(offsets[7], object.responses);
+  writer.writeString(offsets[8], object.type);
 }
 
 DbPrompt _dbPromptDeserialize(
@@ -2141,13 +2159,15 @@ DbPrompt _dbPromptDeserialize(
   final object = DbPrompt(
     reader.readStringOrNull(offsets[1]),
     reader.readStringOrNull(offsets[0]),
-    reader.readStringOrNull(offsets[4]),
     reader.readStringOrNull(offsets[5]),
-    reader.readStringOrNull(offsets[2]),
     reader.readStringOrNull(offsets[6]),
+    reader.readStringOrNull(offsets[2]),
+    reader.readStringOrNull(offsets[8]),
   );
   object.id = id;
-  object.liked = reader.readLong(offsets[3]);
+  object.imgId = reader.readStringOrNull(offsets[3]);
+  object.liked = reader.readLong(offsets[4]);
+  object.responses = reader.readLong(offsets[7]);
   return object;
 }
 
@@ -2165,12 +2185,16 @@ P _dbPromptDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readLong(offset)) as P;
-    case 4:
       return (reader.readStringOrNull(offset)) as P;
+    case 4:
+      return (reader.readLong(offset)) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
+      return (reader.readLong(offset)) as P;
+    case 8:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2756,6 +2780,152 @@ extension DbPromptQueryFilter
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'imgId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'imgId',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'imgId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'imgId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imgId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> imgIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'imgId',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> likedEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -3106,6 +3276,59 @@ extension DbPromptQueryFilter
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> responsesEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'responses',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> responsesGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'responses',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> responsesLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'responses',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> responsesBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'responses',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterFilterCondition> typeIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -3296,6 +3519,18 @@ extension DbPromptQuerySortBy on QueryBuilder<DbPrompt, DbPrompt, QSortBy> {
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByImgId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByImgIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgId', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByLiked() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'liked', Sort.asc);
@@ -3329,6 +3564,18 @@ extension DbPromptQuerySortBy on QueryBuilder<DbPrompt, DbPrompt, QSortBy> {
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByPromptIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'promptId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByResponses() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'responses', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> sortByResponsesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'responses', Sort.desc);
     });
   }
 
@@ -3395,6 +3642,18 @@ extension DbPromptQuerySortThenBy
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByImgId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByImgIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgId', Sort.desc);
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByLiked() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'liked', Sort.asc);
@@ -3428,6 +3687,18 @@ extension DbPromptQuerySortThenBy
   QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByPromptIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'promptId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByResponses() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'responses', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QAfterSortBy> thenByResponsesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'responses', Sort.desc);
     });
   }
 
@@ -3467,6 +3738,13 @@ extension DbPromptQueryWhereDistinct
     });
   }
 
+  QueryBuilder<DbPrompt, DbPrompt, QDistinct> distinctByImgId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'imgId', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<DbPrompt, DbPrompt, QDistinct> distinctByLiked() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'liked');
@@ -3484,6 +3762,12 @@ extension DbPromptQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'promptId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DbPrompt, DbPrompt, QDistinct> distinctByResponses() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'responses');
     });
   }
 
@@ -3521,6 +3805,12 @@ extension DbPromptQueryProperty
     });
   }
 
+  QueryBuilder<DbPrompt, String?, QQueryOperations> imgIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'imgId');
+    });
+  }
+
   QueryBuilder<DbPrompt, int, QQueryOperations> likedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'liked');
@@ -3539,9 +3829,614 @@ extension DbPromptQueryProperty
     });
   }
 
+  QueryBuilder<DbPrompt, int, QQueryOperations> responsesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'responses');
+    });
+  }
+
   QueryBuilder<DbPrompt, String?, QQueryOperations> typeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'type');
+    });
+  }
+}
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+extension GetCachedImagesCollection on Isar {
+  IsarCollection<CachedImages> get cachedImages => this.collection();
+}
+
+const CachedImagesSchema = CollectionSchema(
+  name: r'CachedImages',
+  id: 3219057224725228361,
+  properties: {
+    r'imageBytes': PropertySchema(
+      id: 0,
+      name: r'imageBytes',
+      type: IsarType.longList,
+    ),
+    r'imgId': PropertySchema(
+      id: 1,
+      name: r'imgId',
+      type: IsarType.string,
+    )
+  },
+  estimateSize: _cachedImagesEstimateSize,
+  serialize: _cachedImagesSerialize,
+  deserialize: _cachedImagesDeserialize,
+  deserializeProp: _cachedImagesDeserializeProp,
+  idName: r'id',
+  indexes: {},
+  links: {},
+  embeddedSchemas: {},
+  getId: _cachedImagesGetId,
+  getLinks: _cachedImagesGetLinks,
+  attach: _cachedImagesAttach,
+  version: '3.1.0+1',
+);
+
+int _cachedImagesEstimateSize(
+  CachedImages object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.imageBytes.length * 8;
+  bytesCount += 3 + object.imgId.length * 3;
+  return bytesCount;
+}
+
+void _cachedImagesSerialize(
+  CachedImages object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeLongList(offsets[0], object.imageBytes);
+  writer.writeString(offsets[1], object.imgId);
+}
+
+CachedImages _cachedImagesDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = CachedImages(
+    reader.readString(offsets[1]),
+    reader.readLongList(offsets[0]) ?? [],
+  );
+  object.id = id;
+  return object;
+}
+
+P _cachedImagesDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (reader.readLongList(offset) ?? []) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+Id _cachedImagesGetId(CachedImages object) {
+  return object.id;
+}
+
+List<IsarLinkBase<dynamic>> _cachedImagesGetLinks(CachedImages object) {
+  return [];
+}
+
+void _cachedImagesAttach(
+    IsarCollection<dynamic> col, Id id, CachedImages object) {
+  object.id = id;
+}
+
+extension CachedImagesQueryWhereSort
+    on QueryBuilder<CachedImages, CachedImages, QWhere> {
+  QueryBuilder<CachedImages, CachedImages, QAfterWhere> anyId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+}
+
+extension CachedImagesQueryWhere
+    on QueryBuilder<CachedImages, CachedImages, QWhereClause> {
+  QueryBuilder<CachedImages, CachedImages, QAfterWhereClause> idEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterWhereClause> idNotEqualTo(
+      Id id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterWhereClause> idGreaterThan(
+      Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterWhereClause> idLessThan(Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterWhereClause> idBetween(
+    Id lowerId,
+    Id upperId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension CachedImagesQueryFilter
+    on QueryBuilder<CachedImages, CachedImages, QFilterCondition> {
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> idEqualTo(
+      Id value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> idGreaterThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> idLessThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> idBetween(
+    Id lower,
+    Id upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesElementEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imageBytes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'imageBytes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'imageBytes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'imageBytes',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imageBytes',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imageBytes',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imageBytes',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imageBytes',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imageBytes',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imageBytesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'imageBytes',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> imgIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imgIdGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> imgIdLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> imgIdBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'imgId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imgIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> imgIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> imgIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'imgId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition> imgIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'imgId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imgIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imgId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterFilterCondition>
+      imgIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'imgId',
+        value: '',
+      ));
+    });
+  }
+}
+
+extension CachedImagesQueryObject
+    on QueryBuilder<CachedImages, CachedImages, QFilterCondition> {}
+
+extension CachedImagesQueryLinks
+    on QueryBuilder<CachedImages, CachedImages, QFilterCondition> {}
+
+extension CachedImagesQuerySortBy
+    on QueryBuilder<CachedImages, CachedImages, QSortBy> {
+  QueryBuilder<CachedImages, CachedImages, QAfterSortBy> sortByImgId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterSortBy> sortByImgIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgId', Sort.desc);
+    });
+  }
+}
+
+extension CachedImagesQuerySortThenBy
+    on QueryBuilder<CachedImages, CachedImages, QSortThenBy> {
+  QueryBuilder<CachedImages, CachedImages, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterSortBy> thenByImgId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QAfterSortBy> thenByImgIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imgId', Sort.desc);
+    });
+  }
+}
+
+extension CachedImagesQueryWhereDistinct
+    on QueryBuilder<CachedImages, CachedImages, QDistinct> {
+  QueryBuilder<CachedImages, CachedImages, QDistinct> distinctByImageBytes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'imageBytes');
+    });
+  }
+
+  QueryBuilder<CachedImages, CachedImages, QDistinct> distinctByImgId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'imgId', caseSensitive: caseSensitive);
+    });
+  }
+}
+
+extension CachedImagesQueryProperty
+    on QueryBuilder<CachedImages, CachedImages, QQueryProperty> {
+  QueryBuilder<CachedImages, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<CachedImages, List<int>, QQueryOperations> imageBytesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'imageBytes');
+    });
+  }
+
+  QueryBuilder<CachedImages, String, QQueryOperations> imgIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'imgId');
     });
   }
 }

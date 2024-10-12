@@ -29,16 +29,17 @@ class _LoginFormState extends State<LoginForm> {
   /// Get the initial posts
   Future<bool> verifyLogin(email, password, context) async {
     User user;
+    UserCredential result;
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
+      result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
+    } catch (e) {
+      return false;
+    }
       user = result.user!;
       await setupUserSession(context, user.uid);
       return true;
-    } catch (e) {
-      print('THIS IS WHERE THE ERROR IS $email, $password Error: $e');
-      return false;
-    }
+
   }
 
   Future<void> getInitialPosts(context, FirebaseFirestore firestore,
@@ -105,6 +106,11 @@ class _LoginFormState extends State<LoginForm> {
         print(getRand);
         var i = 0;
         for (DbPrompt p in promptsToAdd) {
+          print("RUNNING ${p.type}");
+          if(p.type == "Meme"){
+            ///Query image
+           userSession.promptImg =  await(getStoredImage(p.imgId!));
+          }
           if (i == getRand) {
             userSession.setCurrentFeedPromptId(p.promptId!);
             await getInitialPosts(

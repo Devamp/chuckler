@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'models.dart';
@@ -120,6 +122,11 @@ class IsarService {
     }
   }
 
+  //
+  Future<Uint8List?> getImages(String id) async {
+    final image = await db.cachedImages.filter().imgIdEqualTo(id).findFirst();
+    return Uint8List.fromList(image!.imageBytes);
+  }
   ///UPDATE FUNCTIONS
   //Get two unseen posts and set the values to seen
   Future<List<DbPost>> getTwoUnseenPosts() async {

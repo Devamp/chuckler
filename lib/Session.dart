@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'database/models.dart';
@@ -8,6 +10,7 @@ class UserService with ChangeNotifier {
   bool firstLogin = false;
   String? _postAnswer;
   String? _loginTime;
+  Uint8List? promptImg;
   String _viewingPost = "____________";
   Color _viewingColor = Colors.amber;
   List<DbPost?> _userPostsForPrompts = List.empty(growable: true);

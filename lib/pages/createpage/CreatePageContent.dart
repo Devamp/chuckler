@@ -97,7 +97,8 @@ class _CreatePageContentState extends State<CreatePageContent>
   void initState() {
     super.initState();
     UserService userSession = Provider.of<UserService>(context, listen: false);
-    if (userSession.userPostsForPrompts.isNotEmpty) {
+    if (userSession.userPostsForPrompts.isNotEmpty && userSession.userPostsForPrompts.first != null) {
+
       _controller.text = userSession.userPostsForPrompts.first!.answer!;
     }
     //Set up text box
@@ -207,7 +208,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                             },
                           )),
                     ])),
-                Expanded(
+               prompts[promptVal].type != "Meme" ? Expanded(
                     flex: 20,
                     child: Padding(
                         padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -232,7 +233,21 @@ class _CreatePageContentState extends State<CreatePageContent>
                           textAlign: TextAlign.center,
                           maxLines: 10,
                           minFontSize: 2,
-                        )))),
+                        )))) : Expanded(
+                 flex: 30,
+                 child: Container(
+                   padding: EdgeInsets.all(10),
+                     child: Image.memory(
+                       ///THe prompt image needs to be changed here to be more dynamic
+                       ///Right now it is just using the session for one prompt
+                       ///TODO
+                       userSession.promptImg!, // The Uint8List containing image data
+                       fit: BoxFit.fill, // Optional: fit the image in the widget
+
+                     )
+                 ),
+
+               ),
                 Divider(
                   color: Colors.black12,
                   thickness: 3,
