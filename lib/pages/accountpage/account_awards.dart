@@ -54,7 +54,7 @@ class Award extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            awardIcon,
+                            const FaIcon(FontAwesomeIcons.fire, size: 32,),
                             const SizedBox(
                               height: 20,
                             ),
