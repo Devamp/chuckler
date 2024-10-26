@@ -1,6 +1,5 @@
-import 'package:chuckler/CustomReusableWidgets/profile_photo.dart';
-import 'package:chuckler/pages/accountpage/account_awards.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PublicPage extends StatelessWidget {
@@ -10,164 +9,150 @@ class PublicPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 500,
-      width: 500,
-      color: Colors.blueGrey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const FaIcon(FontAwesomeIcons.chevronLeft),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Column(
         children: [
+          publicPageHeader(context),
           Expanded(
-            flex: 4,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(40.0),
-                  bottomRight: Radius.circular(40.0),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  ProfilePhoto(username: username, img: '', radius: 70),
-                  const SizedBox(height: 10),
-                  Text(
-                    username.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.amber,
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: 200,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 10.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          side: const BorderSide(color: Colors.amber, width: 3),
-                        ),
-                      ),
-                      onPressed: () {
-                        // Action to perform when the button is pressed
-                      },
-                      child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            FaIcon(FontAwesomeIcons.userPlus),
-                            SizedBox(width: 5),
-                            Text(
-                              'Add Friend',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ]),
-                    ),
-                  )
-                ],
-              ),
+            child: SingleChildScrollView(
+              child: publicPageBody(context),
             ),
-          ),
-          const SizedBox(height: 15),
-          Expanded(
-            flex: 3,
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(15.0),
-              decoration: const BoxDecoration(
-                color: Colors.black,
-              ),
-              child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Achievements',
-                      style: const TextStyle(
-                          color: Colors.white,
-                          decoration: TextDecoration.none,
-                          fontSize: 28),
-                    ),
-                    SizedBox(height: 20),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: Award(
-                              awardIcon:
-                                  FaIcon(FontAwesomeIcons.fire, size: 80),
-                              awardText: '',
-                              isComplete: true,
-                              awardDescription:
-                                  'Log into your account for 30 consecutive days.',
-                            ),
-                          ),
-                          SizedBox(width: 50),
-                          Center(
-                            child: Award(
-                              awardIcon:
-                                  FaIcon(FontAwesomeIcons.comment, size: 80),
-                              awardText: '',
-                              isComplete: true,
-                              awardDescription: 'Leave a comment 100 times.',
-                            ),
-                          ),
-                          SizedBox(width: 50),
-                          Center(
-                            child: Award(
-                              awardIcon: FaIcon(
-                                  FontAwesomeIcons.solidNoteSticky,
-                                  size: 80),
-                              awardText: '',
-                              isComplete: true,
-                              awardDescription: 'Add 5 friends.',
-                            ),
-                          ),
-                          SizedBox(width: 50),
-                          Center(
-                            child: Award(
-                              awardIcon:
-                                  FaIcon(FontAwesomeIcons.thumbsUp, size: 80),
-                              awardText: '',
-                              isComplete: true,
-                              awardDescription: 'Add 5 friends.',
-                            ),
-                          ),
-                          SizedBox(width: 50),
-                          Center(
-                            child: Award(
-                              awardIcon:
-                                  FaIcon(FontAwesomeIcons.gasPump, size: 80),
-                              awardText: '',
-                              isComplete: true,
-                              awardDescription: 'Add 5 friends.',
-                            ),
-                          ),
-                          SizedBox(width: 50),
-                        ],
-                      ),
-                    ),
-                  ]),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Container(),
           ),
         ],
       ),
     );
   }
+}
+
+Widget publicPageHeader(BuildContext context) {
+  return Container(
+    color: Colors.black,
+    padding: const EdgeInsets.only(bottom: 20),
+    child: Column(
+      children: [
+        const ProfilePicture(
+            name: AutofillHints.username, radius: 55, fontsize: 20),
+        const SizedBox(height: 12),
+        const Text(
+          AutofillHints.username,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        const SizedBox(height: 15),
+        const Row(
+          children: [
+            Spacer(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '3928',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  'Posts',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              ],
+            ),
+            SizedBox(width: 40),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '4.2K',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  'Friends',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              ],
+            ),
+            SizedBox(width: 40),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '3.9M',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  'Likes',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              ],
+            ),
+            Spacer(),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            print("Clicked");
+          },
+          style: const ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FaIcon(
+                FontAwesomeIcons.userPlus,
+                color: Colors.black,
+                size: 18,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                'Follow',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              )
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget publicPageBody(BuildContext context) {
+  return Container(
+    color: Colors.black,
+    height: 500,
+    child: const Center(
+      child: Text(
+        'Public Page Body',
+        style: TextStyle(color: Colors.white, fontSize: 24),
+      ),
+    ),
+  );
 }
