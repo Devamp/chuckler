@@ -1,9 +1,8 @@
+import 'package:chuckler/pages/leaderboardpage/leaderboard.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/pages/createpage/create_page.dart';
 import 'package:chuckler/pages/feedpage/feed_page.dart';
-import 'package:chuckler/pages/leaderboardpage/leaderboard_page.dart';
 import 'package:chuckler/pages/accountpage/account_page.dart';
-
 
 class NavigationBarController extends StatefulWidget {
   final int initialPageIndex;
@@ -15,7 +14,6 @@ class NavigationBarController extends StatefulWidget {
 }
 
 class AppNavBar extends State<NavigationBarController> {
-
   //Starting state
   int _currentPageIndex = 0;
 
@@ -32,11 +30,9 @@ class AppNavBar extends State<NavigationBarController> {
   final List<Widget> _pages = [
     const CreatePage(),
     const FeedPage(),
-    const LeaderboardPage(),
+    const Leaderboard(),
     AccountPage(),
-
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +58,6 @@ class AppNavBar extends State<NavigationBarController> {
                   label: "Leaderboard", icon: Icon(Icons.emoji_events)),
               BottomNavigationBarItem(
                   label: "Account", icon: Icon(Icons.person))
-            ]
-        )
-
-
-    );
+            ]));
   }
 }

@@ -17,8 +17,10 @@ class RenderPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10), // Spacing between posts
-      padding: const EdgeInsets.all(15), // Padding inside the post container
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      // Spacing between posts
+      padding: const EdgeInsets.all(15),
+      // Padding inside the post container
       decoration: BoxDecoration(
         color: Colors.white, // Background color of the post
         borderRadius: BorderRadius.circular(10), // Rounded corners
@@ -41,7 +43,6 @@ class RenderPost extends StatelessWidget {
   }
 }
 
-
 class AwardContainer extends StatelessWidget {
   final FaIcon awardIcon;
   final String awardText;
@@ -59,11 +60,12 @@ class AwardContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 125, 
-      height: 150, 
+      width: 125,
+      height: 150,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Colors.blueAccent, Colors.black], // Customize your flag colors
+          colors: [Colors.blueAccent, Colors.black],
+          // Customize your flag colors
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -79,13 +81,16 @@ class AwardContainer extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Award(awardIcon: awardIcon, awardText: awardText, isComplete: isComplete, awardDescription: awardDescription)
+          Award(
+              awardIcon: awardIcon,
+              awardText: awardText,
+              isComplete: isComplete,
+              awardDescription: awardDescription)
         ],
       ),
     );
   }
 }
-
 
 class PublicPage extends StatelessWidget {
   final String username;
@@ -103,7 +108,8 @@ class PublicPage extends StatelessWidget {
           },
         ),
       ),
-      body: SingleChildScrollView(  // Make the entire body scrollable
+      body: SingleChildScrollView(
+        // Make the entire body scrollable
         child: Column(
           children: [
             publicPageHeader(context),
@@ -233,9 +239,13 @@ Widget publicPageBody(BuildContext context) {
     child: Center(
       child: Column(
         children: [
-          const SizedBox(height: 5,),
+          const SizedBox(
+            height: 5,
+          ),
           achivementsContainer(context),
-          const SizedBox(height: 5,),
+          const SizedBox(
+            height: 5,
+          ),
           postsContainer(context)
         ],
       ),
@@ -257,22 +267,31 @@ Widget achivementsContainer(BuildContext context) {
               isComplete: true,
               awardDescription: 'Make 100 friends.',
             ),
-            SizedBox(width: 20,),
+            SizedBox(
+              width: 20,
+            ),
             AwardContainer(
-              awardIcon: FaIcon(FontAwesomeIcons.fire, size: 52,),
+              awardIcon: FaIcon(
+                FontAwesomeIcons.fire,
+                size: 52,
+              ),
               awardText: 'Streaker',
               isComplete: true,
               awardDescription:
                   'Log into your account for 30 consecutive days.',
             ),
-            SizedBox(width: 20,),
+            SizedBox(
+              width: 20,
+            ),
             AwardContainer(
               awardIcon: FaIcon(FontAwesomeIcons.heart),
               awardText: '1000 Likes',
               isComplete: true,
               awardDescription: 'Achieve a total of 1000 likes.',
             ),
-            SizedBox(width: 20,),
+            SizedBox(
+              width: 20,
+            ),
             AwardContainer(
               awardIcon: FaIcon(FontAwesomeIcons.percent),
               awardText: 'The 1%',
@@ -287,19 +306,30 @@ Widget achivementsContainer(BuildContext context) {
 }
 
 Widget postsContainer(BuildContext context) {
-  return const SingleChildScrollView(
-    scrollDirection: Axis.vertical,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        RenderPost(postText: "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
-        RenderPost(postText: "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
-        RenderPost(postText: "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
-        RenderPost(postText: "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
-        RenderPost(postText: "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
-      ],
+  return const SizedBox(
+    height: 300, // Set a specific height for the post container
+    child: SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          RenderPost(
+              postText:
+                  "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
+          RenderPost(
+              postText:
+                  "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
+          RenderPost(
+              postText:
+                  "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
+          RenderPost(
+              postText:
+                  "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
+          RenderPost(
+              postText:
+                  "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS..."),
+        ],
+      ),
     ),
   );
 }
-

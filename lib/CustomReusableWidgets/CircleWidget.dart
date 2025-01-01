@@ -24,7 +24,7 @@ class CircleWidget extends StatelessWidget {
           border: Border.all(
             color: color,
           )),
-      child: ProfilePhoto(username: username, img: "", radius: 51.0),
+      child: ProfilePhoto(username: username, img: "", radius: 55.0),
     );
   }
 }
