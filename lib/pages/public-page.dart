@@ -10,9 +10,9 @@ class RenderPost extends StatelessWidget {
   final String postText;
 
   const RenderPost({
-    Key? key,
+    super.key,
     required this.postText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +112,7 @@ class PublicPage extends StatelessWidget {
         // Make the entire body scrollable
         child: Column(
           children: [
-            publicPageHeader(context),
+            publicPageHeader(context, username),
             publicPageBody(context),
           ],
         ),
@@ -121,17 +121,16 @@ class PublicPage extends StatelessWidget {
   }
 }
 
-Widget publicPageHeader(BuildContext context) {
+Widget publicPageHeader(BuildContext context, String username) {
   return Container(
     color: Colors.black,
     padding: const EdgeInsets.only(bottom: 20),
     child: Column(
       children: [
-        const ProfilePicture(
-            name: AutofillHints.username, radius: 55, fontsize: 20),
+        ProfilePicture(name: username, radius: 55, fontsize: 20),
         const SizedBox(height: 12),
-        const Text(
-          AutofillHints.username,
+        Text(
+          username,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
         ),
         const SizedBox(height: 15),
