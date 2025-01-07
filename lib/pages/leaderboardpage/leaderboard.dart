@@ -80,46 +80,37 @@ class _LeaderboardState extends State<Leaderboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: RadialGradient(
-                colors: [
-                  Color.fromRGBO(9, 32, 63, 1),
-                  Color.fromRGBO(83, 120, 149, 1),
-                  Colors.black,
-                ],
-                center: Alignment(0.6, 0.5),
-                radius: 2,
-              ),
-            ),
+      appBar: AppBar(
+        toolbarHeight: 50,
+        title: const Text(
+          "Local Leaderboard",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.transparent, // Make the AppBar transparent
+        elevation: 0, // Remove shadow for a clean blend with the background
+      ),
+      extendBodyBehindAppBar: true, // Extend the body behind the AppBar
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            colors: [
+              Color.fromRGBO(9, 32, 63, 1),
+              Color.fromRGBO(83, 120, 149, 1),
+              Colors.black,
+            ],
+            center: Alignment(0.6, 0.5),
+            radius: 2,
           ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AppBar(
-              title: const Text(
-                "Local Leaderboard",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: Colors.transparent,
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 115),
+            categoryMenu(context),
+            Expanded(
+              child: buildCategoryContent(),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: kToolbarHeight),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 65),
-                  categoryMenu(context),
-                  buildCategoryContent(),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

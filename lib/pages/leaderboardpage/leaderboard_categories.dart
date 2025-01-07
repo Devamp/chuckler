@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../CustomReusableWidgets/profile_photo.dart';
 import '../public-page.dart';
-import 'topLeadersBanner.dart';
+import 'top_leaders_banner.dart';
 
 Widget buildDailyLeaderboard() {
   // Random data for names and positions
@@ -54,7 +54,7 @@ Widget buildDailyLeaderboard() {
           Leader(name: 'John Appleseed', position: '3rd', color: Colors.brown),
         ],
       ),
-      buildList(leaders)
+      Expanded(child: buildList(leaders))
     ],
   );
 }
@@ -111,7 +111,7 @@ Widget buildWeeklyLeaderboard() {
               name: 'Zarah Missing', position: '3rd', color: Colors.brown)
         ],
       ),
-      buildList(leaders)
+      Expanded(child: buildList(leaders))
     ],
   );
 }
@@ -168,7 +168,7 @@ Widget buildMonthlyLeaderboard() {
           new Leader(name: 'CoolKid99', position: '3rd', color: Colors.brown)
         ],
       ),
-      buildList(leaders)
+      Expanded(child: buildList(leaders))
     ],
   );
 }
@@ -224,74 +224,68 @@ Widget buildHallOfFameLeaderboard() {
           new Leader(name: 'Xin Fei', position: '3rd', color: Colors.brown)
         ],
       ),
-      buildList(leaders)
+      Expanded(child: buildList(leaders))
     ],
   );
 }
 
 Widget buildList(List<Leader> entries) {
-  return SizedBox(
-    height: 300,
-    child: Padding(
-      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: entries.length - 3,
-        itemBuilder: (BuildContext context, int index) {
-          int rank = index + 4;
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: GestureDetector(
-              onTap: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        PublicPage(username: entries[index].name),
-                  ),
-                )
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.black54),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    ProfilePhoto(
-                      username: entries[index].name,
-                      img: '',
-                      radius: 22.0,
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    SizedBox(
-                      width: 150,
-                      child: Text(
-                        entries[index].name,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis),
-                      ),
-                    ),
-                    const SizedBox(width: 100),
-                    Text(
-                      rank.toString(),
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+  return ListView.builder(
+    padding: const EdgeInsets.all(10),
+    scrollDirection: Axis.vertical,
+    itemCount: entries.length - 3,
+    itemBuilder: (BuildContext context, int index) {
+      int rank = index + 4;
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: GestureDetector(
+          onTap: () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PublicPage(username: entries[index].name),
               ),
+            )
+          },
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.black54),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  width: 15,
+                ),
+                ProfilePhoto(
+                  username: entries[index].name,
+                  img: '',
+                  radius: 22.0,
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                SizedBox(
+                  width: 150,
+                  child: Text(
+                    entries[index].name,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis),
+                  ),
+                ),
+                const SizedBox(width: 100),
+                Text(
+                  rank.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-          );
-        },
-      ),
-    ),
+          ),
+        ),
+      );
+    },
   );
 }
