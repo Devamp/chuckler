@@ -14,41 +14,38 @@ class AccountPosts extends StatelessWidget {
         height: screenHeight / 1.8,
         child: posts.isNotEmpty
             ? ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
                   return Column(children: [
-                    Container(
-                      color: Colors.black,
+                    SizedBox(
                       height: 150,
                       child: Center(
                           child: Stack(
                         alignment: Alignment.centerLeft,
                         children: [
                           Container(
-                              margin: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                              constraints: const BoxConstraints(maxWidth: 80),
+                              margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                              constraints: const BoxConstraints(maxWidth: 100),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
                                   color: Colors.amberAccent)),
                           Container(
                               margin: const EdgeInsets.fromLTRB(40, 0, 0, 0),
-                              decoration: const BoxDecoration(
-
-                                  color: Colors.black)
-                              //  child: Text("This is some sample text to see how it looks", style: TextStyle(fontSize: 16, color: Colors.white),),
-                              ),
+                              decoration:
+                                  const BoxDecoration(color: Colors.black)),
                           Container(
-                              margin: const EdgeInsets.fromLTRB(40, 0, 0, 0),
+                              margin: const EdgeInsets.fromLTRB(50, 0, 0, 0),
                               child: Text(
-                                "THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...THIS IS SOME TEXT TO SEE HOW IT WILL FIT IN THIS...",
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                "I love this app omg its so fun to work on this app. I cannot wait to finish this app and post it on the app store and make millions!",
+                                style: Theme.of(context).textTheme.bodySmall,
                               ))
                         ],
                       )),
                     ),
                     index < posts.length - 1
                         ? const Divider(
-                            color: Colors.white,
+                            color: Colors.transparent,
                             thickness: 0.2,
                           )
                         : const SizedBox(height: 50),

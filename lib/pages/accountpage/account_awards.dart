@@ -54,7 +54,10 @@ class Award extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const FaIcon(FontAwesomeIcons.fire, size: 32,),
+                            const FaIcon(
+                              FontAwesomeIcons.fire,
+                              size: 32,
+                            ),
                             const SizedBox(
                               height: 20,
                             ),
@@ -103,7 +106,8 @@ class AwardsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return Padding(
+      padding: EdgeInsets.all(20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -122,7 +126,7 @@ class AwardsPage extends StatelessWidget {
                     awardDescription: 'Make 100 friends.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.fire),
@@ -132,7 +136,7 @@ class AwardsPage extends StatelessWidget {
                         'Log into your account for 30 consecutive days.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.solidNoteSticky),
@@ -158,7 +162,7 @@ class AwardsPage extends StatelessWidget {
                     awardDescription: 'Leave a comment 100 times.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.one),
@@ -167,7 +171,7 @@ class AwardsPage extends StatelessWidget {
                     awardDescription: 'Make your first post.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.heart),
@@ -193,7 +197,7 @@ class AwardsPage extends StatelessWidget {
                     awardDescription: 'Secure a spot on the leaderboard.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.percent),
@@ -202,7 +206,7 @@ class AwardsPage extends StatelessWidget {
                     awardDescription: 'Be in the top 1% of posters.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.handshakeAngle),
@@ -228,7 +232,7 @@ class AwardsPage extends StatelessWidget {
                     awardDescription: 'Hidden Achievement.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.circleQuestion),
@@ -237,7 +241,7 @@ class AwardsPage extends StatelessWidget {
                     awardDescription: 'Hidden Achievement.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.circleQuestion),
@@ -263,7 +267,7 @@ class AwardsPage extends StatelessWidget {
                     awardDescription: 'Hidden Achievement.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.circleQuestion),
@@ -272,7 +276,7 @@ class AwardsPage extends StatelessWidget {
                     awardDescription: 'Hidden Achievement.',
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 Expanded(
                   child: Award(
                     awardIcon: FaIcon(FontAwesomeIcons.circleQuestion),

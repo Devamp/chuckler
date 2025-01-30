@@ -1,10 +1,12 @@
 import 'dart:math';
+import 'package:chuckler/Session.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../CustomReusableWidgets/profile_photo.dart';
-import '../public-page.dart';
+import '../publicpage/public_page.dart';
 import 'top_leaders_banner.dart';
 
-Widget buildDailyLeaderboard() {
+Widget buildDailyLeaderboard(BuildContext context) {
   // Random data for names and positions
   List<String> names = [
     'Devam Patel',
@@ -53,13 +55,14 @@ Widget buildDailyLeaderboard() {
           Leader(name: 'Caden Deutscher', position: '2nd', color: Colors.grey),
           Leader(name: 'John Appleseed', position: '3rd', color: Colors.brown),
         ],
+        category: 'Daily',
       ),
-      Expanded(child: buildList(leaders))
+      Expanded(child: buildList(leaders, context))
     ],
   );
 }
 
-Widget buildWeeklyLeaderboard() {
+Widget buildWeeklyLeaderboard(BuildContext context) {
   // Random data for names and positions
   List<String> names = [
     'Devam Patel',
@@ -110,13 +113,14 @@ Widget buildWeeklyLeaderboard() {
           new Leader(
               name: 'Zarah Missing', position: '3rd', color: Colors.brown)
         ],
+        category: 'Most Posts',
       ),
-      Expanded(child: buildList(leaders))
+      Expanded(child: buildList(leaders, context))
     ],
   );
 }
 
-Widget buildMonthlyLeaderboard() {
+Widget buildMonthlyLeaderboard(BuildContext context) {
   // Random data for names and positions
   List<String> names = [
     'Devam Patel',
@@ -167,13 +171,14 @@ Widget buildMonthlyLeaderboard() {
           new Leader(name: 'Randy', position: '2nd', color: Colors.grey),
           new Leader(name: 'CoolKid99', position: '3rd', color: Colors.brown)
         ],
+        category: 'Longest Streak',
       ),
-      Expanded(child: buildList(leaders))
+      Expanded(child: buildList(leaders, context))
     ],
   );
 }
 
-Widget buildHallOfFameLeaderboard() {
+Widget buildHallOfFameLeaderboard(BuildContext context) {
   // Random data for names and positions
   List<String> names = [
     'Devam Patel',
@@ -223,69 +228,132 @@ Widget buildHallOfFameLeaderboard() {
           new Leader(name: 'Joker', position: '2nd', color: Colors.grey),
           new Leader(name: 'Xin Fei', position: '3rd', color: Colors.brown)
         ],
+        category: 'Hall of Fame',
       ),
-      Expanded(child: buildList(leaders))
+      Expanded(child: buildList(leaders, context))
     ],
   );
 }
 
-Widget buildList(List<Leader> entries) {
+Widget buildList(List<Leader> entries, BuildContext context) {
+  UserService userSession = Provider.of<UserService>(context);
+
   return ListView.builder(
     padding: const EdgeInsets.all(10),
     scrollDirection: Axis.vertical,
-    itemCount: entries.length - 3,
+    itemCount: entries.length - 2,
     itemBuilder: (BuildContext context, int index) {
       int rank = index + 4;
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        child: GestureDetector(
-          onTap: () => {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PublicPage(username: entries[index].name),
-              ),
-            )
-          },
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Colors.black54),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 15,
+
+      if (index == entries.length - 3) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: GestureDetector(
+            onTap: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PublicPage(
+                      username: userSession.loggedInUser?.username ??
+                          'Undefined User'),
                 ),
-                ProfilePhoto(
-                  username: entries[index].name,
-                  img: '',
-                  radius: 22.0,
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                SizedBox(
-                  width: 150,
-                  child: Text(
-                    entries[index].name,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        overflow: TextOverflow.ellipsis),
+              )
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.amberAccent[200]),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: 15,
                   ),
-                ),
-                const SizedBox(width: 100),
-                Text(
-                  rank.toString(),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
+                  ProfilePhoto(
+                    username:
+                        userSession.loggedInUser?.username ?? 'Undefined User',
+                    img: '',
+                    radius: 22.0,
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  SizedBox(
+                    width: 150,
+                    child: Text(
+                      userSession.loggedInUser?.username ?? 'Undefined User',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          overflow: TextOverflow.ellipsis,
+                          color: Colors.black),
+                    ),
+                  ),
+                  const SizedBox(width: 100),
+                  Text(
+                    '483',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
+      } else {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: GestureDetector(
+            onTap: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      PublicPage(username: entries[index].name),
+                ),
+              )
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.black54),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  ProfilePhoto(
+                    username: entries[index].name,
+                    img: '',
+                    radius: 22.0,
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  SizedBox(
+                    width: 150,
+                    child: Text(
+                      entries[index].name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                  ),
+                  const SizedBox(width: 100),
+                  Text(
+                    rank.toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
     },
   );
 }

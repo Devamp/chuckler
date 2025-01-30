@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../Session.dart';
+import '../../Theme/theme.dart';
 import 'leaderboard_categories.dart';
 
 class Leaderboard extends StatefulWidget {
@@ -62,16 +65,16 @@ class _LeaderboardState extends State<Leaderboard> {
   }
 
   // Content to display based on the selected category
-  Widget buildCategoryContent() {
+  Widget buildCategoryContent(BuildContext context) {
     switch (selectedCategory) {
       case 'Daily':
-        return buildDailyLeaderboard();
+        return buildDailyLeaderboard(context);
       case 'Most Posts':
-        return buildWeeklyLeaderboard();
+        return buildWeeklyLeaderboard(context);
       case 'Longest Streak':
-        return buildMonthlyLeaderboard();
+        return buildMonthlyLeaderboard(context);
       case 'Hall of Fame':
-        return buildHallOfFameLeaderboard();
+        return buildHallOfFameLeaderboard(context);
       default:
         return const SizedBox();
     }
@@ -91,23 +94,15 @@ class _LeaderboardState extends State<Leaderboard> {
       ),
       extendBodyBehindAppBar: true, // Extend the body behind the AppBar
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            colors: [
-              Color.fromRGBO(9, 32, 63, 1),
-              Color.fromRGBO(83, 120, 149, 1),
-              Colors.black,
-            ],
-            center: Alignment(0.6, 0.5),
-            radius: 2,
-          ),
+        decoration: BoxDecoration(
+          gradient: primaryBackgroundGradient(context),
         ),
         child: Column(
           children: [
             const SizedBox(height: 115),
             categoryMenu(context),
             Expanded(
-              child: buildCategoryContent(),
+              child: buildCategoryContent(context),
             ),
           ],
         ),

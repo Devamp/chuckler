@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
+
 /// TODO add appropriate themes
+
+// primary background gradient for all screens
+LinearGradient primaryBackgroundGradient(context) {
+  return const LinearGradient(colors: [
+    Color.fromRGBO(9, 32, 63, 1),
+    Color.fromRGBO(83, 120, 149, 1),
+    Color.fromRGBO(9, 32, 63, 1),
+  ], begin: Alignment.topLeft, end: Alignment.bottomRight);
+}
 
 ColorScheme lightThemeColors(context) {
   return const ColorScheme(
@@ -43,37 +53,37 @@ ThemeData lightThemeData(BuildContext context) {
           fontSize: 40,
           fontWeight: FontWeight.bold),
       headlineLarge: TextStyle(
-          color:  lightThemeColors(context).onPrimary,
+          color: lightThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.w700,
           fontSize: screenHeight / 20,
           letterSpacing: 0),
       headlineMedium: TextStyle(
-          color:  lightThemeColors(context).onPrimary,
+          color: lightThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.normal,
           fontSize: screenHeight / 30,
           letterSpacing: 0),
       headlineSmall: TextStyle(
-          color:  lightThemeColors(context).onPrimary,
+          color: lightThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.normal,
           fontSize: screenHeight / 40,
           letterSpacing: 0),
       bodyLarge: TextStyle(
-          color:  lightThemeColors(context).onPrimary,
+          color: lightThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.normal,
           fontSize: screenHeight / 40,
           letterSpacing: 0),
       bodyMedium: TextStyle(
-          color:  lightThemeColors(context).onPrimary,
+          color: lightThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.normal,
           fontSize: screenHeight / 50,
           letterSpacing: 0),
       bodySmall: TextStyle(
-          color:  lightThemeColors(context).onPrimary,
+          color: lightThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.normal,
           fontSize: screenHeight / 60,
@@ -100,31 +110,31 @@ ThemeData darkThemeData(BuildContext context) {
           fontSize: screenHeight / 20,
           letterSpacing: 0),
       headlineMedium: TextStyle(
-          color:  darkThemeColors(context).onPrimary,
+          color: darkThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.w700,
           fontSize: screenHeight / 30,
           letterSpacing: 0),
       headlineSmall: TextStyle(
-          color:  darkThemeColors(context).onPrimary,
+          color: darkThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.w700,
           fontSize: screenHeight / 40,
           letterSpacing: 0),
       bodyLarge: TextStyle(
-          color:  darkThemeColors(context).onPrimary,
+          color: darkThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.normal,
           fontSize: screenHeight / 40,
           letterSpacing: 0),
       bodyMedium: TextStyle(
-          color:  darkThemeColors(context).onPrimary,
+          color: darkThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.normal,
           fontSize: screenHeight / 50,
           letterSpacing: 0),
       bodySmall: TextStyle(
-          color:  darkThemeColors(context).onPrimary,
+          color: darkThemeColors(context).onPrimary,
           fontFamily: 'OpenSans',
           fontWeight: FontWeight.normal,
           fontSize: screenHeight / 60,

@@ -1,8 +1,8 @@
+import 'package:chuckler/pages/accountpage/account.dart';
 import 'package:chuckler/pages/leaderboardpage/leaderboard.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/pages/createpage/create_page.dart';
 import 'package:chuckler/pages/feedpage/feed_page.dart';
-import 'package:chuckler/pages/accountpage/account_page.dart';
 
 class NavigationBarController extends StatefulWidget {
   final int initialPageIndex;
@@ -31,7 +31,7 @@ class AppNavBar extends State<NavigationBarController> {
     const CreatePage(),
     const FeedPage(),
     const Leaderboard(),
-    AccountPage(),
+    const Account(),
   ];
 
   @override
