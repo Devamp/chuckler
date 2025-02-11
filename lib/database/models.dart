@@ -31,6 +31,7 @@ class DbPrompt {
   String? promptId;
   String? date;
   String? type;
+  int responses = 0;
   //If liked is 0 no selection -1 is for dislike 1 is for a like
   int liked = 0;
   DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date, this.type);
@@ -64,10 +65,8 @@ class DbComment {
   DbComment(this.username, this.comment);
 }
 //TODO IMPLEMENT NOTIFICATIONS
-/**
- * HOW will this work? When a user performs an action that involves another user...Have google cloud functions
- * send a notfication to the User that is the target of the request...This could be liking posts/friend requests...etc
- */
+/// HOW will this work? When a user performs an action that involves another user...Have google cloud functions
+/// send a notfication to the User that is the target of the request...This could be liking posts/friend requests...etc
 @Collection()
 class DbNotification{
   Id id = Isar.autoIncrement;

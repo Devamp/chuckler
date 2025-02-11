@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'database/models.dart';
 import 'dart:math';
@@ -10,10 +9,8 @@ import 'dart:math';
 ///
 ///
 
-/**
- * @author Caden Deutscher
- * @description - adds a comment to the subcollection 'Comments' in both the user and post objects
- */
+/// @author Caden Deutscher
+/// @description - adds a comment to the subcollection 'Comments' in both the user and post objects
 Future<void> addCommentToPost(FirebaseFirestore firestore, String postId,
     String usernameCommenter, String comment) async {
   DateTime now = DateTime.now().toUtc();
@@ -35,12 +32,9 @@ Future<void> addCommentToPost(FirebaseFirestore firestore, String postId,
   }
 }
 
-/**
- * Create a new post
- */
+/// Create a new post
 Future<DbPost> createPost(
-    FirebaseFirestore firebase,
-   DbUser u, DbPrompt prompt, answer) async {
+    FirebaseFirestore firebase, DbUser u, DbPrompt prompt, answer) async {
   final now = DateTime.now().toUtc();
   final timestamp = Timestamp.fromDate(now);
   CollectionReference collection = firebase.collection('Posts');
@@ -66,8 +60,8 @@ Future<DbPost> createPost(
       .then((docRef) => {docId = docRef.id})
       .catchError((error) => print("Failed to add data: $error"));
 
-
-  DbPost posted = DbPost(docId,answer,u.username, u.uid, 0 , 0 , 0, prompt.promptId, prompt.promptDateId);
+  DbPost posted = DbPost(docId, answer, u.username, u.uid, 0, 0, 0,
+      prompt.promptId, prompt.promptDateId);
   posted.mine = true;
   return posted;
 }
@@ -105,7 +99,7 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
       .where('date', isLessThan: endDate)
       .get();
   String pid = querySnapshot.docs.first.id;
-  print("this is the pid" + pid);
+  print("this is the pid$pid");
 
   if (querySnapshot.docs.isEmpty) {
     print("NO DOCS FOUND FOR TODAY $startDate");
@@ -119,16 +113,23 @@ Future<List<DbPrompt>> getDailyPrompts(FirebaseFirestore firestore) async {
         dynamic before = data['before'];
         dynamic after = data['after'];
         dynamic type = data['type'];
-        prompts.add(DbPrompt(before, after, pid, ds.id,
-            utcMidnight.toIso8601String().substring(0, 10), type));
+        DbPrompt toAdd = DbPrompt(before, after, pid, ds.id,
+            utcMidnight.toIso8601String().substring(0, 10), type);
+        try{
+          toAdd.responses = data['responses'];
+        }
+        catch(e){
+          print(e);
+        }
+        prompts.add(toAdd);
       }
+
     }
   }
   return prompts;
 }
 
-/**
- * Description Retrieve logged in user information*/
+/// Description Retrieve logged in user information
 Future<DbUser?> getLoggedInUserInfo(
     FirebaseFirestore firestore, String uid) async {
   try {
@@ -165,9 +166,7 @@ Future<DbUser?> getLoggedInUserInfo(
   }
 }
 
-/**
- *
- */
+///
 Future<DbUser?> getAUser(FirebaseFirestore firebase, String uid) async {
   try {
     DocumentSnapshot doc = await firebase.collection("Users").doc(uid).get();
@@ -188,9 +187,7 @@ Future<DbUser?> getAUser(FirebaseFirestore firebase, String uid) async {
   }
 }
 
-/**
- * Description: Get the 10 posts from the database...put them in the
- */
+/// Description: Get the 10 posts from the database...put them in the
 Future<List<DbPost>> getPosts(
     FirebaseFirestore firestore, String prmtId, String prmtDateId) async {
   print("specs");
@@ -236,16 +233,14 @@ Future<List<DbPost>> getPosts(
       dynamic dislikes = data['dislikes'];
       dynamic wins = data['wins'];
       dynamic uid = data['uid'];
-      toReturn
-          .add(DbPost(doc.id, answer, username, uid, likes, dislikes, wins, prmtId, prmtDateId));
+      toReturn.add(DbPost(doc.id, answer, username, uid, likes, dislikes, wins,
+          prmtId, prmtDateId));
     }
     return toReturn;
   }
 }
 
-/**
- * Description: Get the first few comments from a post
- */
+/// Description: Get the first few comments from a post
 Future<List<DbComment>> getComments(
     FirebaseFirestore firestore, String postId) async {
   List<DbComment> comments = List<DbComment>.empty(growable: true);
@@ -270,14 +265,44 @@ Future<List<DbComment>> getComments(
   } catch (error) {}
   return comments;
 }
+/**
+ * Check if there is a document created by a user for a specific prompt/prompt date
+ * Return null if there is not a doc
+ */
+Future<DbPost?> getUserPostForPrompt(FirebaseFirestore firestore, String uid,
+    String promptDateId, String promptId) async {
+  try {
+    var docRef = await firestore
+        .collection('Posts')
+        .where('promptDateId', isEqualTo: promptDateId)
+        .where('promptId', isEqualTo: promptId)
+        .where('uid', isEqualTo: uid)
+        .limit(1)
+        .get();
+    var docData = docRef.docs.first.data();
+    if(docRef.docs.isEmpty){
+      return null;
+    }
+    return DbPost(
+        docRef.docs.first.id,
+        docData['answer'],
+        docData['username'],
+        docData['uid'],
+        docData['likes'],
+        docData['dislikes'],
+        docData['wins'],
+        promptId,
+        promptDateId);
+  } catch (e) {
+    return null;
+  }
+}
 
 ///UPDATE METHODS
 ///
 ///
 
-/**
- * Description increment user number of posts
- */
+/// Description increment user number of posts
 Future<void> incrementNumPosts(FirebaseFirestore firestore, String uid) async {
   firestore
       .collection('Users')

@@ -45,164 +45,169 @@ class  AccountPage extends StatelessWidget{
     }
 
     return Align(
-      alignment: Alignment.topCenter,
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
+
+      child: Padding(
+        padding: EdgeInsets.only(top: 10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Container(
+                height: 220,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 40,
+                    ),
+                    ProfilePhotoPickerModal(username: userService.loggedInUser!.username!, img: userService.loggedInUser!.profilePicture),
+                    Text(
+                      userService.loggedInUser!.username!,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
               height: 220,
+              width: 230,
               decoration: BoxDecoration(
                 color: Colors.black,
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    height: 40,
+                    height: 30,
                   ),
-                  ProfilePhotoPickerModal(username: userService.loggedInUser!.username!, img: userService.loggedInUser!.profilePicture),
-                  Text(
-                    userService.loggedInUser!.username!,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            userService.loggedInUser!.numFriends.toString(),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            'Friends',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 18,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            userService.loggedInUser!.numPosts!.toString(),
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            'Posts',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // confirm the user wants to log out
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Center(
+                            child: AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                              backgroundColor: Color.fromARGB(255, 20, 20, 20),
+                              title: const Text('Confirmation'),
+                              titleTextStyle: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFffd230),
+                                  fontSize: 22),
+                              content: Text('Are you sure you want to sign out?'),
+                              contentTextStyle: const TextStyle(
+                                  fontSize: 14, color: Colors.white),
+                              actions: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.black,
+                                      backgroundColor: const Color(0xFFffd230)),
+                                  child: Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  child: Text('Yes'),
+                                  onPressed: () async {
+                                    UserService userSession = Provider.of<UserService>(context, listen: false);
+                                    userSession.logout();
+                                    await _auth.signOut();
+                                    Navigator.pushReplacementNamed(
+                                        context, '/login');
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    icon: Icon(Icons.logout_outlined),
+                    label: Text(
+                      'Logout',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all<Color>(
+                          const Color(0xFFffd230)),
+                      iconColor: WidgetStateProperty.all<Color>(Colors.black),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          Container(
-            height: 220,
-            width: 230,
-            decoration: BoxDecoration(
-              color: Colors.black,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          userService.loggedInUser!.numFriends.toString(),
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          'Friends',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 18,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          userService.loggedInUser!.numPosts!.toString(),
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          'Posts',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // confirm the user wants to log out
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Center(
-                          child: AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                            backgroundColor: Color.fromARGB(255, 20, 20, 20),
-                            title: const Text('Confirmation'),
-                            titleTextStyle: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFffd230),
-                                fontSize: 22),
-                            content: Text('Are you sure you want to sign out?'),
-                            contentTextStyle: const TextStyle(
-                                fontSize: 14, color: Colors.white),
-                            actions: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    backgroundColor: const Color(0xFFffd230)),
-                                child: Text('Cancel'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.black,
-                                  backgroundColor: Colors.white,
-                                ),
-                                child: Text('Yes'),
-                                onPressed: () async {
-                                  UserService userSession = Provider.of<UserService>(context, listen: false);
-                                  userSession.logout();
-                                  await _auth.signOut();
-                                  Navigator.pushReplacementNamed(
-                                      context, '/login');
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(Icons.logout_outlined),
-                  label: Text(
-                    'Logout',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(
-                        const Color(0xFFffd230)),
-                    iconColor: WidgetStateProperty.all<Color>(Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

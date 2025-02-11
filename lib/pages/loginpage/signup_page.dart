@@ -3,16 +3,26 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+class SignupPage extends StatefulWidget {
+  @override
+  SignupPage({super.key});
 
+  @override
+  _SignupState createState() => _SignupState();
+}
 // ignore: must_be_immutable
-class SignupPage extends StatelessWidget {
-  SignupPage({Key? key}) : super(key: key);
-
+class _SignupState extends State<SignupPage> {
   String username = '';
   String email = '';
   String password = '';
   int age = 18;
   ValueNotifier<bool> isLoading = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -177,6 +187,9 @@ class SignupPage extends StatelessWidget {
                         if(isLoading.value){return;}
                         isLoading.value = true;
                         //Register User if it is valid information
+                        print(username);
+                        print(email);
+                        print(password);
                         if (username.isNotEmpty &&
                             email.isNotEmpty &&
                             password.isNotEmpty) {
@@ -201,6 +214,7 @@ class SignupPage extends StatelessWidget {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
+                                  backgroundColor: Colors.amber,
                                   title: Text('Success'),
                                   content: Text(
                                       'Please log in with your new credentials.'),
@@ -247,13 +261,13 @@ class SignupPage extends StatelessWidget {
                       },
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.black),
+                            WidgetStateProperty.all<Color>(Colors.black),
                         foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                            WidgetStateProperty.all<Color>(Colors.white),
+                        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
                             const EdgeInsets.all(10.0)),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
@@ -270,7 +284,7 @@ class SignupPage extends StatelessWidget {
                           children: const [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(Icons.app_registration_rounded),
                                 SizedBox(width: 8.0),
                                 Text(

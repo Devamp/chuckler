@@ -10,16 +10,17 @@ class UserService with ChangeNotifier {
   String? _loginTime;
   String _viewingPost = "____________";
   Color _viewingColor = Colors.amber;
+  List<DbPost?> _userPostsForPrompts = List.empty(growable: true);
   List<DbPrompt> _prompts = List.empty(growable: true);
   List<DbPost> _currentPosts = List<DbPost>.empty(growable: true);
   String? _currentFeedPromptId;
   String? get currentFeedPromptId => _currentFeedPromptId;
   String? get postAnswer => _postAnswer;
   String? get logTime => _loginTime;
-
   DbUser? get loggedInUser => _loggedInUser;
   String get viewingPost => _viewingPost;
   List<DbPrompt>? get prompts => _prompts;
+  List<DbPost?> get userPostsForPrompts => _userPostsForPrompts;
   List<DbPost>? get currentPosts => _currentPosts;
   Color? get viewingColor => _viewingColor;
   //get the lastLogin as a datetime object
@@ -79,7 +80,10 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-
+void addPostForPrompt(DbPost? p){
+    _userPostsForPrompts.add(p);
+    notifyListeners();
+}
 
   void addPrompt(DbPrompt p){
     _prompts.add(p);
@@ -106,14 +110,19 @@ void clearViewingColor(){
     _viewingColor = Colors.amber;
     notifyListeners();
 }
+void clearPostsForPrompts(){
+    _userPostsForPrompts.clear();
+    notifyListeners();
+}
 
   void logout() {
     clearPrompts();
+    clearPostsForPrompts();
     notifyListeners();
 
   }
 
   void reloadApp() {
-    runApp(MyApp());
+    runApp(const MyApp());
   }
 }

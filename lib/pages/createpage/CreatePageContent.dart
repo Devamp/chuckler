@@ -7,15 +7,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chuckler/pages/loginpage/login_page.dart';
 import 'package:chuckler/PageTransitioner.dart';
+import 'package:flutter/widgets.dart';
 import '../../Session.dart';
 import 'package:provider/provider.dart';
 import '../../database/isarDB.dart';
 import '../../database/models.dart';
 import 'package:chuckler/CustomReusableWidgets/custom_buttons.dart';
 import 'prompt_identifier.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:chuckler/pages/createpage/create_page_middle.dart';
+import '../constant_strings.dart';
 
 class CreatePageContent extends StatefulWidget {
   const CreatePageContent({super.key});
@@ -27,7 +28,7 @@ class CreatePageContent extends StatefulWidget {
 class _CreatePageContentState extends State<CreatePageContent>
     with WidgetsBindingObserver {
   final TextEditingController _controller =
-      TextEditingController(text: "Answer the Prompt Here");
+      TextEditingController(text: CreatePageTextPrompt);
 
 //state variables
   bool isUser = false;
@@ -47,36 +48,31 @@ class _CreatePageContentState extends State<CreatePageContent>
    */
   Future<void> postData() async {
     //check if user can post
-    if (canPost[promptVal]) {
+    UserService userSession = Provider.of<UserService>(context, listen: false);
+    if (canPost[promptVal] &&
+        userSession.userPostsForPrompts[promptVal] == null) {
+      canPost[promptVal] = false;
       //check if user has already posted
       FirebaseFirestore firebase =
           Provider.of<FirebaseFirestore>(context, listen: false);
-      UserService userSession = Provider.of<UserService>(context, listen: false);
-      final docRef = await firebase
-          .collection('Posts')
-          .where('uid', isEqualTo: userId)
-          .where('promptId', isEqualTo: promptId)
-          .where('promptDateId', isEqualTo: promtDateId)
-          .limit(1)
-          .get();
-      //If the user has not posted
-      if (docRef.docs.isEmpty) {
-        canPost[promptVal] = false;
-        try {
-          //Retrieve newly created post
-          DbPost justPosted = await createPost(firebase, userSession.loggedInUser!, userSession.prompts![promptVal], _controller.text);
-          //Add post to local DB
-          IsarService isar = Provider.of<IsarService>(context, listen:  false);
-          //Incrament user posts stat
-          isar.addOnePostToDB(justPosted);
-          incrementNumPosts(firebase, userId);
-        } catch (error) {
-          print("Error: $error");
-        }
-        return;
-      } else {
-        canPost[promptVal] = false;
+
+      try {
+        //Retrieve newly created post
+        DbPost justPosted = await createPost(
+            firebase,
+            userSession.loggedInUser!,
+            userSession.prompts![promptVal],
+            _controller.text);
+        //Add post to local DB
+        IsarService isar = Provider.of<IsarService>(context, listen: false);
+        //Incrament user posts stat
+        isar.addOnePostToDB(justPosted);
+        incrementNumPosts(firebase, userId);
+        userSession.userPostsForPrompts[promptVal] = justPosted;
+      } catch (error) {
+        print("Error: $error");
       }
+      return;
     }
   }
 
@@ -99,14 +95,20 @@ class _CreatePageContentState extends State<CreatePageContent>
   @override
   void initState() {
     super.initState();
+    UserService userSession = Provider.of<UserService>(context, listen: false);
+    if (userSession.userPostsForPrompts.first != null) {
+      _controller.text = userSession.userPostsForPrompts.first!.answer!;
+    }
+    //Set up text box
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
         if (_controller.text.trim().isEmpty) {
-          _controller.text = "Answer the Prompt Here";
+          _controller.text = CreatePageTextPrompt;
         }
       }
       setState(() {});
     });
+    //Ensure user is logged in
     checkTheUser();
   }
 
@@ -136,11 +138,18 @@ class _CreatePageContentState extends State<CreatePageContent>
     List<DbPrompt> prompts = userSession.prompts!;
     promptId = prompts[promptVal].promptId!;
     promtDateId = prompts[promptVal].promptDateId!;
-    for (int i = 0; i < prompts.length; i++) {
+    for (int i = 0; i < userSession.prompts!.length; i++) {
       canPost.add(true);
-      textControllerStates.add("Answer the Prompt Here");
+      if (userSession.userPostsForPrompts[i] == null) {
+        textControllerStates.add(CreatePageTextPrompt);
+      } else {
+        if (textControllerStates.length >= prompts.length) {
+          textControllerStates[i] = userSession.userPostsForPrompts[i]!.answer!;
+        } else {
+          textControllerStates.add(userSession.userPostsForPrompts[i]!.answer!);
+        }
+      }
     }
-
     return Column(
       children: [
         //Prompt Area
@@ -150,15 +159,49 @@ class _CreatePageContentState extends State<CreatePageContent>
               constraints: BoxConstraints.tight(
                   Size(screenWidth / 1.1, double.infinity)),
               decoration: BoxDecoration(
+                  color: Colors.black54,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.amber, width: 5)),
+                  border: Border.all(color: Colors.black26, width: 5)),
               child: Column(children: [
                 Expanded(flex: 1, child: Container()),
-                const Expanded(flex: 6, child: PromptIdentifier()),
+                Expanded(
+                    flex: 6,
+                    child: Row(children: [
+                      Expanded(flex: 1, child: Container()),
+                      Expanded(flex: 4, child: PromptIdentifier()),
+                      Expanded(
+                          flex: 2,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.public,
+                              color: Colors.blueGrey,
+                            ),
+                            onPressed: () {
+                              Dialog(
+                                  child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: FittedBox(
+                                          alignment: Alignment.center,
+                                          child: Container(
+                                              padding: EdgeInsets.all(12),
+                                              constraints: BoxConstraints(
+                                                  maxWidth: screenWidth / 1.2,
+                                                  maxHeight: screenHeight / 4),
+                                              child: Text(
+                                                LikeDislikeInfoText,
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )))));
+                            },
+                          )),
+                    ])),
                 Expanded(
                     flex: 20,
                     child: Padding(
-                        padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                         child: Center(
                             child: AutoSizeText.rich(
                           TextSpan(
@@ -172,7 +215,8 @@ class _CreatePageContentState extends State<CreatePageContent>
                               TextSpan(
                                   text: _controller.text,
                                   style: const TextStyle(
-                                      color: Color(0xFFffd230))),
+                                      color: Color(0xfffbd0bf))),
+                              //Color(0xff84C3D1)
                               TextSpan(text: prompts[promptVal].after),
                             ],
                           ),
@@ -181,8 +225,8 @@ class _CreatePageContentState extends State<CreatePageContent>
                           minFontSize: 2,
                         )))),
                 Divider(
-                  color: Colors.grey,
-                  thickness: 1,
+                  color: Colors.black12,
+                  thickness: 3,
                 ),
                 Expanded(
                     flex: 6,
@@ -208,12 +252,14 @@ class _CreatePageContentState extends State<CreatePageContent>
                                       splashRadius: 10,
                                       icon: const Icon(
                                         Icons.chevron_left_outlined,
-                                        color: Colors.amber,
+                                        color: Color(0xff84C3D1),
                                       ),
                                     )
                                   : Container()),
-                          const Expanded(
-                              flex: 10, child: CreatePageLoadingBar()),
+                          Expanded(
+                              flex: 10,
+                              child: CreatePageLoadingBar(
+                                  pVal: promptVal, friend: null)),
                           //PROMPT W/ USER ANSWER
                           Expanded(
                               flex: 2,
@@ -234,7 +280,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                                       splashRadius: 10,
                                       icon: const Icon(
                                         Icons.chevron_right_outlined,
-                                        color: Colors.amber,
+                                        color: Color(0xff84C3D1),
                                       ),
                                     )
                                   : Container()),
@@ -247,7 +293,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                 flex: 12,
                 child: Container(
                   alignment: Alignment.center,
-                  child: CreateMiddle(),
+                  child:  CreateMiddle(),
                 ),
               )
             : Expanded(flex: 1, child: Container()),
@@ -285,7 +331,7 @@ class _CreatePageContentState extends State<CreatePageContent>
                                   },
                                   onTap: () {
                                     if (_controller.text.trim() ==
-                                        "Answer the Prompt Here") {
+                                        CreatePageTextPrompt) {
                                       _controller.text = "";
                                       setState(() {});
                                     }
@@ -300,28 +346,38 @@ class _CreatePageContentState extends State<CreatePageContent>
                                   minLines: 1,
                                   maxLength: 500,
                                   keyboardType: TextInputType.multiline,
-                                  cursorColor: Colors.white,
+                                  cursorColor: Colors.black,
                                   focusNode: focusNode,
-                                  style: const TextStyle(color: Colors.amber),
+                                  style: TextStyle(
+                                      color: Color(0xfffbd0bf), fontSize: 18),
                                   decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.black54,
                                     constraints: BoxConstraints(
                                       maxWidth: screenWidth / 1.5,
                                     ),
-                                    hintText: "Answer Prompt Here",
-                                    border: const OutlineInputBorder(),
+                                    hintText: CreatePageTextPrompt,
+                                    counterStyle:
+                                        TextStyle(color: Colors.white54),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.black54,
+                                        // Unfocused border color
+                                        width: 2.0, // Unfocused border weight
+                                      ),
+                                    ),
                                     focusedBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(
-                                            color: Colors.amber, width: 3)),
+                                            color: Colors.black87, width: 3)),
                                     contentPadding: const EdgeInsets.all(10),
                                   ),
                                 );
                               }),
                               Container(
-                                  color: Colors.black,
 //Row For the Post Button
                                   child: ElevatedIconButton(
-                                      color: Colors.amber,
-                                      iconColor: Colors.black,
+                                      color: Colors.black87,
+                                      iconColor: Colors.blueGrey,
                                       fractionHeight: 40,
                                       text: "Post",
                                       width: screenWidth / 3,
@@ -364,3 +420,4 @@ class _CreatePageContentState extends State<CreatePageContent>
     );
   }
 }
+//Color(0xff84C3D1)

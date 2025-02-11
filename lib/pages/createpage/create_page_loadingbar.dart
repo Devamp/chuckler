@@ -1,9 +1,14 @@
 import 'package:chuckler/CustomReusableWidgets/profile_photo.dart';
+import 'package:chuckler/Session.dart';
 import 'package:flutter/material.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:provider/provider.dart';
+
+import '../../database/models.dart';
 
 class CreatePageLoadingBar extends StatefulWidget {
-  const CreatePageLoadingBar({super.key});
+  final int pVal;
+  final DbUser? friend;
+  const CreatePageLoadingBar({super.key, required this.pVal, required this.friend});
 
   @override
   _CreatePageLoadingBarState createState() => _CreatePageLoadingBarState();
@@ -11,11 +16,8 @@ class CreatePageLoadingBar extends StatefulWidget {
 
 class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
     with TickerProviderStateMixin {
-  var _progressValue = 0.0;
   String timeRemaining = "";
   int timeLeft = 0;
-
-
 
   //Set the progress indicator
   void _updateProgress() {
@@ -30,14 +32,10 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
     const totalSecondsInDay = 24 * 60 * 60;
     final hoursRemaining =
         ((totalSecondsInDay - secondsRemaining) / (60 * 60)).round();
-    final progressValue =
-        1 - ((totalSecondsInDay - secondsRemaining) / totalSecondsInDay);
-
 
     // Update state and potentially rebuild the widget
     setState(() {
       timeLeft = hoursRemaining;
-      _progressValue = progressValue;
       timeRemaining = hoursRemaining.toString();
     });
   }
@@ -50,6 +48,7 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
 
   @override
   Widget build(BuildContext context) {
+    UserService userSession = Provider.of<UserService>(context, listen: false);
     double screenHeight = MediaQuery.of(context).size.height;
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Expanded(
@@ -60,19 +59,19 @@ class _CreatePageLoadingBarState extends State<CreatePageLoadingBar>
                 color: Colors.white,
                 fontFamily: 'OpenSans',
                 fontSize: screenHeight / 70,
-              fontWeight: FontWeight.w700
-            ),
+                fontWeight: FontWeight.w700),
           )),
       Expanded(flex: 3, child: Container()),
       Expanded(
           flex: 8,
           child: Container(
-            alignment: Alignment.centerRight,
-            decoration: BoxDecoration(),
+              alignment: Alignment.centerRight,
+              decoration: const BoxDecoration(),
               height: 30,
+              //TODO add friend image
               child: Row(children: [
-                ProfilePhoto(username: "Text", img: "", radius: 15),
-                Text(" +100 answered",
+                widget.friend != null ? ProfilePhoto(username: "Text", img: "", radius: 15): Container(),
+                Text(" ${widget.friend == null ? "         " : " + "} ${userSession.prompts![widget.pVal].responses} Answered",
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'OpenSans',

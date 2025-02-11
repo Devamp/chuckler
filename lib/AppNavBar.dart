@@ -1,22 +1,19 @@
+import 'package:chuckler/pages/accountpage/account.dart';
+import 'package:chuckler/pages/leaderboardpage/leaderboard.dart';
 import 'package:flutter/material.dart';
 import 'package:chuckler/pages/createpage/create_page.dart';
 import 'package:chuckler/pages/feedpage/feed_page.dart';
-import 'package:chuckler/pages/explorepage/explore_page.dart';
-import 'package:chuckler/pages/accountpage/account_page.dart';
-
 
 class NavigationBarController extends StatefulWidget {
   final int initialPageIndex;
 
-  const NavigationBarController({Key? key, required this.initialPageIndex})
-      : super(key: key);
+  const NavigationBarController({super.key, required this.initialPageIndex});
 
   @override
   AppNavBar createState() => AppNavBar(initialPageIndex: initialPageIndex);
 }
 
 class AppNavBar extends State<NavigationBarController> {
-
   //Starting state
   int _currentPageIndex = 0;
 
@@ -31,13 +28,11 @@ class AppNavBar extends State<NavigationBarController> {
   }
 
   final List<Widget> _pages = [
-    CreatePage(),
-    FeedPage(),
-    ExplorePage(),
-    AccountPage(),
-
+    const CreatePage(),
+    const FeedPage(),
+    const Leaderboard(),
+    const Account(),
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +47,7 @@ class AppNavBar extends State<NavigationBarController> {
             onTap: (itemIndex) {
               setCurrentPageIndex(itemIndex);
             },
-            selectedItemColor: Color(0xFFffd230),
+            selectedItemColor: const Color(0xFFffd230),
             unselectedItemColor: Colors.white,
             //Creates a list of each of the icons in the nav bar
             items: const [
@@ -60,13 +55,9 @@ class AppNavBar extends State<NavigationBarController> {
                   label: "Create", icon: Icon(Icons.create)),
               BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home)),
               BottomNavigationBarItem(
-                  label: "Explore", icon: Icon(Icons.explore)),
+                  label: "Leaderboard", icon: Icon(Icons.emoji_events)),
               BottomNavigationBarItem(
                   label: "Account", icon: Icon(Icons.person))
-            ]
-        )
-
-
-    );
+            ]));
   }
 }

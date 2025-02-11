@@ -4,4 +4,7 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- TODO REMOVE FOLLOWING LINE BEFORE DEPLOYMENT-->
+    <application android:usesCleartextTraffic="true"> </application>
+    <!-- TODO REMOVE PREVIOUS LINE BEFORE DEPLOYMENT-->
 </manifest>
