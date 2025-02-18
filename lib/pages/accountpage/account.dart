@@ -1,7 +1,10 @@
 import 'package:chuckler/pages/accountpage/account_awards.dart';
 import 'package:chuckler/pages/accountpage/notifications.dart';
+import 'package:chuckler/pages/accountpage/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:provider/provider.dart';
+import '../../Session.dart';
 import '../../Theme/theme.dart';
 import '../../database/models.dart';
 import 'account_posts.dart';
@@ -16,6 +19,7 @@ class Account extends StatefulWidget {
 class _AccountState extends State<Account> {
   int _currentPageIndex = 0;
   Widget _currentScreen = Container();
+  bool _isFirstRender = true;
 
   List<DbPost> posts = [
     DbPost("a", "b", "c", "C", 0, 0, 0, "", ""),
@@ -34,6 +38,14 @@ class _AccountState extends State<Account> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
+    if (_isFirstRender) {
+      setState(() {
+        _currentScreen = AccountPosts(posts: posts);
+      });
+
+      _isFirstRender = false;
+    }
 
     return Scaffold(
       body: Container(
@@ -55,6 +67,8 @@ class _AccountState extends State<Account> {
 
   Widget accountHeader(BuildContext context, Function setCurrentPageIndex,
       double screenWidth, double screenHeight) {
+    UserService userService = Provider.of<UserService>(context, listen: true);
+
     return Container(
       width: screenWidth,
       height: screenHeight * 0.45,
@@ -71,10 +85,13 @@ class _AccountState extends State<Account> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const ProfilePicture(name: 'Username', radius: 55, fontsize: 20),
+            ProfilePicture(
+                name: userService.loggedInUser!.username!,
+                radius: 55,
+                fontsize: 20),
             const SizedBox(height: 12),
-            const Text(
-              'Username',
+            Text(
+              userService.loggedInUser!.username!,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             ),
             const SizedBox(height: 15),
@@ -146,40 +163,28 @@ class _AccountState extends State<Account> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Settings()),
+                    );
+                  },
                   style: const ButtonStyle(
                     backgroundColor:
                         MaterialStatePropertyAll<Color>(Colors.white),
                   ),
-                  child: const Icon(
-                    Icons.settings,
-                    color: Colors.black,
-                    size: 18,
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: const ButtonStyle(
-                    backgroundColor:
-                        MaterialStatePropertyAll<Color>(Colors.white),
-                  ),
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Text(
-                        'Logout',
+                      const Text(
+                        'Settings',
                         style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         width: 8,
                       ),
-                      Icon(
-                        Icons.logout_outlined,
+                      const Icon(
+                        Icons.settings,
                         color: Colors.black,
                         size: 18,
                       ),
@@ -205,7 +210,6 @@ class _AccountState extends State<Account> {
       currentIndex: _currentPageIndex,
       onTap: (itemIndex) {
         setCurrentPageIndex(itemIndex);
-
         // Handle navigation based on index
         switch (itemIndex) {
           case 0:
@@ -215,24 +219,11 @@ class _AccountState extends State<Account> {
             break;
           case 1:
             setState(() {
-              _currentScreen = const SingleChildScrollView(
-                child: SizedBox(
-                  child: Column(
-                    children: [
-                      Text('My Bookmarks'),
-                    ],
-                  ),
-                ),
-              );
-            });
-            break;
-          case 2:
-            setState(() {
               _currentScreen = getMyNotificationsScreen(context);
             });
             break;
 
-          case 3:
+          case 2:
             setState(() {
               _currentScreen = AwardsPage();
             });
@@ -246,7 +237,6 @@ class _AccountState extends State<Account> {
           label: "Posts",
           icon: Icon(Icons.sticky_note_2_outlined),
         ),
-        BottomNavigationBarItem(label: "Bookmarks", icon: Icon(Icons.bookmark)),
         BottomNavigationBarItem(
           label: "Notifications",
           icon: Icon(Icons.notifications),
