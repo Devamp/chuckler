@@ -18,8 +18,9 @@ class DbPost {
   bool mine = false;
   String? promptId;
   String? promptDateId;
-  DbPost(this.postId, this.answer, this.username, this.uid, this.likes, this.dislikes, this.wins, this.promptId, this.promptDateId);
 
+  DbPost(this.postId, this.answer, this.username, this.uid, this.likes,
+      this.dislikes, this.wins, this.promptId, this.promptDateId);
 }
 
 @Collection()
@@ -32,9 +33,12 @@ class DbPrompt {
   String? date;
   String? type;
   int responses = 0;
+
   //If liked is 0 no selection -1 is for dislike 1 is for a like
   int liked = 0;
-  DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date, this.type);
+
+  DbPrompt(this.before, this.after, this.promptDateId, this.promptId, this.date,
+      this.type);
 }
 
 @Collection()
@@ -53,26 +57,30 @@ class DbUser {
   String? uid;
   List<String> friends = List.empty(growable: true);
   List<String> pendingFriends = List.empty(growable: true);
-  DbUser(this.uid, this.username,this.numFriends, this.numPosts, this.profilePicture);
-}
 
+  DbUser(this.uid, this.username, this.numFriends, this.numPosts,
+      this.profilePicture);
+}
 
 @Collection()
 class DbComment {
   Id id = Isar.autoIncrement;
   String? username;
   String? comment;
+
   DbComment(this.username, this.comment);
 }
+
 //TODO IMPLEMENT NOTIFICATIONS
 /// HOW will this work? When a user performs an action that involves another user...Have google cloud functions
 /// send a notfication to the User that is the target of the request...This could be liking posts/friend requests...etc
 @Collection()
-class DbNotification{
+class DbNotification {
   Id id = Isar.autoIncrement;
   String? notification;
   String? by;
   String? day;
   bool seen = false;
-  DbNotification(this. notification, this.by, this. day);
+
+  DbNotification(this.notification, this.by, this.day);
 }
